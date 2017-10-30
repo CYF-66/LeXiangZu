@@ -37,6 +37,7 @@ export default class RegisterPage extends Component {
             date: {},
             code:'',
             verifyCodeText:'验证码',
+            test:''
 
         };
         this.timer = null;
