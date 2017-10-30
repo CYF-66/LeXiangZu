@@ -1,0 +1,371 @@
+'use strict'
+import React, {Component} from 'react'
+import {
+    View,
+    ListView,
+    RefreshControl,
+    TouchableOpacity,
+    TouchableHighlight,
+    Text,
+    Image,
+    StyleSheet,
+    InteractionManager
+} from 'react-native'
+//引入标题支持包
+import NavigationBar from 'react-native-navigationbar'
+import Toast from 'react-native-root-toast';
+import Common from '../util/constants';
+import {GetOrderDetail} from '../actions/orderActions'
+import Alipay from 'react-native-yunpeng-alipay'
+
+
+export default class RepaymentPage extends Component {
+    constructor(props) {
+        super(props);
+        this.state = ({
+            isError: false,
+            isLoading: true,
+        })
+    }
+    componentDidMount() {
+        InteractionManager.runAfterInteractions(() => {
+            const {dispatch} = this.props;
+            let data={'book_id':this.props.book_id};
+            console.log('data===------------>'+JSON.stringify(data));
+            dispatch(GetOrderDetail(data));
+        });
+    }
+
+    render() {
+        return (
+            <View style={styles.container} needsOffscreenAlphaCompositing renderToHardwareTextureAndroid>
+                <NavigationBar
+                    backIconHidden={false}
+                    barTintColor={Common.colors.yellow3}
+                    barStyle={styles.navbar}
+                    title={this.props.Title}
+                    titleColor={Common.colors.white}
+                    backColor={Common.colors.white}
+                    backFunc={() => {
+                        this.props.navigator.pop()
+                    }}
+                />
+
+                <View style={{backgroundColor: Common.colors.yellow2, height: 100, width: Common.window.width}}>
+
+                </View>
+                <View style={{
+                    position: 'absolute',
+                    left: 10,
+                    top: 80,
+                    right: 10, backgroundColor: Common.colors.white, borderRadius: 5, height: 160
+                }}>
+
+                    <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                        <Text style={{color: Common.colors.brown1, fontSize: 15, marginTop: 15}}>
+                            还款总额(元)
+                        </Text>
+                        <Text style={{color: Common.colors.yellow3, fontSize: 25, marginTop: 3}}>
+                            555.00元
+                        </Text>
+                        <Text style={{color: Common.colors.brown1, fontSize: 10, marginTop: 3}}>
+                            结算日期:2017/12/09
+                        </Text>
+                    </View>
+                    <Image source={require('../images/order/icon_use.png')} style={{
+                        position: 'absolute',
+                        top: 25,
+                        right: 25,
+                        width: 60,
+                        height: 60,
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                    }}/>
+                    <View style={{backgroundColor: Common.colors.gray6, height: 2, marginTop: 10}}/>
+                    <View style={{
+                        flexDirection: 'row',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        marginTop: 15,
+                        marginBottom: 20
+                    }}>
+                        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+
+                            <Text style={{color: Common.colors.brown1, fontSize: 12}}>
+                                本期应还(元)
+                            </Text>
+                            <Text style={{color: Common.colors.yellow3, fontSize: 12, marginTop: 5}}>
+                                555.00
+                            </Text>
+                        </View>
+                        <View style={{
+                            height: 30,
+                            width: 1,
+                            backgroundColor: Common.colors.yellow2,
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                        }}/>
+                        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+
+                            <Text style={{color: Common.colors.brown1, fontSize: 12}}>
+                                应还总额(元)
+                            </Text>
+                            <Text style={{color: Common.colors.yellow3, fontSize: 12, marginTop: 5}}>
+                                555.00
+                            </Text>
+                        </View>
+                        <View style={{
+                            height: 30,
+                            width: 1,
+                            backgroundColor: Common.colors.yellow2,
+                            alignItems: 'center',
+                            justifyContent: 'center'
+                        }}/>
+                        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+
+                            <Text style={{color: Common.colors.brown1, fontSize: 12}}>
+                                产品金额(元)
+                            </Text>
+                            <Text style={{color: Common.colors.yellow3, fontSize: 12, marginTop: 5}}>
+                                555.00
+                            </Text>
+                        </View>
+                    </View>
+
+                </View>
+                <View style={{backgroundColor: Common.colors.white, marginTop: 60}}>
+                    <View style={{backgroundColor: Common.colors.brown2, height: 5, marginLeft: 10, marginRight: 10}}/>
+
+                    <View style={{paddingTop: 10}}>
+                        <Text style={{
+                            marginLeft: 10,
+                            marginRight: 10,
+                            paddingBottom: 3,
+                            color: Common.colors.black,
+                            fontSize: 15,
+                            borderBottomColor: Common.colors.bottomlinecolor,
+                            borderBottomWidth: 1
+                        }}>
+                            全部账单
+                        </Text>
+                        <Text style={{
+                            marginLeft: 10, marginRight: 10, color: Common.colors.yellow3, fontSize: 12
+                            , paddingTop: 5, paddingBottom: 5
+                        }}>
+                            结清账单
+                        </Text>
+                        <TouchableOpacity
+                            activeOpacity={0.9}
+                            onPress={() => this._skipIntoAccountManage("订单")}>
+                            <View style={{
+                                backgroundColor: Common.colors.gray5,
+                                borderRadius: 5,
+                                marginTop: 10,
+                                marginLeft: 10,
+                                marginRight: 10
+                            }}>
+
+                                <View style={{
+                                    backgroundColor: Common.colors.white,
+                                    borderRadius: 5,
+                                    margin: 1,
+                                    paddingLeft: 10,
+                                    paddingRight: 10
+                                }}>
+                                    <View style={{
+                                        flexDirection: 'row', justifyContent: 'center', alignItems: 'center',
+                                        borderBottomColor: Common.colors.bottomlinecolor,
+                                        borderBottomWidth: 1
+                                    }}>
+
+                                        <Image source={require('../images/other/icon_iphone8.png')} style={{
+                                            width: 30,
+                                            height: 60,
+                                            alignItems: 'center',
+                                            justifyContent: 'center'
+                                        }}/>
+                                        <View style={{flex: 1, justifyContent: 'center', marginBottom: 5}}>
+
+                                            <Text style={{
+                                                color: Common.colors.black,
+                                                fontSize: 15,
+                                                marginLeft: 10
+                                            }}>IPhone8</Text>
+                                            <Text style={{
+                                                color: Common.colors.gray7,
+                                                fontSize: 12,
+                                                marginLeft: 10,
+                                                marginTop: 3
+                                            }}>1/1期</Text>
+
+                                                <Text style={{color: Common.colors.gray7,
+                                                fontSize: 12,
+                                                marginLeft: 10,
+                                                marginTop: 3
+                                            }}>666.00(含服务费60，逾期费:55.0)</Text>
+                                        </View>
+                                        {/*<View style={{justifyContent: 'center',marginTop:15}}>*/}
+                                        <Text style={{fontSize: 12, color: Common.colors.gray1}}>
+                                            还款日 2017/10/21
+                                        </Text>
+                                        <Text style={{
+                                            position: 'absolute',
+                                            backgroundColor:Common.colors.yellow3,
+                                            bottom: 5,
+                                            right: 5, fontSize: 12, color: Common.colors.white,
+                                            paddingLeft:5,
+                                            paddingRight:5,
+                                            borderRadius:5
+                                        }}>
+                                            还款
+                                        </Text>
+                                        {/*</View>*/}
+                                    </View>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            activeOpacity={0.9}
+                            onPress={() => this._skipIntoAccountManage("订单")}>
+                            <View style={{
+                                backgroundColor: Common.colors.gray5,
+                                borderRadius: 5,
+                                marginTop: 10,
+                                marginLeft: 10,
+                                marginRight: 10
+                            }}>
+
+                                <View style={{
+                                    backgroundColor: Common.colors.white,
+                                    borderRadius: 5,
+                                    margin: 1,
+                                    paddingLeft: 10,
+                                    paddingRight: 10
+                                }}>
+                                    <View style={{
+                                        flexDirection: 'row', justifyContent: 'center', alignItems: 'center',
+                                        borderBottomColor: Common.colors.bottomlinecolor,
+                                        borderBottomWidth: 1
+                                    }}>
+
+                                        <Image source={require('../images/other/icon_iphone8.png')} style={{
+                                            width: 30,
+                                            height: 60,
+                                            alignItems: 'center',
+                                            justifyContent: 'center'
+                                        }}/>
+                                        <View style={{flex: 1, justifyContent: 'center', marginBottom: 5}}>
+
+                                            <Text style={{
+                                                color: Common.colors.black,
+                                                fontSize: 15,
+                                                marginLeft: 10
+                                            }}>IPhone8</Text>
+                                            <Text style={{
+                                                color: Common.colors.gray7,
+                                                fontSize: 12,
+                                                marginLeft: 10,
+                                                marginTop: 3
+                                            }}>1/1期</Text>
+                                            <Text style={{
+                                                color: Common.colors.gray7,
+                                                fontSize: 12,
+                                                marginLeft: 10,
+                                                marginTop: 3
+                                            }}>666.00(含服务费60，逾期费:55.0)</Text>
+                                        </View>
+                                        {/*<View style={{justifyContent: 'center',marginTop:15}}>*/}
+                                        <Text style={{fontSize: 12, color: Common.colors.gray1}}>
+                                            还款日 2017/10/21
+                                        </Text>
+                                        <Text style={{
+                                            position: 'absolute',
+                                            bottom: 5,
+                                            right: 5, fontSize: 12, color: Common.colors.gray7
+                                        }}>
+                                            已还款
+                                        </Text>
+                                        {/*</View>*/}
+                                    </View>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                <View style={{
+                    position: 'absolute',
+                    backgroundColor: Common.colors.white,
+                    paddingTop: 10,
+                    paddingBottom: 10,
+                    justifyContent:'center',
+                    alignItems:'center',
+                    width: Common.window.width,
+                    bottom: 0,
+                }}>
+                    <TouchableOpacity
+                        activeOpacity={0.5}
+                        onPress={() => this._skipIntoAccountManage("立即还款")}>
+                        <Text style={{
+                            alignItems: 'center',
+                            fontSize: 18, color: Common.colors.black
+                        }}>
+                            立即还款
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        )
+    }
+
+    _skipIntoAccountManage(content) {
+        Toast.show(content, {position: Toast.positions.CENTER});
+        // this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+        //     name:'SetContainer',
+        //     component: SetContainer,
+        //     // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
+        // })// push一个route对象到navigator中
+    }
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: Common.colors.gray4,
+    },
+    secondLine: {
+        backgroundColor: Common.colors.white,
+        flexDirection: 'row',
+        paddingTop: 10,
+        alignItems: 'center',
+        paddingBottom: 10,
+        borderBottomColor: Common.colors.bottomlinecolor,
+        borderBottomWidth: 1
+    },
+    secondLineItem: {
+        backgroundColor: Common.colors.white,
+        alignItems: 'center',
+        borderBottomColor: Common.colors.bottomlinecolor,
+        borderBottomWidth: 1
+    },
+    PayTitle: {
+        marginLeft: 8,
+        fontSize: 15,
+        color: Common.colors.black,
+        marginTop: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    Pay: {
+        marginLeft: 15,
+        marginTop: 10,
+        color: Common.colors.red,
+        fontSize: 15,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    orderState: {
+        flexDirection: 'row',
+        alignItems: 'center',
+
+    },
+});
