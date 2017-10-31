@@ -237,7 +237,7 @@ export default class OrderPage extends Component {
         this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
             name: 'RepaymentContainer',
             component: RepaymentContainer,
-            passProps: {Title: content,book_id:content}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
+            passProps: {Title: '订单',book_id:content}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
         })// push一个route对象到navigator中
     }
 }

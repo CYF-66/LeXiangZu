@@ -19,7 +19,7 @@ import {GetOrderDetail} from '../actions/orderActions'
 import Alipay from 'react-native-yunpeng-alipay'
 import Loading from '../components/Loading';
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-var isRefreshing=true;
+var isRefreshing=false;
 var isLoadMore=false;
 export default class RepaymentPage extends Component {
     constructor(props) {
@@ -45,6 +45,7 @@ export default class RepaymentPage extends Component {
         // let Data=homeReducer.Data;
         let data = orderReducer.Data;
         let isLoading = orderReducer.isLoading;
+        console.log('orderReducer.Data===------------>'+JSON.stringify(orderReducer.Data));
         let content;
         content = (
             <View style={styles.container}>
@@ -222,6 +223,7 @@ export default class RepaymentPage extends Component {
     _renderItem(contentData){
 
         return(
+            <View style={styles.container}>
             <TouchableOpacity
                 activeOpacity={0.9}
                 onPress={() => this._skipIntoAccountManage("订单")}>
@@ -292,6 +294,7 @@ export default class RepaymentPage extends Component {
                     </View>
                 </View>
             </TouchableOpacity>
+            </View>
         )
     }
 

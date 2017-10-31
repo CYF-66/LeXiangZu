@@ -53,9 +53,9 @@ export let GetOrderDetail = (data,isLoading,isRefreshing,isLoadMore) => {
             (Code, Message, Data) => {
 
             if(Code==1){
-                dispatch({type: types.MYORDERDETAILRECEIVED, Code: Code, Message: Message, Data: Data});
+                dispatch({type: types.MYORDERDETAILRECEIVED, Code: Code, Message: Message, Data: Data.bills});
             }else if(Code==2){//token 失效TOKENERROR
-                dispatch({type: types.MYORDERDETAILRECEIVED, Code: Code, Message: Message, Data: Data});
+                dispatch({type: types.MYORDERDETAILRECEIVED, Code: Code, Message: Message, Data: Data.bills});
             }else{
 
             }
