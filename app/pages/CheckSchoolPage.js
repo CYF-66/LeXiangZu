@@ -30,6 +30,11 @@ export default class CheckSchoolPage extends Component {
             isLoading: true,
             avatarSource: require('../images/set/icon_xueshengz.jpg'),
             isEducation: false,
+            isZhuanAndBen:true,
+            isBen:true,
+            isZhuan:false,
+            isGao:false,
+            isChu:false
 
             // typeList: {}
         })
@@ -50,13 +55,14 @@ export default class CheckSchoolPage extends Component {
                     marginRight: 100,
                     marginTop: 10
                 }}>
-                    <View style={{flex: 1, justifyContent: 'center'}}>
+                    <View style={{flex: 1, justifyContent: 'center',backgroundColor:Common.colors.red}}>
                         <TouchableOpacity
-                            activeOpacity={0.5}
+                            activeOpacity={1}
                             onPress={() => this._skipIntoAccountManage("在校")}>
                             <View
                                 style={{
                                     backgroundColor: Common.colors.red,
+                                    margin:1,
                                     justifyContent: 'center',
                                     alignItems: 'center'
                                 }}>
@@ -76,14 +82,14 @@ export default class CheckSchoolPage extends Component {
                             </View>
                         </TouchableOpacity>
                     </View>
-                    <View style={{flex: 1, justifyContent: 'center'}}>
+                    <View style={{flex: 1, justifyContent: 'center',backgroundColor:Common.colors.red}}>
                         <TouchableOpacity
-                            activeOpacity={0.5}
+                            activeOpacity={1}
                             onPress={() => this._skipIntoAccountManage("毕业")}>
 
                             <View style={{
-                                flex: 1,
-                                backgroundColor: Common.colors.gray3,
+                                backgroundColor: Common.colors.white,
+                                margin:1,
                                 justifyContent: 'center',
                                 alignItems: 'center'
                             }}>
@@ -206,7 +212,7 @@ export default class CheckSchoolPage extends Component {
                     </TouchableOpacity>
                 </View>
                 <TouchableOpacity activeOpacity={0.5} style={styles.loginBtn} onPress={this._next.bind(this)}>
-                    <Text style={styles.loginText}>下一步</Text>
+                    <Text style={styles.loginText}>提交</Text>
                 </TouchableOpacity>
             </ScrollView>
         )
@@ -224,15 +230,16 @@ export default class CheckSchoolPage extends Component {
                     marginRight: 100,
                     marginTop: 10
                 }}>
-                    <View style={{flex: 1, justifyContent: 'center'}}>
+                    <View style={{flex: 1, justifyContent: 'center',backgroundColor:Common.colors.red}}>
                         <TouchableOpacity
-                            activeOpacity={0.5}
+                            activeOpacity={1}
                             onPress={() => this._skipIntoAccountManage("在校")}>
                             <View
                                 style={{
-                                    backgroundColor: Common.colors.gray3,
+                                    backgroundColor: Common.colors.white,
                                     justifyContent: 'center',
-                                    alignItems: 'center'
+                                    alignItems: 'center',
+                                    margin:1,
                                 }}>
 
                                 <Text style={{
@@ -250,19 +257,19 @@ export default class CheckSchoolPage extends Component {
                             </View>
                         </TouchableOpacity>
                     </View>
-                    <View style={{flex: 1, justifyContent: 'center'}}>
+                    <View style={{flex: 1, justifyContent: 'center',backgroundColor:Common.colors.red}}>
                         <TouchableOpacity
-                            activeOpacity={0.5}
+                            activeOpacity={1}
                             onPress={() => this._skipIntoAccountManage("毕业")}>
 
                             <View style={{
-                                flex: 1,
                                 backgroundColor: Common.colors.red,
+                                margin:1,
                                 justifyContent: 'center',
                                 alignItems: 'center'
                             }}>
                                 <Text style={{
-                                    color: Common.colors.gray3,
+                                    color: Common.colors.white,
                                     fontSize: 20,
                                     paddingTop: 5,
                                     paddingBottom: 5,
@@ -277,52 +284,151 @@ export default class CheckSchoolPage extends Component {
                         </TouchableOpacity>
                     </View>
                 </View>
-                <View style={{flexDirection: 'row', justifyContent: 'center',marginTop:10,marginLeft:5,marginRight:5,marginBottom:30}}>
-                    <View style={{backgroundColor:Common.colors.yellow3,justifyContent:'center',alignItems: 'center',}}>
-                        <View style={{backgroundColor:Common.colors.white,margin:1,paddingTop: 5,
-                            paddingBottom: 5,paddingLeft:5,paddingRight:5}}>
-                        <Text style={{
-                            justifyContent:'center',
-                            alignItems: 'center',
-                            color: Common.colors.yellow3,
-                            fontSize: 18
-                        }}>本科及本科以上</Text>
+                <View style={{flexDirection: 'row', justifyContent: 'center',marginTop:20,marginLeft:5,marginRight:5,marginBottom:30}}>
+                    {this.state.isBen ? <View>
+                        <TouchableOpacity
+                            activeOpacity={0.5}
+                            onPress={() => this._skipIntoAccountManage("本科及本科以上")}>
+                            <View style={{backgroundColor:Common.colors.yellow3,justifyContent:'center',alignItems: 'center',}}>
+                                <View style={{backgroundColor:Common.colors.white,margin:1,paddingTop: 5,
+                                    paddingBottom: 5,paddingLeft:5,paddingRight:5}}>
+                                    <Text style={{
+                                        justifyContent:'center',
+                                        alignItems: 'center',
+                                        color: Common.colors.yellow3,
+                                        fontSize: 12
+                                    }}>本科及本科以上</Text>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    </View>:<View>
+                        <TouchableOpacity
+                            activeOpacity={0.5}
+                            onPress={() => this._skipIntoAccountManage("本科及本科以上")}>
+                            <View style={{backgroundColor:Common.colors.gray5,justifyContent:'center',alignItems: 'center',}}>
+                                <View style={{backgroundColor:Common.colors.white,margin:1,paddingTop: 5,
+                                    paddingBottom: 5,paddingLeft:5,paddingRight:5}}>
+                                    <Text style={{
+                                        justifyContent:'center',
+                                        alignItems: 'center',
+                                        color: Common.colors.gray5,
+                                        fontSize: 12
+                                    }}>本科及本科以上</Text>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    </View>}
+
+                    {this.state.isZhuan ?<View><TouchableOpacity
+                        activeOpacity={0.5}
+                        onPress={() => this._skipIntoAccountManage("大专")}>
+                        <View style={{backgroundColor:Common.colors.yellow3,marginLeft:5}}>
+                            <View style={{backgroundColor:Common.colors.white,margin:1,paddingTop: 5,
+                                paddingBottom: 5,paddingLeft:5,paddingRight:5}}>
+                                <Text style={{
+                                    justifyContent:'center',
+                                    alignItems: 'center',
+                                    color: Common.colors.yellow3,
+                                    fontSize: 12
+                                }}>大专</Text>
+                            </View>
                         </View>
-                    </View>
-                    <View style={{backgroundColor:Common.colors.gray5,marginLeft:5}}>
-                        <View style={{backgroundColor:Common.colors.white,margin:1,paddingTop: 5,
-                            paddingBottom: 5,paddingLeft:5,paddingRight:5}}>
-                        <Text style={{
-                            justifyContent:'center',
-                            alignItems: 'center',
-                            color: Common.colors.gray5,
-                            fontSize: 18
-                        }}>大专</Text>
-                        </View>
-                    </View>
+                    </TouchableOpacity></View>:<View><TouchableOpacity
+                        activeOpacity={0.5}
+                        onPress={() => this._skipIntoAccountManage("大专")}>
                         <View style={{backgroundColor:Common.colors.gray5,marginLeft:5}}>
                             <View style={{backgroundColor:Common.colors.white,margin:1,paddingTop: 5,
                                 paddingBottom: 5,paddingLeft:5,paddingRight:5}}>
-                        <Text style={{
-                            justifyContent:'center',
-                            alignItems: 'center',
-                            color: Common.colors.gray5,
-                            fontSize: 18
-                        }}>高中</Text>
+                                <Text style={{
+                                    justifyContent:'center',
+                                    alignItems: 'center',
+                                    color: Common.colors.gray5,
+                                    fontSize: 12
+                                }}>大专</Text>
                             </View>
                         </View>
+                    </TouchableOpacity></View>}
+
+                    {this.state.isGao ?<View>
+                        <TouchableOpacity
+                            activeOpacity={0.5}
+                            onPress={() => this._skipIntoAccountManage("高中")}>
+                            <View style={{backgroundColor:Common.colors.yellow3,marginLeft:5}}>
+                                <View style={{backgroundColor:Common.colors.white,margin:1,paddingTop: 5,
+                                    paddingBottom: 5,paddingLeft:5,paddingRight:5}}>
+                                    <Text style={{
+                                        justifyContent:'center',
+                                        alignItems: 'center',
+                                        color: Common.colors.yellow3,
+                                        fontSize: 12
+                                    }}>高中</Text>
+                                </View>
+                            </View>
+
+                        </TouchableOpacity>
+                    </View>:<View>
+                        <TouchableOpacity
+                            activeOpacity={0.5}
+                            onPress={() => this._skipIntoAccountManage("高中")}>
                             <View style={{backgroundColor:Common.colors.gray5,marginLeft:5}}>
                                 <View style={{backgroundColor:Common.colors.white,margin:1,paddingTop: 5,
                                     paddingBottom: 5,paddingLeft:5,paddingRight:5}}>
-                        <Text style={{
-                            justifyContent:'center',
-                            alignItems: 'center',
-                            color: Common.colors.gray5,
-                            fontSize: 18
-                        }}>初中及初中以下</Text>
+                                    <Text style={{
+                                        justifyContent:'center',
+                                        alignItems: 'center',
+                                        color: Common.colors.gray5,
+                                        fontSize: 12
+                                    }}>高中</Text>
                                 </View>
                             </View>
+
+                        </TouchableOpacity>
+                    </View>}
+
+                    {this.state.isChu ?<View><TouchableOpacity
+                        activeOpacity={0.5}
+                        onPress={() => this._skipIntoAccountManage("初中及初中以下")}>
+                        <View style={{backgroundColor:Common.colors.yellow3,marginLeft:5}}>
+                            <View style={{backgroundColor:Common.colors.white,margin:1,paddingTop: 5,
+                                paddingBottom: 5,paddingLeft:5,paddingRight:5}}>
+                                <Text style={{
+                                    justifyContent:'center',
+                                    alignItems: 'center',
+                                    color: Common.colors.yellow3,
+                                    fontSize: 12
+                                }}>初中及初中以下</Text>
+                            </View>
+                        </View>
+                    </TouchableOpacity></View>:<View><TouchableOpacity
+                        activeOpacity={0.5}
+                        onPress={() => this._skipIntoAccountManage("初中及初中以下")}>
+                        <View style={{backgroundColor:Common.colors.gray5,marginLeft:5}}>
+                            <View style={{backgroundColor:Common.colors.white,margin:1,paddingTop: 5,
+                                paddingBottom: 5,paddingLeft:5,paddingRight:5}}>
+                                <Text style={{
+                                    justifyContent:'center',
+                                    alignItems: 'center',
+                                    color: Common.colors.gray5,
+                                    fontSize: 12
+                                }}>初中及初中以下</Text>
+                            </View>
+                        </View>
+                    </TouchableOpacity></View>}
+
                 </View>
+
+                {this.state.isZhuanAndBen ? this._renderHighLever() : this._renderLowLever()}
+
+                <TouchableOpacity activeOpacity={0.5} style={styles.loginBtn} onPress={this._next.bind(this)}>
+                    <Text style={styles.loginText}>提交</Text>
+                </TouchableOpacity>
+            </ScrollView>
+        )
+    }
+
+    _renderHighLever(){
+        return(
+            <View>
                 <View style={[styles.formInput, styles.formInputSplit]}>
                     <Text
                         style={{
@@ -365,13 +471,77 @@ export default class CheckSchoolPage extends Component {
                         underlineColorAndroid={'transparent'}
                         onChangeText={this.onChangePassword.bind(this)}/>
                 </View>
-                <TouchableOpacity activeOpacity={0.5} style={styles.loginBtn} onPress={this._next.bind(this)}>
-                    <Text style={styles.loginText}>下一步</Text>
-                </TouchableOpacity>
-            </ScrollView>
+            </View>
         )
     }
-
+    _renderLowLever(){
+        return(
+            <View>
+                <View style={[styles.formInput, styles.formInputSplit]}>
+                    <Text
+                        style={{
+                            fontSize: 16, color: Common.colors.gray1,
+                            alignItems: 'center', justifyContent: 'center'
+                        }}>
+                        毕业院校地址
+                    </Text>
+                    <TextInput
+                        ref="login_name"
+                        placeholder=''
+                        restrict="^."
+                        maxLength={11}
+                        editable={true}
+                        keyboardType='default'
+                        multiline={false}
+                        // defaultValue={this.state.account.substring(1,this.state.account.length-1)}
+                        underlineColorAndroid={'transparent'}
+                        // field.restrict = "0-9"
+                        style={styles.loginInput}
+                        onChangeText={this.onChangeMobile.bind(this)}/>
+                </View>
+                <View style={[styles.formInput, styles.formInputSplit]}>
+                    <Text
+                        style={{
+                            fontSize: 16, color: Common.colors.gray1,
+                            alignItems: 'center', justifyContent: 'center'
+                        }}>
+                        毕业院校
+                    </Text>
+                    <TextInput
+                        ref="login_psw"
+                        style={styles.loginInput}
+                        // field.restrict = "0-9"
+                        multiline={false}
+                        // defaultValue={this.state.accountPWD.substring(1,this.state.accountPWD.length-1)}
+                        keyboardType={'default'}
+                        secureTextEntry={false}
+                        placeholder=''
+                        underlineColorAndroid={'transparent'}
+                        onChangeText={this.onChangePassword.bind(this)}/>
+                </View>
+                <View style={[styles.formInput, styles.formInputSplit]}>
+                    <Text
+                        style={{
+                            fontSize: 16, color: Common.colors.gray1,
+                            alignItems: 'center', justifyContent: 'center'
+                        }}>
+                        入学年份
+                    </Text>
+                    <TextInput
+                        ref="login_psw"
+                        style={styles.loginInput}
+                        // field.restrict = "0-9"
+                        multiline={false}
+                        // defaultValue={this.state.accountPWD.substring(1,this.state.accountPWD.length-1)}
+                        keyboardType={'default'}
+                        secureTextEntry={false}
+                        placeholder=''
+                        underlineColorAndroid={'transparent'}
+                        onChangeText={this.onChangePassword.bind(this)}/>
+                </View>
+            </View>
+        )
+    }
     render() {
         return (
             <View style={styles.container} needsOffscreenAlphaCompositing renderToHardwareTextureAndroid>
@@ -396,14 +566,46 @@ export default class CheckSchoolPage extends Component {
     }
 
     _skipIntoAccountManage(content) {
-        Toast.show(content, {position: Toast.positions.CENTER});
+        // Toast.show(content, {position: Toast.positions.CENTER});
         if (content == '在校') {
             this.setState({
                 isEducation: false
             })
-        } else {
+        } else if(content == '毕业') {
             this.setState({
-                isEducation: true
+                isEducation: true,
+            })
+        }else if(content == '本科及本科以上'){
+            this.setState({
+                isZhuanAndBen: true,
+                isBen:true,
+                isZhuan:false,
+                isGao:false,
+                isChu:false
+            })
+        }else if(content == '大专'){
+            this.setState({
+                isZhuanAndBen: true,
+                isBen:false,
+                isZhuan:true,
+                isGao:false,
+                isChu:false
+            })
+        }else if(content == '高中'){
+            this.setState({
+                isZhuanAndBen: false,
+                isBen:false,
+                isZhuan:false,
+                isGao:true,
+                isChu:false
+            })
+        }else if(content == '初中及初中以下'){
+            this.setState({
+                isZhuanAndBen: false,
+                isBen:false,
+                isZhuan:false,
+                isGao:false,
+                isChu:true
             })
         }
     }
@@ -510,8 +712,8 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     formInputSplit: {
-        // borderBottomWidth: 1,
-        // borderBottomColor: Common.colors.bottomlinecolor,
+        borderBottomWidth: 1,
+        borderBottomColor: Common.colors.bottomlinecolor,
     },
     loginInput: {
         height: 40,
@@ -520,8 +722,8 @@ const styles = StyleSheet.create({
         fontSize: 16,
         alignItems: 'center',
         justifyContent: 'center',
-        borderBottomWidth: 1,
-        borderBottomColor: Common.colors.bottomlinecolor,
+        // borderBottomWidth: 1,
+        // borderBottomColor: Common.colors.bottomlinecolor,
     },
 
     loginBtn: {
@@ -529,6 +731,7 @@ const styles = StyleSheet.create({
         padding: 10,
         alignItems: 'center',
         marginTop: 20,
+        marginBottom:20,
         marginLeft: 20,
         marginRight: 20,
         borderRadius: 5,

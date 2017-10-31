@@ -45,14 +45,14 @@ export default class CheckNamePage extends Component {
                     backFunc={() => {
                         this.props.navigator.pop()
                     }}
-                    actionName='提交'
-                    actionTextColor={Common.colors.white}
-                    actionFunc={() => {
-                        Toast.show('提交', {position: Toast.positions.CENTER});
-                        // this.props.navigator.push({
-                        //     component: AboutPage
-                        // })
-                    }}
+                    // actionName='提交'
+                    // actionTextColor={Common.colors.white}
+                    // actionFunc={() => {
+                    //     Toast.show('提交', {position: Toast.positions.CENTER});
+                    //     // this.props.navigator.push({
+                    //     //     component: AboutPage
+                    //     // })
+                    // }}
                 />
                 <View style={[styles.formInput, styles.formInputSplit]}>
                     <Text
@@ -62,7 +62,7 @@ export default class CheckNamePage extends Component {
                     </Text>
                     <TextInput
                         ref="login_name"
-                        placeholder='姓名'
+                        placeholder=''
                         restrict="^."
                         maxLength={11}
                         editable={true}
@@ -89,19 +89,19 @@ export default class CheckNamePage extends Component {
                         // defaultValue={this.state.accountPWD.substring(1,this.state.accountPWD.length-1)}
                         keyboardType={'numeric'}
                         secureTextEntry={false}
-                        placeholder='密码'
+                        placeholder=''
                         underlineColorAndroid={'transparent'}
                         onChangeText={this.onChangePassword.bind(this)}/>
                 </View>
                 <TouchableOpacity activeOpacity={0.5} style={styles.loginBtn} onPress={this._next.bind(this)}>
-                    <Text style={styles.loginText}>下一步</Text>
+                    <Text style={styles.loginText}>提交</Text>
                 </TouchableOpacity>
             </View>
         )
     }
 
     _next() {
-        Toast.show('下一步', {position: Toast.positions.CENTER});
+        Toast.show('提交', {position: Toast.positions.CENTER});
     }
     onChangeMobile(text) {
         // this.state.account = text;
@@ -152,8 +152,8 @@ const styles = StyleSheet.create({
         alignItems:'center'
     },
     formInputSplit: {
-        // borderBottomWidth: 1,
-        // borderBottomColor: Common.colors.bottomlinecolor,
+        borderBottomWidth: 1,
+        borderBottomColor: Common.colors.bottomlinecolor,
     },
     loginInput: {
         height: 40,
@@ -162,8 +162,8 @@ const styles = StyleSheet.create({
         fontSize: 16,
         alignItems:'center',
         justifyContent:'center',
-        borderBottomWidth: 1,
-        borderBottomColor: Common.colors.bottomlinecolor,
+        // borderBottomWidth: 1,
+        // borderBottomColor: Common.colors.bottomlinecolor,
     },
 
     loginBtn: {
