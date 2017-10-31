@@ -66,11 +66,6 @@ let Util = {
                     console.log('result='+JSON.stringify(result));
                     // console.log('result.Message='+result.Message);
                     successCallback(result.Code, result.Message, result.Data);
-
-                    // if(result.Data!=null){
-                    // }else{
-                    //     failCallback("数据为空");
-                    // }
                 })
                 .catch((err) => {
                     console.log('------err='+err);
@@ -78,12 +73,6 @@ let Util = {
                     //     , {position:Toast.positions.CENTER});
                     failCallback(err);
                 });
-            console.log('cookie===value=='+value);
-        // if (value) {
-        //         token: value
-        //     } else {
-        //         token: ''
-        //     }
         });
 
     },

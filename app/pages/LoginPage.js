@@ -44,11 +44,12 @@ export default class LoginPage extends Component {
             console.log('loginReducer.isLoggedIn===------------>'+loginReducer.isLoggedIn);
             if (loginReducer.isLoggedIn) {
                 this.props.navigator.popToTop();
+                loginReducer.isLoggedIn=false;
             }
         });
 
     }
-    componentDidMount() {
+    componentWillMount() {
         Storage.getUser().then((user) => {
             if (user) {
                 this.setState({
@@ -57,6 +58,18 @@ export default class LoginPage extends Component {
             } else {
                 this.setState({
                     user: {},
+                })
+            }
+        });
+        Storage.get("isLogin").then((value) => {
+            if(value){
+                this.setState({
+                    isLogin: value
+                })
+
+            }else{
+                this.setState({
+                    isLogin: ''
                 })
             }
         });

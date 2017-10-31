@@ -37,8 +37,6 @@ export default class RegisterPage extends Component {
             date: {},
             code:'',
             verifyCodeText:'验证码',
-            test:''
-
         };
         this.timer = null;
         this.timeHit = 0;
@@ -81,6 +79,7 @@ export default class RegisterPage extends Component {
             console.log('registerReducer.isRegisterSuccess===------------>'+registerReducer.isRegisterSuccess);
             if (registerReducer.isRegisterSuccess==true) {
                 this.props.navigator.popToTop();
+                registerReducer.isRegisterSuccess=false;
             }
         });
 

@@ -18,7 +18,8 @@ import Toast from 'react-native-root-toast';
 import IdentificationContainer from '../containers/IdentificationContainer'
 import Storage from '../util/Storage'
 import {LoginOut} from '../actions/myActions'
-
+import LoginContainer from '../containers/LoginContainer'
+import RegisterContainer from '../containers/RegisterContainer'
 export default class SetPage extends Component {
 
     constructor(props) {
@@ -38,6 +39,7 @@ export default class SetPage extends Component {
             console.log('loginReducer.isLoggedIn===------------>'+myReducer.isLoggedIn);
             if (myReducer.isLoginOut) {
                 this.props.navigator.popToTop();
+                myReducer.isLoginOut=false;
             }
         });
 
@@ -92,11 +94,88 @@ export default class SetPage extends Component {
                     // }}
                 />
 
+                <TouchableOpacity
+                    activeOpacity={0.5}
+                    onPress={() => this._goToLoginPage()}>
+                    <View style={{
+                        flexDirection: 'row',
+                        padding: 15,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: Common.colors.white,
+                        borderBottomColor: Common.colors.bottomlinecolor,
+                        borderBottomWidth: 1
+                    }}>
+                        <Image source={require('../images/set/login_icon.png')} style={{
+                            width: 30,
+                            height: 30,
+                        }}/>
+                        <Text style={{
+                            flex: 1,
+                            color: Common.colors.gray1,
+                            marginLeft: 10,
+                            fontSize: 15,
+                            justifyContent: 'center'
+                        }}>
+                            登录
+                        </Text>
+                        <Text style={{color: Common.colors.gray1, fontSize: 15,}}>
+                            >
+                        </Text>
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    activeOpacity={0.5}
+                    onPress={() => this._goToRegisterPage()}>
+                    <View style={{
+                        flexDirection: 'row',
+                        padding: 15,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: Common.colors.white,
+                        borderBottomColor: Common.colors.bottomlinecolor,
+                        borderBottomWidth: 1
+                    }}>
+                        <Image source={require('../images/set/login_icon.png')} style={{
+                            width: 30,
+                            height: 30,
+                        }}/>
+                        <Text style={{
+                            flex: 1,
+                            color: Common.colors.gray1,
+                            marginLeft: 10,
+                            fontSize: 15,
+                            justifyContent: 'center'
+                        }}>
+                            注册
+                        </Text>
+                        <Text style={{color: Common.colors.gray1, fontSize: 15,}}>
+                            >
+                        </Text>
+                    </View>
+                </TouchableOpacity>
                 <TouchableOpacity activeOpacity={0.5} style={styles.loginBtn} onPress={this._loginOut.bind(this)}>
                     <Text style={styles.loginText}>退出登录</Text>
                 </TouchableOpacity>
             </View>
         )
+    }
+
+    _goToLoginPage(){
+        Toast.show("登录", {position: Toast.positions.CENTER});
+        this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+            name:'LoginContainer',
+            component: LoginContainer,
+            // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
+        })
+    }
+    _goToRegisterPage(){
+        Toast.show("注册", {position: Toast.positions.CENTER});
+        this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+            name:'RegisterContainer',
+            component: RegisterContainer,
+            // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
+        })
     }
     _loginOut() {
         // Toast.show('退出登录', {position: Toast.positions.CENTER});

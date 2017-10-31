@@ -64,7 +64,7 @@ export default class MyPage extends Component {
             }
         });
     }
-    componentDidMount() {
+    componentWillMount() {
         Storage.getUser().then((user) => {
             if (user) {
                 this.setState({
@@ -85,6 +85,18 @@ export default class MyPage extends Component {
             }else{
                 this.setState({
                     isLogin: false
+                })
+            }
+        });
+        Storage.get("isLogin").then((value) => {
+            if(value){
+                this.setState({
+                    isLogin: value
+                })
+
+            }else{
+                this.setState({
+                    isLogin: ''
                 })
             }
         });

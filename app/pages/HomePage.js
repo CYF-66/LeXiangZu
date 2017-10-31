@@ -17,6 +17,11 @@ import {GetHomeInfo} from '../actions/homeActions'
 import TakeOrderContainer from '../containers/TakeOrderContainer'
 import Loading from '../components/Loading';
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+var iphone8deadprice='';
+var iphone8pdeadprice='';
+var iphone8yuqi='';
+var iphone8pyuqi='';
+var state='iphone8';
 export default class HomePage extends Component {
 
     constructor(props) {
@@ -25,6 +30,8 @@ export default class HomePage extends Component {
             isError: false,
             isSecltor8: true,
             isSecltor8p: false,
+            deadprice:'',
+            yuqi:'',
             dataSource:ds.cloneWithRows([])
         })
     }
@@ -90,7 +97,21 @@ export default class HomePage extends Component {
         // let Data=homeReducer.Data;
         let data = homeReducer.Data;
         let isLoading = homeReducer.isLoading;
+
+        for (var i in data) {
+            if (data.hasOwnProperty(i)) { //filter,只输出man的私有属性
+                if(data[i].name=='iphone8'){
+                    iphone8deadprice=data[i].deadprice;
+                    iphone8yuqi=data[i].expiryrate*100+"%"
+                }else{
+                    iphone8pdeadprice=data[i].deadprice;
+                    iphone8pyuqi=data[i].expiryrate*100+"%"
+                }
+                // console.log(i,":",DataList[i]);
+            }
+        }
         let content;
+
         content=(
             <View style={styles.container}>
                 {isLoading ?
@@ -119,8 +140,8 @@ export default class HomePage extends Component {
                 }
             </View>
         )
-        let deadprice=data.deadprice;
-        console.log('data===------------>'+data.deadprice);
+        // let deadprice=data.deadprice;
+        // console.log('data===------------>'+data.deadprice);
 
         return (
             <ScrollView
@@ -150,7 +171,7 @@ export default class HomePage extends Component {
                                 {/*alignItems: 'center',*/}
                                 {/*}}/>*/}
                                 <Text style={styles.drawertext}>每期应还</Text>
-                                <Text style={styles.lendMoney}>{deadprice}元</Text>
+                                <Text style={styles.lendMoney}>{this.state.deadprice}元</Text>
                             </View>
                         </TouchableOpacity>
                     </View>
@@ -167,8 +188,8 @@ export default class HomePage extends Component {
                                 {/*justifyContent: 'center',*/}
                                 {/*alignItems: 'center',*/}
                                 {/*}}/>*/}
-                                <Text style={styles.drawertext}>逾期费</Text>
-                                <Text style={styles.lendMoney}>55.0元</Text>
+                                <Text style={styles.drawertext}>逾期率</Text>
+                                <Text style={styles.lendMoney}>{this.state.yuqi}</Text>
                             </View>
                         </TouchableOpacity>
                     </View>
@@ -220,15 +241,17 @@ export default class HomePage extends Component {
     }
 
     _skipIntoAccountManage(content) {
-        if(content=="iphone 8" ||content==""){
+        if(content=="iphone8" ||content==""){
             this.setState({
                 isSecltor8: true,
-                isSecltor8p: false,
+                deadprice:iphone8deadprice,
+                yuqi:iphone8yuqi
             })
         }else{
             this.setState({
                 isSecltor8: false,
-                isSecltor8p: true,
+                deadprice:iphone8pdeadprice,
+                yuqi:iphone8pyuqi
             })
         }
         Toast.show(content, {position: Toast.positions.CENTER});
@@ -240,14 +263,35 @@ export default class HomePage extends Component {
     }
 
     _renderItem(contentData){
-
+        // avatarSource: {uri:image.path}
+        let state='';
+        let pic='';
+        if(this.state.isSecltor8){
+            if(contentData.name=='iphone8'){
+                pic=require('../images/other/icon_iphone8.png');
+                state=require('../images/other/icon_seclect.png');
+            }else{
+                pic=require('../images/other/icon_iph8plus.png');
+                state=require('../images/other/icon_unseclect.png');
+            }
+        }else{
+            if(contentData.name=='iphone8'){
+                pic=require('../images/other/icon_iphone8.png');
+                state=require('../images/other/icon_unseclect.png');
+            }else{
+                pic=require('../images/other/icon_iph8plus.png');
+                state=require('../images/other/icon_seclect.png');
+            }
+        }
         return(
+            <TouchableOpacity
+                activeOpacity={0.5}
+                onPress={() => this._skipIntoAccountManage(contentData.name)}>
             <View style={{flexDirection: 'row',justifyContent:'center',alignItems:'center',
                 backgroundColor:Common.colors.white,
                 paddingLeft:25,paddingTop:5,paddingBottom:5,paddingRight:10,borderBottomColor: Common.colors.bottomlinecolor,
                 borderBottomWidth: 1}}>
-
-                <Image source={require('../images/other/icon_iphone8.png')} style={{
+                <Image source={pic} style={{
                     width: 30,
                     height: 60,
                     alignItems:'center',
@@ -256,12 +300,14 @@ export default class HomePage extends Component {
                 <View style={{flex:1,justifyContent:'center'}}>
 
                     <Text style={{color:Common.colors.black,fontSize:20,marginLeft:10}}>{contentData.name}</Text>
-                    <Text style={{color:Common.colors.gray5,fontSize:12,marginLeft:10,marginTop:5}}>借款分期:{contentData.deadline}期</Text>
+                    <Text style={{color:Common.colors.gray7,fontSize:12,marginLeft:10,marginTop:5}}>借款分期:{contentData.deadline}期</Text>
                 </View>
-                <Image source={require('../images/other/icon_seclect.png')}
+                <Image source={state}
                        style={{padding:10,marginRight:20,width: 20,
                            height: 20,}}/>
+
             </View>
+            </TouchableOpacity>
         )
     }
 
