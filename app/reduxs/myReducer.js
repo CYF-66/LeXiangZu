@@ -41,14 +41,13 @@ let myReducer = (state = initialState, action) => {
                 isLoginOut:true,
                 Data:action.Data
             };
+        case types.TOKENERROR:
+            return {
+                ...state,
+                isLoading: false,
+                isLoginOut:false,
+            };
         case types.ACTIONERROR:
-            // return {
-            //     ...state,
-            //     //articles: action.articles,
-            //     articles: action.articles.length > 0 ? state.articles.concat(action.articles) : state.articles,
-            //     isLoading: false,
-            //     isRefreshing: false,
-            // };
             return {
                 ...state,
                 ...action,

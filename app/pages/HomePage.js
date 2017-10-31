@@ -22,16 +22,19 @@ var iphone8pdeadprice='';
 var iphone8yuqi='';
 var iphone8pyuqi='';
 var state='iphone8';
+var isRefreshing=true;
+var isLoadMore=false;
 export default class HomePage extends Component {
 
     constructor(props) {
         super(props);
         this.state = ({
             isError: false,
+            isLoading: true,
             isSecltor8: true,
             isSecltor8p: false,
-            deadprice:'',
-            yuqi:'',
+            deadprice:'550',
+            yuqi:'3%',
             dataSource:ds.cloneWithRows([])
         })
     }
@@ -41,7 +44,7 @@ export default class HomePage extends Component {
             const {dispatch} = this.props;
             let data={'reload ':true};
             console.log('data===------------>'+JSON.stringify(data));
-            dispatch(GetHomeInfo(data));
+            dispatch(GetHomeInfo(data,this.state.isLoading,isRefreshing,isLoadMore));
         });
     }
 
@@ -317,8 +320,8 @@ export default class HomePage extends Component {
             const {dispatch} = this.props;
             let data={'reload ':true};
             console.log('data===------------>'+JSON.stringify(data));
-            let isRefreshing=true;
-            dispatch(GetHomeInfo(data,isRefreshing,isRefreshing));
+            isRefreshing=true;
+            dispatch(GetHomeInfo(data,this.state.isLoading,isRefreshing,isLoadMore));
         });
 
     }

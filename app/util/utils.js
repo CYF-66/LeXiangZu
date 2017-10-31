@@ -65,7 +65,13 @@ let Util = {
                     // , {position:Toast.positions.CENTER});
                     console.log('result='+JSON.stringify(result));
                     // console.log('result.Message='+result.Message);
-                    successCallback(result.Code, result.Message, result.Data);
+
+                    // successCallback(result.Code, result.Message, result.Data);
+                    if(responseText.indexOf('Code')>=0&&responseText.indexOf('Message')>=0){
+                        successCallback(result.Code, result.Message, result.Data);
+                    }else{
+                        failCallback(result);
+                    }
                 })
                 .catch((err) => {
                     console.log('------err='+err);

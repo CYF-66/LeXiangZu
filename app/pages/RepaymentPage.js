@@ -17,14 +17,17 @@ import Toast from 'react-native-root-toast';
 import Common from '../util/constants';
 import {GetOrderDetail} from '../actions/orderActions'
 import Alipay from 'react-native-yunpeng-alipay'
-
-
+import Loading from '../components/Loading';
+var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+var isRefreshing=true;
+var isLoadMore=false;
 export default class RepaymentPage extends Component {
     constructor(props) {
         super(props);
         this.state = ({
             isError: false,
             isLoading: true,
+            dataSource:ds.cloneWithRows([])
         })
     }
     componentDidMount() {
@@ -32,11 +35,45 @@ export default class RepaymentPage extends Component {
             const {dispatch} = this.props;
             let data={'book_id':this.props.book_id};
             console.log('data===------------>'+JSON.stringify(data));
-            dispatch(GetOrderDetail(data));
+            dispatch(GetOrderDetail(data,this.state.isLoading,isRefreshing,isLoadMore));
         });
     }
 
     render() {
+
+        const {orderReducer} = this.props;
+        // let Data=homeReducer.Data;
+        let data = orderReducer.Data;
+        let isLoading = orderReducer.isLoading;
+        let content;
+        content = (
+            <View style={styles.container}>
+                {isLoading ?
+                    <Loading/> :
+                    <View style={{flex: 1, flexDirection: 'column'}}>
+                        <ListView
+                            dataSource={this.state.dataSource.cloneWithRows(data)}
+                            renderRow={this._renderItem.bind(this)}
+                            // initialListSize={1}
+                            enableEmptySections={true}
+                            // onScroll={this._onScroll}
+                            // onEndReached={this._onEndReach.bind(this)}
+                            // onEndReachedThreshold={30}
+                            // renderFooter={this._renderFooter.bind(this)}
+                            // style={{height: Common.window.height - 64}}
+                            refreshControl={
+                                <RefreshControl
+                                    refreshing={orderReducer.isRefreshing}
+                                    onRefresh={this._onRefresh.bind(this)}
+                                    title="正在加载中……"
+                                    color={Common.colors.red}
+                                />
+                            }
+                        />
+                    </View>
+                }
+            </View>
+        )
         return (
             <View style={styles.container} needsOffscreenAlphaCompositing renderToHardwareTextureAndroid>
                 <NavigationBar
@@ -154,142 +191,7 @@ export default class RepaymentPage extends Component {
                         }}>
                             结清账单
                         </Text>
-                        <TouchableOpacity
-                            activeOpacity={0.9}
-                            onPress={() => this._skipIntoAccountManage("订单")}>
-                            <View style={{
-                                backgroundColor: Common.colors.gray5,
-                                borderRadius: 5,
-                                marginTop: 10,
-                                marginLeft: 10,
-                                marginRight: 10
-                            }}>
-
-                                <View style={{
-                                    backgroundColor: Common.colors.white,
-                                    borderRadius: 5,
-                                    margin: 1,
-                                    paddingLeft: 10,
-                                    paddingRight: 10
-                                }}>
-                                    <View style={{
-                                        flexDirection: 'row', justifyContent: 'center', alignItems: 'center',
-                                        borderBottomColor: Common.colors.bottomlinecolor,
-                                        borderBottomWidth: 1
-                                    }}>
-
-                                        <Image source={require('../images/other/icon_iphone8.png')} style={{
-                                            width: 30,
-                                            height: 60,
-                                            alignItems: 'center',
-                                            justifyContent: 'center'
-                                        }}/>
-                                        <View style={{flex: 1, justifyContent: 'center', marginBottom: 5}}>
-
-                                            <Text style={{
-                                                color: Common.colors.black,
-                                                fontSize: 15,
-                                                marginLeft: 10
-                                            }}>IPhone8</Text>
-                                            <Text style={{
-                                                color: Common.colors.gray7,
-                                                fontSize: 12,
-                                                marginLeft: 10,
-                                                marginTop: 3
-                                            }}>1/1期</Text>
-
-                                                <Text style={{color: Common.colors.gray7,
-                                                fontSize: 12,
-                                                marginLeft: 10,
-                                                marginTop: 3
-                                            }}>666.00(含服务费60，逾期费:55.0)</Text>
-                                        </View>
-                                        {/*<View style={{justifyContent: 'center',marginTop:15}}>*/}
-                                        <Text style={{fontSize: 12, color: Common.colors.gray1}}>
-                                            还款日 2017/10/21
-                                        </Text>
-                                        <Text style={{
-                                            position: 'absolute',
-                                            backgroundColor:Common.colors.yellow3,
-                                            bottom: 5,
-                                            right: 5, fontSize: 12, color: Common.colors.white,
-                                            paddingLeft:5,
-                                            paddingRight:5,
-                                            borderRadius:5
-                                        }}>
-                                            还款
-                                        </Text>
-                                        {/*</View>*/}
-                                    </View>
-                                </View>
-                            </View>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            activeOpacity={0.9}
-                            onPress={() => this._skipIntoAccountManage("订单")}>
-                            <View style={{
-                                backgroundColor: Common.colors.gray5,
-                                borderRadius: 5,
-                                marginTop: 10,
-                                marginLeft: 10,
-                                marginRight: 10
-                            }}>
-
-                                <View style={{
-                                    backgroundColor: Common.colors.white,
-                                    borderRadius: 5,
-                                    margin: 1,
-                                    paddingLeft: 10,
-                                    paddingRight: 10
-                                }}>
-                                    <View style={{
-                                        flexDirection: 'row', justifyContent: 'center', alignItems: 'center',
-                                        borderBottomColor: Common.colors.bottomlinecolor,
-                                        borderBottomWidth: 1
-                                    }}>
-
-                                        <Image source={require('../images/other/icon_iphone8.png')} style={{
-                                            width: 30,
-                                            height: 60,
-                                            alignItems: 'center',
-                                            justifyContent: 'center'
-                                        }}/>
-                                        <View style={{flex: 1, justifyContent: 'center', marginBottom: 5}}>
-
-                                            <Text style={{
-                                                color: Common.colors.black,
-                                                fontSize: 15,
-                                                marginLeft: 10
-                                            }}>IPhone8</Text>
-                                            <Text style={{
-                                                color: Common.colors.gray7,
-                                                fontSize: 12,
-                                                marginLeft: 10,
-                                                marginTop: 3
-                                            }}>1/1期</Text>
-                                            <Text style={{
-                                                color: Common.colors.gray7,
-                                                fontSize: 12,
-                                                marginLeft: 10,
-                                                marginTop: 3
-                                            }}>666.00(含服务费60，逾期费:55.0)</Text>
-                                        </View>
-                                        {/*<View style={{justifyContent: 'center',marginTop:15}}>*/}
-                                        <Text style={{fontSize: 12, color: Common.colors.gray1}}>
-                                            还款日 2017/10/21
-                                        </Text>
-                                        <Text style={{
-                                            position: 'absolute',
-                                            bottom: 5,
-                                            right: 5, fontSize: 12, color: Common.colors.gray7
-                                        }}>
-                                            已还款
-                                        </Text>
-                                        {/*</View>*/}
-                                    </View>
-                                </View>
-                            </View>
-                        </TouchableOpacity>
+                        {content}
                     </View>
                 </View>
                 <View style={{
@@ -317,6 +219,94 @@ export default class RepaymentPage extends Component {
         )
     }
 
+    _renderItem(contentData){
+
+        return(
+            <TouchableOpacity
+                activeOpacity={0.9}
+                onPress={() => this._skipIntoAccountManage("订单")}>
+                <View style={{
+                    backgroundColor: Common.colors.gray5,
+                    borderRadius: 5,
+                    marginTop: 10,
+                    marginLeft: 10,
+                    marginRight: 10
+                }}>
+
+                    <View style={{
+                        backgroundColor: Common.colors.white,
+                        borderRadius: 5,
+                        margin: 1,
+                        paddingLeft: 10,
+                        paddingRight: 10
+                    }}>
+                        <View style={{
+                            flexDirection: 'row', justifyContent: 'center', alignItems: 'center',
+                            borderBottomColor: Common.colors.bottomlinecolor,
+                            borderBottomWidth: 1
+                        }}>
+
+                            <Image source={require('../images/other/icon_iphone8.png')} style={{
+                                width: 30,
+                                height: 60,
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}/>
+                            <View style={{flex: 1, justifyContent: 'center', marginBottom: 5}}>
+
+                                <Text style={{
+                                    color: Common.colors.black,
+                                    fontSize: 15,
+                                    marginLeft: 10
+                                }}>IPhone8</Text>
+                                <Text style={{
+                                    color: Common.colors.gray7,
+                                    fontSize: 12,
+                                    marginLeft: 10,
+                                    marginTop: 3
+                                }}>1/1期</Text>
+
+                                <Text style={{color: Common.colors.gray7,
+                                    fontSize: 12,
+                                    marginLeft: 10,
+                                    marginTop: 3
+                                }}>666.00(含服务费60，逾期费:55.0)</Text>
+                            </View>
+                            {/*<View style={{justifyContent: 'center',marginTop:15}}>*/}
+                            <Text style={{fontSize: 12, color: Common.colors.gray1}}>
+                                还款日 2017/10/21
+                            </Text>
+                            <Text style={{
+                                position: 'absolute',
+                                backgroundColor:Common.colors.yellow3,
+                                bottom: 5,
+                                right: 5, fontSize: 12, color: Common.colors.white,
+                                paddingLeft:5,
+                                paddingRight:5,
+                                borderRadius:5
+                            }}>
+                                还款
+                            </Text>
+                            {/*</View>*/}
+                        </View>
+                    </View>
+                </View>
+            </TouchableOpacity>
+        )
+    }
+
+    // 下拉刷新
+    _onRefresh() {
+
+        InteractionManager.runAfterInteractions(() => {
+            const {dispatch} = this.props;
+            let data={'book_id':this.props.book_id};
+            console.log('data===------------>'+JSON.stringify(data));
+            isRefreshing=true;
+            dispatch(GetOrderDetail(data,this.state.isLoading,isRefreshing,isLoadMore));
+        });
+
+    }
     _skipIntoAccountManage(content) {
         Toast.show(content, {position: Toast.positions.CENTER});
         // this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面

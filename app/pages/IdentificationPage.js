@@ -16,6 +16,7 @@ import NavigationBar from 'react-native-navigationbar'
 import Toast from 'react-native-root-toast';
 import Common from '../util/constants';
 import CheckNameContainer from '../containers/CheckNameContainer'
+import CheckSchoolContainer from '../containers/CheckSchoolContainer'
 
 
 export default class  IdentificationPage extends Component {
@@ -168,6 +169,18 @@ export default class  IdentificationPage extends Component {
                 component: CheckNameContainer,
                 // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
             })
+        }else if(content=="学历认证"){
+            this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                name:'CheckSchoolContainer',
+                component: CheckSchoolContainer,
+                // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+            })
+        }else if(content=="工作信息"){
+
+        }else if(content=="手机认证"){
+
+        }else if(content=="联系人认证"){
+
         }
     }
 }

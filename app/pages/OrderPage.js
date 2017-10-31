@@ -19,6 +19,8 @@ import RepaymentContainer from '../containers/RepaymentContainer'
 import {GetOrderList} from '../actions/orderActions'
 import Loading from '../components/Loading';
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+var isRefreshing=false;
+var isLoadMore=false;
 export default class OrderPage extends Component {
 
     constructor(props) {
@@ -38,7 +40,7 @@ export default class OrderPage extends Component {
             const {dispatch} = this.props;
             let data={'pageNum':this.state.currentPage,'pageSize':'10'};
             console.log('data===------------>'+JSON.stringify(data));
-            dispatch(GetOrderList(data));
+            dispatch(GetOrderList(data,this.state.isLoading,isRefreshing,isLoadMore));
         });
     }
     render() {
@@ -104,6 +106,17 @@ export default class OrderPage extends Component {
     }
 
     _renderItem(contentData) {
+
+        let pic;
+        if(contentData.book_state=='3'){//还款中
+            pic=require('../images/order/icon_zhengc.png');
+        }else if(contentData.book_state=='2'){//审核中
+            pic=require('../images/order/icon_yihuan.png');
+        }else if(contentData.book_state=='1'){//已完成
+            pic=require('../images/order/icon_jieqing.png');
+        }else{//已逾期
+            pic=require('../images/order/icon_yuqi.png');
+        }
         return (
         <View style={styles.container}>
         <TouchableOpacity
@@ -145,7 +158,7 @@ export default class OrderPage extends Component {
                             }}>{contentData.product_name}</Text>
                         </View>
                         <Text style={{fontSize: 12, color: Common.colors.gray1}}>
-                            2017/10/21
+                            {contentData.start_date}
                         </Text>
                     </View>
                     <View style={{flexDirection: 'row', paddingTop: 5, paddingLeft: 20}}>
@@ -173,7 +186,7 @@ export default class OrderPage extends Component {
                             逾期费:
                         </Text>
                         <Text style={{color: Common.colors.gray1, fontSize: 12}}>
-                            ￥60.00元
+                            ￥{contentData.expiryfee}元
                         </Text>
                     </View>
                     <View style={{flexDirection: 'row', paddingTop: 5, paddingLeft: 20}}>
@@ -181,7 +194,7 @@ export default class OrderPage extends Component {
                             服务费:
                         </Text>
                         <Text style={{color: Common.colors.gray1, fontSize: 12, marginLeft: 5}}>
-                            ￥30.00元
+                            ￥{contentData.serverfee}元
                         </Text>
                     </View>
                     <View style={{flexDirection: 'row', paddingTop: 5, paddingLeft: 20, marginBottom: 10}}>
@@ -189,10 +202,10 @@ export default class OrderPage extends Component {
                             还款日:
                         </Text>
                         <Text style={{color: Common.colors.gray1, fontSize: 12, marginLeft: 5}}>
-                            2017/10/21
+                            {contentData.repaydate}
                         </Text>
                     </View>
-                    <Image source={require('../images/order/icon_zhengc.png')} style={{
+                    <Image source={pic} style={{
                         position: 'absolute',
                         bottom: 0,
                         right: 5,
@@ -214,8 +227,8 @@ export default class OrderPage extends Component {
             const {dispatch} = this.props;
             let data={'pageNum':this.state.currentPage,'pageSize':'10'};
             console.log('data===------------>'+JSON.stringify(data));
-            let isRefreshing=true;
-            dispatch(GetOrderList(data,isRefreshing));
+            isRefreshing=true;
+            dispatch(GetOrderList(data,this.state.isLoading,isRefreshing,isLoadMore));
         });
 
     }

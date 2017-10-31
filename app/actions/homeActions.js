@@ -8,7 +8,8 @@
 import * as types from './actionTypes';
 import Util from '../util/utils';
 import * as urls from '../util/constants_url';
-
+import Toast from 'react-native-root-toast';
+import Storage from '../util/Storage'
 export let GetHomeInfo = (data,isLoading) => {
 
     let url = urls.HOMEINFO;
@@ -18,44 +19,58 @@ export let GetHomeInfo = (data,isLoading) => {
         return Util.post(url, data,
             (Code, Message, Data) => {
 
-                // let notrealaccount=Data
+            if(Code==1){
                 dispatch({type: types.GETHOMEINFORECEIVED, Code: Code, Message: Message, Data: Data});
+            }else if(Code==2){
+                Storage.get("refresh_token").then((value) => {
+                    let data;
+                    data={'refresh_token':value};
+                    console.log('data===------------>'+JSON.stringify(data));
+                    dispatch(_RefreshToken(data));
+                });
+                dispatch({'type': types.TOKENERROR});
+            }else{
 
-                //11010497   cks69t
+            }
 
-                // if(status){
-                //
-                // }
+
             },
             (error) => {
                 // console.log('Fetch banner list error: ' + error);
-                dispatch({'type': types.ACTIONERROR,'isLoading': false});
-                alert('Android要用外网地址');
+                dispatch({'type': types.ACTIONERROR});
+                // alert('Android要用外网地址');
             }
         );
     }
 
 };
-export let GetProductList = (data,isLoading,isRefreshing,isLoadMore) => {
+_RefreshToken = (data) => {
 
-    let url = urls.GETPRODUCTLIST;
+    let url = urls.REFRRSHTOKEN;
 
     return dispatch => {
-        dispatch({type: types.GETPRODUCTLIST,isLoading: isLoading,isRefreshing:isRefreshing,isLoadMore:isLoadMore});
+        dispatch({type: types.REFRESHTOKEN});
         return Util.post(url, data,
-            (Code, Message, DataList) => {
+            (Code, Message, Data) => {
+                let user={};
+                if(Code==1){
+                    user=Data.custom;
+                    console.log('=======user===------------>'+JSON.stringify(user));
+                    Storage.setUser(user);
+                    Storage.save('token',Data.token);
+                    Storage.save('isLogin',true);
+                    Storage.save('refresh_token',Data.refresh_token);
 
-                // let notrealaccount=Data
-                let List= [];
-                List=DataList;
-                dispatch({type: types.GETPRODUCTLISTRECEIVED, Code: Code, Message: Message, DataList: DataList});
+                }else if(Code==2){
+                    Toast.show("请重新登录"
+                        , {position:Toast.positions.CENTER});
+                    Storage.save('isLogin',false);
+                }else{
+                    Toast.show(Message
+                        , {position:Toast.positions.CENTER});
+                }
+                dispatch({type: types.REFRESHTOKENRECEIVED, Code: Code, Message: Message, Data: Data});
 
-                //11010497   cks69t
-
-
-                // if(status){
-                //
-                // }
             },
             (err) => {
                 console.log('Fetch banner list error: ' + err);
@@ -66,102 +81,5 @@ export let GetProductList = (data,isLoading,isRefreshing,isLoadMore) => {
     }
 
 };
-export let OpenSocketConnection = () => {
-
-    let url = 'http://114.55.68.211:9888';
-
-    return dispatch => {
-        dispatch({type: types.GETPMARKETLIST});
-        return Util.socket(url,
-            (data) => {
-
-                dispatch({type: types.GETPMARKETLISTRECEIVED, Data:data});
-
-                //11010497   cks69t
 
 
-                // if(status){
-                //
-                // }
-            },
-            (error) => {
-                // console.log('Fetch banner list error: ' + error);
-                dispatch({'type': types.ACTIONERROR,'isLoading': false});
-                alert('Android要用外网地址');
-            }
-        );
-    }
-
-};
-
-
-export let bannerList = () => {
-    let url = urls.kUrlBannerList;
-    return dispatch => {
-        // 请求轮播数据
-        dispatch({type: types.kBannerList});
-        return Util.get(url,
-            (status, code, message, data, share) => {
-                let banners = [];
-                if (status) {
-                    banners = data.banners;
-                }
-                dispatch({
-                    type: types.kBannerListReceived,
-                    status: status,
-                    code: code,
-                    message: message,
-                    share: share,
-                    banners: banners
-                });
-            },
-            (error) => {
-                // console.log('Fetch banner list error: ' + error);
-                dispatch({'type': types.ACTIONERROR});
-                alert('Android要用外网地址');
-            }
-        );
-    }
-};
-
-export let homeListArticles = (page, isLoadMore, isRefreshing, isLoading) => {
-    let url = urls.kUrlHomeListArticles + '?page=' + page;
-    return dispatch => {
-        dispatch({
-            type: types.kHomeListArticles,
-            isLoadMore: isLoadMore,
-            isRefreshing: isRefreshing,
-            isLoading: isLoading,
-        });
-
-        return Util.get(url,
-            (status, code, message, data, share) => {
-                let articles = [];
-                if (status) {
-                    articles = data.articles;
-                }
-                dispatch({
-                    type: types.kHomeListArticlesReceived,
-                    status: status,
-                    code: code,
-                    message: message,
-                    share: share,
-                    articles: articles
-                });
-            },
-            (error) => {
-                dispatch({'type': types.ACTIONERROR, 'isLoading': false});
-            }
-        );
-
-        //模拟网络延迟
-        // function fetching() {
-        //     Util.get(URL, (response) => {
-        //         dispatch(receiveFeedList(response.feeds));
-        //     }, (error) => {
-        //         dispatch(receiveFeedList([]));
-        //     });
-        // }
-        // setTimeout(fetching, 3000);
-    }
-};

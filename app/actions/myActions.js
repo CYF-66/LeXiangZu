@@ -26,8 +26,8 @@ export let HttpLogin = (data,isLoading) => {
                     Storage.save('token',Data.token);
                     Storage.save('isLogin',true);
                     Storage.save('refresh_token',Data.refresh_token);
+                    dispatch({type: types.LOGINURLRECEIVED, Code : Code, Message: Message, Data: Data.custom});
                 }
-                dispatch({type: types.LOGINURLRECEIVED, Code : Code, Message: Message, Data: Data.custom});
             },
             (err) => {
                 console.log('Fetch banner list error: ' + err);

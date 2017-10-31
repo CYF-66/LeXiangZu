@@ -13,11 +13,12 @@
 
 //公用类型
 export const ACTIONERROR                       = 'action_error';
+export const TOKENERROR                       = 'token_error';
 // export const kCommonIsToasting                  = 'kCommonIsToasting';
 
-//一间注册模拟账户
-export const GETNOTREALACCOUNT                  = 'account_unreal';
-export const GETNOTREALACCOUNTRECEIVED                  = 'account_unreal_received';
+//刷新token
+export const REFRESHTOKEN                  = 'token_refresh';
+export const REFRESHTOKENRECEIVED                  = 'token_refresh_received';
 
 //获取验证码token
 export const GETCHECKNUM                  = 'yzm_token';
@@ -55,17 +56,7 @@ export const MYORDERDETAILRECEIVED                  = 'my_order_detail_received'
 export const CREATEORDER                  = 'order_create';
 export const CREATEORDERRECEIVED                  = 'order_create_received';
 
-//获取历史数据
-export const GETPRDERlIST                  = 'history';
-export const GETPRDERlISTRECEIVED                  = 'history_received';
 
-//获取当前交易订单列表
-export const GETORDERlIST                  = 'trade';
-export const GETORDERlISTRECEIVED                  = 'trade_received';
-
-//获取当前交易订单列表
-export const GETCHARTlIST                  = 'chart';
-export const GETCHARTlISTRECEIVED                  = 'chart_received';
 
 
 

@@ -29,10 +29,19 @@ let orderReducer = (state = initialState, action) => {
                 isRefreshing: false,
                 // DataList: action.DataList.length> 0 ? state.DataList.concat(action.DataList) : state.DataList
             };
+        case types.TOKENERROR:
+            return {
+                ...state,
+                isLoading: false,
+                isRefreshing: false,
+                isLoadMore: false,
+            };
         case types.ACTIONERROR:
             return {
                 ...state,
                 isLoading: false,
+                isRefreshing: false,
+                isLoadMore: false,
             };
         default:
             return state;

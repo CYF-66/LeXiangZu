@@ -31,6 +31,11 @@ let homeReducer = (state = initialState, action) => {
                 isRefreshing: false,
                 // DataList: action.DataList.length> 0 ? state.DataList.concat(action.DataList) : state.DataList
             };
+        case types.TOKENERROR://token失效
+            return {
+                ...state,
+                isLoading: false,
+            };
         case types.ACTIONERROR://请求错误
             return {
                 ...state,

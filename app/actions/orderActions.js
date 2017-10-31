@@ -7,7 +7,8 @@
 import * as types from './actionTypes';
 import Util from '../util/utils';
 import * as urls from '../util/constants_url';
-
+import Toast from 'react-native-root-toast';
+import Storage from '../util/Storage'
 export let GetOrderList = (data,isLoading,isRefreshing,isLoadMore) => {
 
     let url = urls.MYORDER;
@@ -17,7 +18,19 @@ export let GetOrderList = (data,isLoading,isRefreshing,isLoadMore) => {
         return Util.post(url, data,
             (Code, Message, Data) => {
 
+            if(Code==1){
                 dispatch({type: types.MYORDERRECEIVED, Code: Code, Message: Message, Data: Data});
+            }else if(Code==2){//token 失效
+                Storage.get("refresh_token").then((value) => {
+                    let data;
+                    data={'refresh_token':value};
+                    console.log('data===------------>'+JSON.stringify(data));
+                    dispatch(_RefreshToken(data));
+                });
+                dispatch({'type': types.TOKENERROR});
+            }else{
+
+            }
 
             },
             (err) => {
@@ -39,7 +52,13 @@ export let GetOrderDetail = (data,isLoading,isRefreshing,isLoadMore) => {
         return Util.post(url, data,
             (Code, Message, Data) => {
 
+            if(Code==1){
                 dispatch({type: types.MYORDERDETAILRECEIVED, Code: Code, Message: Message, Data: Data});
+            }else if(Code==2){//token 失效TOKENERROR
+                dispatch({type: types.MYORDERDETAILRECEIVED, Code: Code, Message: Message, Data: Data});
+            }else{
+
+            }
 
             },
             (err) => {
@@ -62,6 +81,45 @@ export let TakeOrder = (data,isLoading) => {
             (Code, Message, Data) => {
 
                 dispatch({type: types.CREATEORDERRECEIVED, Code: Code, Message: Message, Data: Data});
+
+            },
+            (err) => {
+                console.log('Fetch banner list error: ' + err);
+                dispatch({'type': types.ACTIONERROR});
+                // alert('Android要用外网地址');
+            }
+        );
+    }
+
+};
+
+  _RefreshToken = (data) => {
+
+    let url = urls.REFRRSHTOKEN;
+
+    return dispatch => {
+        dispatch({type: types.REFRESHTOKEN});
+        return Util.post(url, data,
+            (Code, Message, Data) => {
+                let user={};
+            if(Code==1){
+                user=Data.custom;
+                console.log('=======user===------------>'+JSON.stringify(user));
+                Storage.setUser(user);
+                Storage.save('token',Data.token);
+                Storage.save('isLogin',true);
+                Storage.save('refresh_token',Data.refresh_token);
+                Toast.show("请重新登录"
+                    , {position:Toast.positions.CENTER});
+            }else if(Code==2){
+                Toast.show("请重新登录"
+                    , {position:Toast.positions.CENTER});
+                Storage.save('isLogin',false);
+            }else{
+                Toast.show(Message
+                , {position:Toast.positions.CENTER});
+            }
+                dispatch({type: types.REFRESHTOKENRECEIVED, Code: Code, Message: Message, Data: Data});
 
             },
             (err) => {
