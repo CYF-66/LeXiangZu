@@ -64,6 +64,9 @@ export const CREATEORDER    = IPAddress + 'book/createBook';
 /** 我的审核中心 */
 export const CHECKCENTER    = IPAddress + 'book/myAuditBook';
 
+/** 我的消息 */
+export const MESSAGE    = IPAddress + 'custom/myMessage';
+
 
 
 

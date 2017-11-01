@@ -15,12 +15,10 @@ const instructions = Platform.select({
 });
 import {GetHomeInfo} from '../actions/homeActions'
 import TakeOrderContainer from '../containers/TakeOrderContainer'
+import MessageContainer from '../containers/MessageContainer'
+import WebViewPage from '../pages/WebViewPage'
 import Loading from '../components/Loading';
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-var iphone8deadprice='';
-var iphone8pdeadprice='';
-var iphone8yuqi='';
-var iphone8pyuqi='';
 var state='iphone8';
 var isRefreshing=true;
 var isLoadMore=false;
@@ -30,15 +28,46 @@ export default class HomePage extends Component {
         super(props);
         this.state = ({
             isError: false,
+            isClickItem:false,
             isLoading: true,
             isSecltor8: true,
             isSecltor8p: false,
-            deadprice:'550',
-            yuqi:'3%',
+            deadprice:'',
+            yuqi:'',
+            id:'',
+            name:'',
+            deadline:'',
+            deadunit:'',
+            serverfee:'',
             dataSource:ds.cloneWithRows([])
         })
     }
+    componentWillUpdate() {
+        InteractionManager.runAfterInteractions(() => {
+            const {homeReducer} = this.props;
+            console.log('homeReducer.isSuccess===------------>'+homeReducer.isSuccess);
+            if (homeReducer.isSuccess) {
+                // this.props.navigator.popToTop();
+                homeReducer.isSuccess=false;
+                // let Data=homeReducer.Data;
+                let data = homeReducer.Data;
+                for (var i in data) {
+                    if (data.hasOwnProperty(i)) { //filter,只输出man的私有属性
+                        this.setState({
+                            deadprice:data[0].deadprice,
+                            yuqi:data[0].expiryrate*100+"%",
+                            id:data[0].id,
+                            name:data[0].name,
+                            deadline:data[0].deadline,
+                            deadunit:data[0].deadunit,
+                            serverfee:data[0].serverfee,
+                        })
+                    }
+                }
+            }
+        });
 
+    }
     componentDidMount() {
         InteractionManager.runAfterInteractions(() => {
             const {dispatch} = this.props;
@@ -101,18 +130,7 @@ export default class HomePage extends Component {
         let data = homeReducer.Data;
         let isLoading = homeReducer.isLoading;
 
-        for (var i in data) {
-            if (data.hasOwnProperty(i)) { //filter,只输出man的私有属性
-                if(data[i].name=='iphone8'){
-                    iphone8deadprice=data[i].deadprice;
-                    iphone8yuqi=data[i].expiryrate*100+"%"
-                }else{
-                    iphone8pdeadprice=data[i].deadprice;
-                    iphone8pyuqi=data[i].expiryrate*100+"%"
-                }
-                // console.log(i,":",DataList[i]);
-            }
-        }
+
         let content;
 
         content=(
@@ -153,7 +171,7 @@ export default class HomePage extends Component {
                 <View style={{flex:1,position:'absolute',top:25,right:15}}>
                     <TouchableOpacity
                         activeOpacity={0.5}
-                        onPress={() => this._skipIntoAccountManage("消息中心")}>
+                        onPress={() => this._clickMessage("消息中心")}>
                         <Image source={require('../images/set/iconfont_tixing.png')} style={{
                             width: 30,
                             height: 30,
@@ -163,9 +181,6 @@ export default class HomePage extends Component {
 
                 <View style={styles.secondLine}>
                     <View style={{flex: 1}}>
-                        <TouchableOpacity
-                            activeOpacity={0.5}
-                            onPress={() => this._skipIntoAccountManage("每期应还")}>
                             <View style={styles.check}>
                                 {/*<Image source={require('../images/order/icon_shenhecenter.png')} style={{*/}
                                 {/*width: 45,*/}
@@ -176,13 +191,9 @@ export default class HomePage extends Component {
                                 <Text style={styles.drawertext}>每期应还</Text>
                                 <Text style={styles.lendMoney}>{this.state.deadprice}元</Text>
                             </View>
-                        </TouchableOpacity>
                     </View>
                     <View style={{width:1,backgroundColor:Common.colors.gray6,alignItems:'center',justifyContent:'center'}}/>
                     <View style={{flex: 1}}>
-                        <TouchableOpacity
-                            activeOpacity={0.5}
-                            onPress={() => this._skipIntoAccountManage("逾期费")}>
                             <View style={styles.pay}>
 
                                 {/*<Image source={require('../images/order/icon_huankuanzhing.png')} style={{*/}
@@ -194,7 +205,6 @@ export default class HomePage extends Component {
                                 <Text style={styles.drawertext}>逾期率</Text>
                                 <Text style={styles.lendMoney}>{this.state.yuqi}</Text>
                             </View>
-                        </TouchableOpacity>
                     </View>
                 </View>
                 <View style={styles.thirdLine}>
@@ -204,7 +214,7 @@ export default class HomePage extends Component {
                 <View style={{paddingTop: 5, paddingBottom: 15}}>
                     <TouchableOpacity
                         activeOpacity={0.5}
-                        onPress={() => this._skipIntoAccountManage("了解逾期后果")}>
+                        onPress={() => this._skipIntoWeb("了解逾期后果")}>
                         <Text style={{
                             textAlign: 'right',
                             fontSize: 15,
@@ -217,7 +227,7 @@ export default class HomePage extends Component {
                 </View>
                 <TouchableOpacity
                     activeOpacity={0.5}
-                    onPress={() => this._takeOrder("马上申请")}>
+                    onPress={() => this._takeOrder()}>
                     <View style={{
                         marginTop:5,
                         justifyContent: 'center',
@@ -241,28 +251,6 @@ export default class HomePage extends Component {
 
             </ScrollView>
         );
-    }
-
-    _skipIntoAccountManage(content) {
-        if(content=="iphone8" ||content==""){
-            this.setState({
-                isSecltor8: true,
-                deadprice:iphone8deadprice,
-                yuqi:iphone8yuqi
-            })
-        }else{
-            this.setState({
-                isSecltor8: false,
-                deadprice:iphone8pdeadprice,
-                yuqi:iphone8pyuqi
-            })
-        }
-        Toast.show(content, {position: Toast.positions.CENTER});
-        // this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
-        //     name:'SetContainer',
-        //     component: SetContainer,
-        //     // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
-        // })// push一个route对象到navigator中
     }
 
     _renderItem(contentData){
@@ -289,7 +277,7 @@ export default class HomePage extends Component {
         return(
             <TouchableOpacity
                 activeOpacity={0.5}
-                onPress={() => this._skipIntoAccountManage(contentData.name)}>
+                onPress={() => this._clickItem(contentData.name,contentData.id,contentData.deadunit,contentData.deadline,contentData.deadprice,contentData.expiryrate,contentData.serverfee)}>
             <View style={{flexDirection: 'row',justifyContent:'center',alignItems:'center',
                 backgroundColor:Common.colors.white,
                 paddingLeft:25,paddingTop:5,paddingBottom:5,paddingRight:10,borderBottomColor: Common.colors.bottomlinecolor,
@@ -325,11 +313,61 @@ export default class HomePage extends Component {
         });
 
     }
-    _takeOrder(content){
+
+    _skipIntoWeb(){
+        this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+            component: WebViewPage,
+            passProps:{title: '逾期后果',url: Common.url.outTimeUrl}//http://114.67.154.29/agreement.html
+        })
+    }
+    _clickItem(name,id,deadunit,deadline,deadprice,expiryrate,serverfee) {
+        if(name=="iphone8" ||name==""){
+            this.setState({
+                isSecltor8: true,
+                deadprice:deadprice,
+                yuqi:expiryrate*100+"%",
+                id:id,
+                name:name,
+                deadline:deadline,
+                deadunit:deadunit,
+                serverfee:serverfee,
+                isClickItem:true,
+            })
+        }else{
+            this.setState({
+                isSecltor8: false,
+                deadprice:deadprice,
+                yuqi:expiryrate*100+"%",
+                id:id,
+                name:name,
+                deadline:deadline,
+                deadunit:deadunit,
+                serverfee:serverfee,
+                isClickItem:true,
+            })
+        }
+        // Toast.show(name, {position: Toast.positions.CENTER});
+    }
+
+    _clickMessage(content){
+        this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+            name:'MessageContainer',
+            component: MessageContainer,
+            // passProps: {product_id:product_id}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
+        })
+    }
+    _takeOrder(){
+
+            let product_id=this.state.id;
+        let name=this.state.name;
+        let deadline=this.state.deadline;
+        let deadunit=this.state.deadunit;
+        let deadprice=this.state.deadprice;
+        let serverfee=this.state.serverfee;
         this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
             name:'TakeOrderContainer',
             component: TakeOrderContainer,
-            // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
+            passProps: {product_id:product_id,name:name,deadline:deadline,deadunit:deadunit,deadprice:deadprice,serverfee:serverfee}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
         })// push一个route对象到navigator中
     }
 }
@@ -438,7 +476,7 @@ const styles = StyleSheet.create({
     lendMoney: {
         fontSize: 18,
         marginTop: 5,
-        color: Common.colors.yellow1,
+        color: Common.colors.yellow2,
         justifyContent: 'center',
         alignItems: 'center',
     },

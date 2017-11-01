@@ -53,9 +53,16 @@ export let GetOrderDetail = (data,isLoading,isRefreshing,isLoadMore) => {
             (Code, Message, Data) => {
 
             if(Code==1){
-                dispatch({type: types.MYORDERDETAILRECEIVED, Code: Code, Message: Message, Data: Data.bills});
+                dispatch({type: types.MYORDERDETAILRECEIVED, Code: Code, Message: Message, Data: Data});
             }else if(Code==2){//token 失效TOKENERROR
-                dispatch({type: types.MYORDERDETAILRECEIVED, Code: Code, Message: Message, Data: Data.bills});
+                Storage.get("refresh_token").then((value) => {
+                    let data;
+                    data={'refresh_token':value};
+                    console.log('data===------------>'+JSON.stringify(data));
+                    dispatch(_RefreshToken(data));
+                });
+                dispatch({'type': types.TOKENERROR});
+                // dispatch({type: types.MYORDERDETAILRECEIVED, Code: Code, Message: Message, Data: Data.bills});
             }else{
 
             }

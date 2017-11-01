@@ -18,24 +18,26 @@ import Common from '../util/constants';
 import {GetOrderDetail} from '../actions/orderActions'
 import Alipay from 'react-native-yunpeng-alipay'
 import Loading from '../components/Loading';
+
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-var isRefreshing=false;
-var isLoadMore=false;
+var isRefreshing = false;
+var isLoadMore = false;
 export default class RepaymentPage extends Component {
     constructor(props) {
         super(props);
         this.state = ({
             isError: false,
             isLoading: true,
-            dataSource:ds.cloneWithRows([])
+            dataSource: ds.cloneWithRows([])
         })
     }
+
     componentDidMount() {
         InteractionManager.runAfterInteractions(() => {
             const {dispatch} = this.props;
-            let data={'book_id':this.props.book_id};
-            console.log('data===------------>'+JSON.stringify(data));
-            dispatch(GetOrderDetail(data,this.state.isLoading,isRefreshing,isLoadMore));
+            let data = {'book_id': this.props.book_id};
+            console.log('data===------------>' + JSON.stringify(data));
+            dispatch(GetOrderDetail(data, this.state.isLoading, isRefreshing, isLoadMore));
         });
     }
 
@@ -45,7 +47,15 @@ export default class RepaymentPage extends Component {
         // let Data=homeReducer.Data;
         let data = orderReducer.Data;
         let isLoading = orderReducer.isLoading;
-        console.log('orderReducer.Data===------------>'+JSON.stringify(orderReducer.Data));
+        // console.log('orderReducer.data.bills===------------>'+JSON.stringify(data.bills));
+
+        var orderData = [];//结清账单
+        for (var i in data.bills) {
+            if (data.bills.hasOwnProperty(i)) {
+                orderData.push(data.bills[i]);
+            }
+        }
+        console.log('orderData===------------>' + JSON.stringify(orderData));
         let content;
         content = (
             <View style={styles.container}>
@@ -53,7 +63,7 @@ export default class RepaymentPage extends Component {
                     <Loading/> :
                     <View style={{flex: 1, flexDirection: 'column'}}>
                         <ListView
-                            dataSource={this.state.dataSource.cloneWithRows(data)}
+                            dataSource={this.state.dataSource.cloneWithRows(orderData)}
                             renderRow={this._renderItem.bind(this)}
                             // initialListSize={1}
                             enableEmptySections={true}
@@ -104,10 +114,10 @@ export default class RepaymentPage extends Component {
                             还款总额(元)
                         </Text>
                         <Text style={{color: Common.colors.yellow3, fontSize: 25, marginTop: 3}}>
-                            555.00元
+                            {data.remainfee}
                         </Text>
                         <Text style={{color: Common.colors.brown1, fontSize: 10, marginTop: 3}}>
-                            结算日期:2017/12/09
+                            结算日期:{data.repaydate}
                         </Text>
                     </View>
                     <Image source={require('../images/order/icon_use.png')} style={{
@@ -133,7 +143,7 @@ export default class RepaymentPage extends Component {
                                 本期应还(元)
                             </Text>
                             <Text style={{color: Common.colors.yellow3, fontSize: 12, marginTop: 5}}>
-                                555.00
+                                {data.currrepay}
                             </Text>
                         </View>
                         <View style={{
@@ -149,7 +159,7 @@ export default class RepaymentPage extends Component {
                                 应还总额(元)
                             </Text>
                             <Text style={{color: Common.colors.yellow3, fontSize: 12, marginTop: 5}}>
-                                555.00
+                                {data.remainfee}
                             </Text>
                         </View>
                         <View style={{
@@ -165,7 +175,7 @@ export default class RepaymentPage extends Component {
                                 产品金额(元)
                             </Text>
                             <Text style={{color: Common.colors.yellow3, fontSize: 12, marginTop: 5}}>
-                                555.00
+                                {data.price}
                             </Text>
                         </View>
                     </View>
@@ -192,16 +202,16 @@ export default class RepaymentPage extends Component {
                         }}>
                             结清账单
                         </Text>
-                        {content}
                     </View>
                 </View>
+                {content}
                 <View style={{
                     position: 'absolute',
                     backgroundColor: Common.colors.white,
                     paddingTop: 10,
                     paddingBottom: 10,
-                    justifyContent:'center',
-                    alignItems:'center',
+                    justifyContent: 'center',
+                    alignItems: 'center',
                     width: Common.window.width,
                     bottom: 0,
                 }}>
@@ -220,80 +230,101 @@ export default class RepaymentPage extends Component {
         )
     }
 
-    _renderItem(contentData){
+    _renderItem(contentData) {
 
-        return(
+        var isNeedPay;
+        if(contentData.state=='2'){
+            isNeedPay=false;
+        }else{
+            isNeedPay=true;
+        }
+        return (
             <View style={styles.container}>
-            <TouchableOpacity
-                activeOpacity={0.9}
-                onPress={() => this._skipIntoAccountManage("订单")}>
-                <View style={{
-                    backgroundColor: Common.colors.gray5,
-                    borderRadius: 5,
-                    marginTop: 10,
-                    marginLeft: 10,
-                    marginRight: 10
-                }}>
-
                     <View style={{
-                        backgroundColor: Common.colors.white,
+                        backgroundColor: Common.colors.gray5,
                         borderRadius: 5,
-                        margin: 1,
-                        paddingLeft: 10,
-                        paddingRight: 10
+                        marginTop: 10,
+                        marginLeft: 10,
+                        marginRight: 10
                     }}>
+
                         <View style={{
-                            flexDirection: 'row', justifyContent: 'center', alignItems: 'center',
-                            borderBottomColor: Common.colors.bottomlinecolor,
-                            borderBottomWidth: 1
+                            backgroundColor: Common.colors.white,
+                            borderRadius: 5,
+                            margin: 1,
+                            paddingLeft: 10,
+                            paddingRight: 10
                         }}>
-
-                            <Image source={require('../images/other/icon_iphone8.png')} style={{
-                                width: 30,
-                                height: 60,
-                                alignItems: 'center',
-                                justifyContent: 'center'
-                            }}/>
-                            <View style={{flex: 1, justifyContent: 'center', marginBottom: 5}}>
-
-                                <Text style={{
-                                    color: Common.colors.black,
-                                    fontSize: 15,
-                                    marginLeft: 10
-                                }}>IPhone8</Text>
-                                <Text style={{
-                                    color: Common.colors.gray7,
-                                    fontSize: 12,
-                                    marginLeft: 10,
-                                    marginTop: 3
-                                }}>1/1期</Text>
-
-                                <Text style={{color: Common.colors.gray7,
-                                    fontSize: 12,
-                                    marginLeft: 10,
-                                    marginTop: 3
-                                }}>666.00(含服务费60，逾期费:55.0)</Text>
-                            </View>
-                            {/*<View style={{justifyContent: 'center',marginTop:15}}>*/}
-                            <Text style={{fontSize: 12, color: Common.colors.gray1}}>
-                                还款日 2017/10/21
-                            </Text>
-                            <Text style={{
-                                position: 'absolute',
-                                backgroundColor:Common.colors.yellow3,
-                                bottom: 5,
-                                right: 5, fontSize: 12, color: Common.colors.white,
-                                paddingLeft:5,
-                                paddingRight:5,
-                                borderRadius:5
+                            <View style={{
+                                flexDirection: 'row', justifyContent: 'center', alignItems: 'center',
+                                borderBottomColor: Common.colors.bottomlinecolor,
+                                borderBottomWidth: 1
                             }}>
-                                还款
-                            </Text>
-                            {/*</View>*/}
+
+                                <Image source={require('../images/other/icon_iphone8.png')} style={{
+                                    width: 30,
+                                    height: 60,
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
+                                }}/>
+                                <View style={{flex: 1, justifyContent: 'center', marginBottom: 5}}>
+
+                                    <Text style={{
+                                        color: Common.colors.black,
+                                        fontSize: 15,
+                                        marginLeft: 10
+                                    }}>{contentData.product}</Text>
+                                    <Text style={{
+                                        color: Common.colors.gray7,
+                                        fontSize: 12,
+                                        marginLeft: 10,
+                                        marginTop: 3
+                                    }}>{contentData.period}/10期</Text>
+
+                                    <Text style={{
+                                        color: Common.colors.gray7,
+                                        fontSize: 12,
+                                        marginLeft: 10,
+                                        marginTop: 3
+                                    }}>{contentData.repayfee}(含服务费{contentData.servicefee}，逾期费:{contentData.expiryfee})</Text>
+                                </View>
+                                {/*<View style={{justifyContent: 'center',marginTop:15}}>*/}
+                                <Text style={{fontSize: 12, color: Common.colors.gray1}}>
+                                    还款日 {contentData.targetdate}
+                                </Text>
+                                <View style={{flexDirection:'row',position: 'absolute',bottom: 5,
+                                    right: 5,justifyContent:'center' }}>
+
+                                    <Text style={{
+                                        fontSize: 10, color: Common.colors.yellow3,
+                                        paddingLeft: 5,
+                                        paddingRight: 5,
+                                        borderRadius: 5
+                                    }}>
+                                        {contentData.statenm}
+                                    </Text>
+                                    {isNeedPay ? <View>
+                                        <TouchableOpacity
+                                            activeOpacity={0.9}
+                                            onPress={() => this._skipIntoAccountManage("还款")}>
+                                            <Text style={{
+                                                backgroundColor: Common.colors.yellow3,
+                                                fontSize: 12, color: Common.colors.white,
+                                                paddingLeft: 5,
+                                                paddingRight: 5,
+                                                borderRadius: 5
+                                            }}>
+                                                还款
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </View> : null}
+
+                                </View>
+
+                                {/*</View>*/}
+                            </View>
                         </View>
                     </View>
-                </View>
-            </TouchableOpacity>
             </View>
         )
     }
@@ -303,15 +334,20 @@ export default class RepaymentPage extends Component {
 
         InteractionManager.runAfterInteractions(() => {
             const {dispatch} = this.props;
-            let data={'book_id':this.props.book_id};
-            console.log('data===------------>'+JSON.stringify(data));
-            isRefreshing=true;
-            dispatch(GetOrderDetail(data,this.state.isLoading,isRefreshing,isLoadMore));
+            let data = {'book_id': this.props.book_id};
+            console.log('data===------------>' + JSON.stringify(data));
+            isRefreshing = true;
+            dispatch(GetOrderDetail(data, this.state.isLoading, isRefreshing, isLoadMore));
         });
 
     }
+
     _skipIntoAccountManage(content) {
-        Toast.show(content, {position: Toast.positions.CENTER});
+        if(content=='还款'){
+            Toast.show("暂未开通支付宝支付，请手动转账", {position: Toast.positions.CENTER});
+        }else if(content=='立即还款'){
+            Toast.show("暂未开通支付宝支付，请手动转账", {position: Toast.positions.CENTER});
+        }
         // this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
         //     name:'SetContainer',
         //     component: SetContainer,

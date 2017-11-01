@@ -7,14 +7,16 @@
 import * as types from '../actions/actionTypes';
 const initialState = {
     Data:[],
+    msgData:[],
     isLoading: true,
     isLoadMore: false,
     isRefreshing: false,
+    isSuccess:false,
 };
 
 let homeReducer = (state = initialState, action) => {
     switch (action.type) {
-        case types.GETHOMEINFO://获取行情列表
+        case types.GETHOMEINFO://获取首页数据
             return {
                 ...state,
                 isLoading: true,
@@ -29,17 +31,37 @@ let homeReducer = (state = initialState, action) => {
                 Data: action.Data,
                 isLoadMore: false,
                 isRefreshing: false,
+                isSuccess:true,
+                // DataList: action.DataList.length> 0 ? state.DataList.concat(action.DataList) : state.DataList
+            };
+        case types.GETMESSAGE://消息
+            return {
+                ...state,
+                isLoading: true,
+                isLoadMore: action.isLoadMore,
+                isRefreshing: action.isRefreshing,
+            };
+        case types.GETMESSAGERECEIVED:
+            // alert('homereducer===');
+            return {
+                ...state,
+                isLoading: false,
+                msgData: action.Data,
+                isLoadMore: false,
+                isRefreshing: false,
                 // DataList: action.DataList.length> 0 ? state.DataList.concat(action.DataList) : state.DataList
             };
         case types.TOKENERROR://token失效
             return {
                 ...state,
                 isLoading: false,
+                isSuccess:false,
             };
         case types.ACTIONERROR://请求错误
             return {
                 ...state,
                 isLoading: false,
+                isSuccess:false,
             };
         default:
             return state;

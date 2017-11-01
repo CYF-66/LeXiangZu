@@ -184,28 +184,6 @@ export default class LoginPage extends Component {
         });
     }
 
-    _loginSuccess() {
-        const {account, accountPWD} = this.state;
-        const {loginReducer} = this.props;
-        let data = loginReducer.Data;
-        let code = loginReducer.Code;
-        if(typeof(data)=='undefined'||data==null){
-            return;
-        }
-        // Toast.show("data===="+data, {position: Toast.positions.CENTER});
-        console.log("code===="+code);
-        // if(code=='0'){
-        //     Toast.show("_loginSuccess--data.Balance="+data.Balance, {position: Toast.positions.CENTER});
-            Storage.save('accountPWD', accountPWD);
-            Storage.save('account', account);
-            this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
-                name:'AppMain',
-                component: AppMain,
-                // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
-            })// push一个route对象到navigator中
-        // }
-    }
-
     _forgetPassword() {
         Toast.show('忘记密码', {position: Toast.positions.CENTER});
     }

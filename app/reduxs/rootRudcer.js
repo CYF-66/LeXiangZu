@@ -13,11 +13,13 @@ import orderReducer from './orderReducer';
 import myReducer from './myReducer';
 import loginReducer from './loginReducer';
 import registerReducer from './registerReducer';
+import checkReducer from './checkReducer';
 
 export default rootReducer = combineReducers({
     homeReducer,
     orderReducer,
     myReducer,
     loginReducer,
-    registerReducer
+    registerReducer,
+    checkReducer
 })

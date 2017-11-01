@@ -7,16 +7,16 @@
 
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import CheckNamePage from '../pages/CheckNamePage';
+import MessagePage from '../pages/MessagePage';
 
-class CheckNameContainer extends Component {
+class MessageContainer extends Component {
     render() {
         return (
-            <CheckNamePage {...this.props} />
+            <MessagePage {...this.props} />
         )
     }
 }
 
 export default connect((state) => {
-    return { checkReducer} = state;
-})(CheckNameContainer);
+    return { homeReducer} = state;
+})(MessageContainer);

@@ -13,9 +13,11 @@ import {
 //引入标题支持包
 // import SetPage from 'SetPage'
 import Common from '../util/constants';
+import DateUtil from '../util/DateUtil'
 import NavigationBar from 'react-native-navigationbar'
 import Toast from 'react-native-root-toast';
 import {TakeOrder} from '../actions/orderActions'
+import WebViewPage from '../pages/WebViewPage'
 export default class TakeOrderPage extends Component {
 
     constructor(props) {
@@ -24,11 +26,51 @@ export default class TakeOrderPage extends Component {
             isError: false,
             isLoading: true,
             isSuccess: false,
-            title: '申请确认'
+            title: '申请确认',
+            firstPayDay:'',
             // typeList: {}
         })
     }
 
+    componentWillUpdate() {
+        InteractionManager.runAfterInteractions(() => {
+            const {orderReducer} = this.props;
+            console.log('loginReducer.isTakeOrderSuccess===------------>'+orderReducer.isTakeOrderSuccess);
+            if (orderReducer.isTakeOrderSuccess) {
+                // this.props.navigator.popToTop();
+                orderReducer.isTakeOrderSuccess=false;
+                this.setState({
+                    isSuccess: true,
+                    title: '申请已受理'
+                })
+            }
+        });
+
+    }
+    componentWillMount() {
+        InteractionManager.runAfterInteractions(() => {
+            let t;
+            if(this.props.deadunit=='1'){//1天
+                t=1;
+            }else if(this.props.deadunit=='2'){//7天
+                t=7;
+            }else if(this.props.deadunit=='3'){//30天
+                t=30;
+            }else{//4  365天
+                t=365;
+            }
+            //当前时间
+            var nowTime = (new Date()).valueOf();
+            //差值
+            var date3 = 24*3600*1000*t;
+            var sendTime=date3+nowTime;
+            let date=DateUtil.formatDate(sendTime, "yyyy-MM-dd");
+            this.setState({
+                firstPayDay:date
+            });
+            console.log('firstPayDay===------------>'+date);
+        });
+    }
     _renderSubmit() {
         return (
             <View style={{flex: 1, marginTop: 15, paddingLeft: 20, paddingRight: 20}}>
@@ -49,7 +91,7 @@ export default class TakeOrderPage extends Component {
                         借款产品
                     </Text>
                     <Text style={{fontSize: 15, color: Common.colors.gray1, marginLeft: 20}}>
-                        iphone
+                        {this.props.name}
                     </Text>
                 </View>
                 <View style={{
@@ -59,7 +101,7 @@ export default class TakeOrderPage extends Component {
                         借款期限
                     </Text>
                     <Text style={{fontSize: 15, color: Common.colors.gray1, marginLeft: 20}}>
-                        10周
+                        {this.props.deadline}周
                     </Text>
                 </View>
                 <View style={{
@@ -69,10 +111,10 @@ export default class TakeOrderPage extends Component {
                         每月还款
                     </Text>
                     <Text style={{fontSize: 15, color: Common.colors.gray1, marginLeft: 20}}>
-                        ￥560.00
+                        ￥{this.props.deadprice}
                     </Text>
                     <Text style={{fontSize: 15, color: Common.colors.gray5}}>
-                        (含￥60.00服务费)
+                        (含￥{this.props.serverfee}服务费)
                     </Text>
                 </View>
 
@@ -83,28 +125,18 @@ export default class TakeOrderPage extends Component {
                         首还款日
                     </Text>
                     <Text style={{fontSize: 15, color: Common.colors.gray1, marginLeft: 20}}>
-                        2017-11-11
-                    </Text>
-                </View>
-                <View style={{
-                    flexDirection: 'row', paddingTop: 10,
-                }}>
-                    <Text style={{fontSize: 15, color: Common.colors.gray5}}>
-                        周还款日
-                    </Text>
-                    <Text style={{fontSize: 15, color: Common.colors.gray1, marginLeft: 20}}>
-                        周日
+                        {this.state.firstPayDay}
                     </Text>
                 </View>
                 <View style={{
                     flexDirection: 'row', paddingTop: 10, borderBottomColor: Common.colors.bottomlinecolor,
-                    borderBottomWidth: 1, paddingBottom: 5
+                    borderBottomWidth: 1, paddingBottom: 15
                 }}>
                     <Text style={{fontSize: 15, color: Common.colors.gray5}}>
                         还款说明
                     </Text>
                     <Text style={{fontSize: 15, color: Common.colors.gray1, marginLeft: 20}}>
-                        您需要在还款日前进行还款，否则将产生逾期费；
+                        您需要在还款日前进行还款，否则将产生逾期费
                     </Text>
                 </View>
 
@@ -148,20 +180,41 @@ export default class TakeOrderPage extends Component {
                         onPress={() => this._skipIntoAccountManage("同意")}>
                         <Image source={require('../images/other/icon_seclect.png')}
                                style={{
-                                   padding: 10, width: 20,
-                                   height: 20,
+                                   padding: 10, width: 25,
+                                   height: 25,
                                }}/>
                     </TouchableOpacity>
-                    <Text style={{fontSize: 12, color: Common.colors.gray1, marginLeft: 5}}>
+                    <Text style={{fontSize: 15, color: Common.colors.gray1, marginLeft: 5}}>
                         同意
                     </Text>
-                    <Text style={{fontSize: 12, color: Common.colors.yellow1, marginLeft: 5}}>
-                        《贷款协议》
-                    </Text>
-                    <Text style={{fontSize: 12, color: Common.colors.yellow1, marginLeft: 5}}>
+                    <TouchableOpacity
+                        activeOpacity={0.9}
+                        onPress={() => this._skipIntoWeb("借款协议")}>
+                        <Text style={{color:Common.colors.blue,fontSize:15,marginLeft:5}}>
+                            《借款协议》
+                        </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        activeOpacity={0.9}
+                        onPress={() => this._skipIntoWeb("借款协议")}>
+                    <Text style={{fontSize: 15, color: Common.colors.blue, marginLeft: 5}}>
                         《平台服务协议》
                     </Text>
+                    </TouchableOpacity>
                 </View>
+                {/*<View style={{flexDirection:'row',marginTop:30,marginBottom:10}}>*/}
+
+                    {/*<Text style={{color:Common.colors.black,fontSize:15}}>*/}
+                        {/*申请即同意*/}
+                    {/*</Text>*/}
+                    {/*<TouchableOpacity*/}
+                        {/*activeOpacity={0.9}*/}
+                        {/*onPress={() => this._skipIntoWeb("借款协议")}>*/}
+                        {/*<Text style={{color:Common.colors.blue,fontSize:15,marginLeft:5}}>*/}
+                            {/*《借款协议》*/}
+                        {/*</Text>*/}
+                    {/*</TouchableOpacity>*/}
+                {/*</View>*/}
                 <TouchableOpacity
                     activeOpacity={0.5}
                     onPress={() => this._takeOrder("确认借款")}>
@@ -276,15 +329,12 @@ export default class TakeOrderPage extends Component {
         // Toast.show(content, {position: Toast.positions.CENTER});
         InteractionManager.runAfterInteractions(() => {
             const {dispatch} = this.props;
-            let data={'product_id':''};
+            let data={'product_id':this.props.product_id};
+            console.log('this.props.product_id===------------>'+this.props.product_id);
             console.log('data===------------>'+JSON.stringify(data));
             dispatch(TakeOrder(data));
         });
 
-        this.setState({
-            isSuccess: true,
-            title: '申请已受理'
-        })
         // this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
         //     name:'SetContainer',
         //     component: SetContainer,
@@ -294,6 +344,14 @@ export default class TakeOrderPage extends Component {
     _skipIntoAccountManage(content) {
         Toast.show(content, {position: Toast.positions.CENTER});
     }
+
+    _skipIntoWeb(content){
+        this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+            component: WebViewPage,
+            passProps:{title: content,url: Common.url.registerAgreeUrl}//
+        })
+    }
+
 }
 
 const styles = StyleSheet.create({

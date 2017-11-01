@@ -18,7 +18,8 @@ export let GetHomeInfo = (data,isLoading) => {
         dispatch({type: types.GETHOMEINFO,isLoading: isLoading});
         return Util.post(url, data,
             (Code, Message, Data) => {
-
+                Toast.show(Message
+                    , {position:Toast.positions.CENTER});
             if(Code==1){
                 dispatch({type: types.GETHOMEINFORECEIVED, Code: Code, Message: Message, Data: Data});
             }else if(Code==2){
@@ -44,6 +45,43 @@ export let GetHomeInfo = (data,isLoading) => {
     }
 
 };
+
+export let GetMessage = (data,isLoading,isRefreshing,isLoadMore) => {
+
+    let url = urls.MESSAGE;
+
+    return dispatch => {
+        dispatch({type: types.GETMESSAGE,isLoading: isLoading,isRefreshing:isRefreshing,isLoadMore:isLoadMore});
+        return Util.post(url, data,
+            (Code, Message, Data) => {
+                Toast.show(Message
+                    , {position:Toast.positions.CENTER});
+            if(Code==1){
+                dispatch({type: types.GETMESSAGERECEIVED, Code: Code, Message: Message, Data: Data});
+            }else if(Code==2){
+                Storage.get("refresh_token").then((value) => {
+                    let data;
+                    data={'refresh_token':value};
+                    console.log('data===------------>'+JSON.stringify(data));
+                    dispatch(_RefreshToken(data));
+                });
+                dispatch({'type': types.TOKENERROR});
+            }else{
+
+            }
+
+
+            },
+            (error) => {
+                // console.log('Fetch banner list error: ' + error);
+                dispatch({'type': types.ACTIONERROR});
+                // alert('Android要用外网地址');
+            }
+        );
+    }
+
+};
+
 _RefreshToken = (data) => {
 
     let url = urls.REFRRSHTOKEN;
@@ -52,6 +90,8 @@ _RefreshToken = (data) => {
         dispatch({type: types.REFRESHTOKEN});
         return Util.post(url, data,
             (Code, Message, Data) => {
+                Toast.show(Message
+                    , {position:Toast.positions.CENTER});
                 let user={};
                 if(Code==1){
                     user=Data.custom;

@@ -44,6 +44,10 @@ export const REGISTERRECEIVED                  = 'register_received';
 export const GETHOMEINFO                  = 'home_info';
 export const GETHOMEINFORECEIVED   = 'home_info_received';
 
+//消息
+export const GETMESSAGE                  = 'message';
+export const GETMESSAGERECEIVED   = 'message_received';
+
 //我的订单
 export const MYORDER                  = 'my_order';
 export const MYORDERRECEIVED                  = 'my_order_received';
@@ -55,6 +59,18 @@ export const MYORDERDETAILRECEIVED                  = 'my_order_detail_received'
 //生成订单
 export const CREATEORDER                  = 'order_create';
 export const CREATEORDERRECEIVED                  = 'order_create_received';
+
+//审核中心
+export const CHECKCENTER                  = 'check_center';
+export const CHECKCENTERRECEIVED                  = 'check_center_received';
+
+//实名认证
+export const CHECKNAME                  = 'check_name';
+export const CHECKNAMERECEIVED                  = 'check_name_received';
+
+//手机号认证
+export const CHECKPHONE                  = 'check_phone';
+export const CHECKPHONERECEIVED                  = 'check_phone_received';
 
 
 

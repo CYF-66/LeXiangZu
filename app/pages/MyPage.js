@@ -23,6 +23,7 @@ import CheckContainer from '../containers/CheckContainer'
 import SetContainer from '../containers/SetContainer'
 import Storage from '../util/Storage'
 import DialogSelected from '../components/alertSelected';
+import WebViewPage from '../pages/WebViewPage'
 const selectedArr = ["拍照", "相册"];
 export default class MyPage extends Component {
 
@@ -327,7 +328,7 @@ export default class MyPage extends Component {
                 </TouchableOpacity>
                 <TouchableOpacity
                     activeOpacity={0.5}
-                    onPress={() => this._skipIntoAccountManage("常见问题")()}>
+                    onPress={() => this._skipIntoAccountManage("常见问题")}>
                     <View style={{
                         flexDirection: 'row',
                         padding: 15,
@@ -439,34 +440,9 @@ export default class MyPage extends Component {
             console.log('takePhoto--image.path='+image.path);
         });
     }
-    // _skipIntoContent(contentData) {
-    //     Toast.show(contentData, {position: Toast.positions.CENTER});
-    // }
 
-    // _skipIntoAccountManage(content) {
-    //     Toast.show(content, {position: Toast.positions.CENTER});
-    //     if(content=="我的认证"){
-    //         this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
-    //             name:'IdentificationContainer',
-    //             component: IdentificationContainer,
-    //             // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
-    //         })// push一个route对象到navigator中
-    //         // this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
-    //         //     name:'SetContainer',
-    //         //     component: SetContainer,
-    //         //     // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
-    //         // })// push一个route对象到navigator中
-    //     }else if(content=="我的优惠券"){
-    //
-    //         this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
-    //             name:'CouponContainer',
-    //             component: CouponContainer,
-    //             // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
-    //         })
-    //     }
-    // }
     _skipIntoAccountManage(content) {
-        Toast.show(content, {position: Toast.positions.CENTER});
+        // Toast.show(content, {position: Toast.positions.CENTER});
         if(content=="我的认证"){
             this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
                name:'IdentificationContainer',
@@ -497,12 +473,10 @@ export default class MyPage extends Component {
             //     // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
             // })
         }else if(content=="常见问题"){
-
-            // this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
-            //     name:'CouponContainer',
-            //     component: CouponContainer,
-            //     // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
-            // })
+                this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                    component: WebViewPage,
+                    passProps:{title: '常见问题',url: Common.url.questionUrl}
+                })
         }else if(content=="登录"){
             this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
                 name:'LoginContainer',

@@ -16,17 +16,16 @@ import {
 import Common from '../util/constants';
 import NavigationBar from 'react-native-navigationbar'
 import Toast from 'react-native-root-toast';
-import {CheckName} from '../actions/myActions'
+import {CheckSchool} from '../actions/myActions'
 
-export default class CheckNamePage extends Component {
+export default class CheckPhonePage extends Component {
 
     constructor(props) {
         super(props);
         this.state = ({
             isError: false,
             isLoading: true,
-            name: '',
-            idcardNumber: '',
+            phone: '',
             // typeList: {}
         })
     }
@@ -34,10 +33,10 @@ export default class CheckNamePage extends Component {
     componentWillUpdate() {
         InteractionManager.runAfterInteractions(() => {
             const {checkReducer} = this.props;
-            console.log('checkReducer.isCheckName===------------>'+checkReducer.isCheckName);
-            if (checkReducer.isCheckName) {
+            console.log('checkReducer.isCheckPhone===------------>'+checkReducer.isCheckPhone);
+            if (checkReducer.isCheckPhone) {
                 this.props.navigator.popToTop();
-                checkReducer.isCheckName=false;
+                checkReducer.isCheckPhone=false;
             }
         });
 
@@ -49,7 +48,7 @@ export default class CheckNamePage extends Component {
                     backIconHidden={false}
                     barTintColor={Common.colors.yellow3}
                     barStyle={styles.navbar}
-                    title='实名认证'
+                    title='手机号认证'
                     titleColor={Common.colors.white}
                     backColor={Common.colors.white}
                     backFunc={() => {
@@ -68,7 +67,7 @@ export default class CheckNamePage extends Component {
                     <Text
                            style={{fontSize:16,color:Common.colors.gray1,
                                alignItems:'center',justifyContent:'center'}}>
-                        真实姓名
+                        手机号
                     </Text>
                     <TextInput
                         ref="login_name"
@@ -82,26 +81,7 @@ export default class CheckNamePage extends Component {
                         underlineColorAndroid={'transparent'}
                         // field.restrict = "0-9"
                         style={styles.loginInput}
-                        onChangeText={this.onChangeName.bind(this)}/>
-                </View>
-                <View style={[styles.formInput, styles.formInputSplit]}>
-                    <Text
-                        style={{fontSize:16,color:Common.colors.gray1,
-                            alignItems:'center',justifyContent:'center'}}>
-                        身份证号
-                    </Text>
-                    <TextInput
-                        ref="login_psw"
-                        style={styles.loginInput}
-                        // field.restrict = "0-9"
-                        restrict="0-9"
-                        multiline={false}
-                        // defaultValue={this.state.accountPWD.substring(1,this.state.accountPWD.length-1)}
-                        keyboardType={'numeric'}
-                        secureTextEntry={false}
-                        placeholder=''
-                        underlineColorAndroid={'transparent'}
-                        onChangeText={this.onChangeIdcard.bind(this)}/>
+                        onChangeText={this.onChangePhone.bind(this)}/>
                 </View>
                 <TouchableOpacity activeOpacity={0.5} style={styles.loginBtn} onPress={this._submit.bind(this)}>
                     <Text style={styles.loginText}>提交</Text>
@@ -112,25 +92,21 @@ export default class CheckNamePage extends Component {
 
     _submit() {
         // Toast.show('提交', {position: Toast.positions.CENTER});
-        let {name, idcardNumber} = this.state;
+        let {phone} = this.state;
 
         InteractionManager.runAfterInteractions(() => {
             const {dispatch} = this.props;
             // dispatch(GetOneKeyRegister(isLoading));
             //11010497   cks69t
             this.state.isLoading = true;
-            let data = {'name': name, 'identity': idcardNumber};
+            let data = {'phone': phone};
             console.log('data===------------>'+JSON.stringify(data));
             // let data={'name':'13788957291','identity':'000000'};
-            dispatch(CheckName(data, this.state.isLoading));
+            dispatch(CheckSchool(data, this.state.isLoading));
         });
     }
-    onChangeName(text) {
-        this.state.name = text;
-    }
-
-    onChangeIdcard(text) {
-        this.state.idcardNumber = text;
+    onChangePhone(text) {
+        this.state.phone = text;
     }
 }
 

@@ -18,6 +18,7 @@ import Common from '../util/constants';
 import CheckNameContainer from '../containers/CheckNameContainer'
 import CheckSchoolContainer from '../containers/CheckSchoolContainer'
 import CheckWorkContainer from '../containers/CheckWorkContainer'
+import CheckPhoneContainer from '../containers/CheckPhoneContainer'
 
 
 export default class  IdentificationPage extends Component {
@@ -183,7 +184,11 @@ export default class  IdentificationPage extends Component {
                 // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
             })
         }else if(content=="手机认证"){
-
+            this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                name:'CheckPhoneContainer',
+                component: CheckPhoneContainer,
+                // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+            })
         }else if(content=="联系人认证"){
 
         }

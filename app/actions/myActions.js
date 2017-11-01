@@ -8,6 +8,7 @@ import * as types from './actionTypes';
 import Util from '../util/utils';
 import * as urls from '../util/constants_url';
 import Storage from '../util/Storage'
+import Toast from 'react-native-root-toast';
 
 /**登录 */
 export let HttpLogin = (data,isLoading) => {
@@ -18,6 +19,8 @@ export let HttpLogin = (data,isLoading) => {
         dispatch({type: types.LOGINURL,isLoading: isLoading});
         return Util.post(url, data,
             (Code, Message, Data) => {
+                Toast.show(Message
+                    , {position:Toast.positions.CENTER});
                 let user={};
                 if(Code==1){
                     user=Data.custom;
@@ -49,6 +52,8 @@ export let LoginOut = (data,isLoading) => {
         return Util.post(url, data,
             (Code, Message, Data) => {
                 let user={};
+                Toast.show(Message
+                    , {position:Toast.positions.CENTER});
                 if(Code==1){
                     console.log('=======user===------------>'+JSON.stringify(user));
                     Storage.setUser(user);
@@ -77,6 +82,7 @@ export let GetCheckNum = () => {
         dispatch({type: types.GETCHECKNUM});
         return Util.post(url,{},
             (Code, Message, Data) => {
+
                 if(Code==1){
                     Storage.save("token",Data);
                     // Storage.save("tt","cyf123456");
@@ -107,9 +113,14 @@ export let SendYZM = (data) => {
             if(Code==1){
                 Storage.save("yzmtoken",Message);
                 // Storage.save("tt","cyf123456");
-                console.log('======yzmtoken===------------>'+Message);
-            }
                 dispatch({type: types.SENDYZMRECEIVED, Code : Code, Message: Message, Data: Data});
+                console.log('======yzmtoken===------------>'+Message);
+            }else if(Code==2){
+
+            }else{
+
+            }
+
             },
             (err) => {
                 console.log('发送验证码 err: ' + err);
@@ -130,11 +141,15 @@ export let Register = (data,isLoading) => {
         dispatch({type: types.REGISTER,isLoading: isLoading});
         return Util.post(url, data,
             (Code, Message, Data) => {
-
+                Toast.show(Message
+                    , {position:Toast.positions.CENTER});
             if(Code==1){
+                dispatch({type: types.REGISTERRECEIVED, Code : Code, Message: Message, Data: Data});
+            }else if(Code==2){
+
+            }else{
 
             }
-                dispatch({type: types.REGISTERRECEIVED, Code : Code, Message: Message, Data: Data});
             },
             (err) => {
                 console.log('Register error: ' + err);
@@ -152,14 +167,77 @@ export let CheckCenter = (data,isLoading) => {
     let url = urls.CHECKCENTER;
 
     return dispatch => {
-        dispatch({type: types.REGISTER,isLoading: isLoading});
+        dispatch({type: types.CHECKCENTER,isLoading: isLoading});
         return Util.post(url, data,
             (Code, Message, Data) => {
+                Toast.show(Message
+                    , {position:Toast.positions.CENTER});
+            if(Code==1){
+                dispatch({type: types.CHECKCENTERRECEIVED, Code : Code, Message: Message, Data: Data});
 
+            }else if(Code==2){
+
+            }else{
+            }
+            },
+            (err) => {
+                console.log('Register error: ' + err);
+                dispatch({'type': types.ACTIONERROR});
+                // alert('Android要用外网地址');
+            }
+        );
+    }
+
+};
+
+/**实名认证 */
+export let CheckName = (data,isLoading) => {
+
+    let url = urls.CHECKNAME;
+
+    return dispatch => {
+        dispatch({type: types.CHECKNAME,isLoading: isLoading});
+        return Util.post(url, data,
+            (Code, Message, Data) => {
+                Toast.show(Message
+                    , {position:Toast.positions.CENTER});
             if(Code==1){
 
+                dispatch({type: types.CHECKNAMERECEIVED, Code : Code, Message: Message, Data: Data});
+            }else if(Code==2){
+
+            }else{
+
             }
-                dispatch({type: types.REGISTERRECEIVED, Code : Code, Message: Message, Data: Data});
+            },
+            (err) => {
+                console.log('Register error: ' + err);
+                dispatch({'type': types.ACTIONERROR});
+                // alert('Android要用外网地址');
+            }
+        );
+    }
+
+};
+/**学历认证 */
+export let CheckSchool = (data,isLoading) => {
+
+    let url = urls.CHECKPHONE;
+
+    return dispatch => {
+        dispatch({type: types.CHECKPHONE,isLoading: isLoading});
+        return Util.post(url, data,
+            (Code, Message, Data) => {
+                Toast.show(Message
+                    , {position:Toast.positions.CENTER});
+            if(Code==1){
+
+                dispatch({type: types.CHECKPHONERECEIVED, Code : Code, Message: Message, Data: Data});
+            }else if(Code==2){
+
+            }else{
+
+            }
             },
             (err) => {
                 console.log('Register error: ' + err);

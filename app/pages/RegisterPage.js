@@ -18,6 +18,7 @@ import HomePage from "./HomePage";
 import AppMain from '../containers/AppMain';
 import Common from '../util/constants';
 import Storage from '../util/Storage'
+import WebViewPage from '../pages/WebViewPage'
 import {GetCheckNum,SendYZM,Register} from '../actions/myActions'
 
 export default class RegisterPage extends Component {
@@ -172,6 +173,20 @@ export default class RegisterPage extends Component {
                         underlineColorAndroid={'transparent'}
                         onChangeText={this.onChangePassword.bind(this)}/>
                 </View>
+
+                <View style={{flexDirection:'row',marginLeft:20,marginTop:30}}>
+
+                    <Text style={{color:Common.colors.black,fontSize:15}}>
+                        注册即同意
+                    </Text>
+                    <TouchableOpacity
+                        activeOpacity={0.9}
+                        onPress={() => this._skipIntoWeb("注册使用协议")}>
+                    <Text style={{color:Common.colors.blue,fontSize:15,marginLeft:5}}>
+                        《注册使用协议》
+                    </Text>
+                    </TouchableOpacity>
+                </View>
                 <TouchableOpacity activeOpacity={0.5} style={styles.loginBtn} onPress={this._register.bind(this)}>
                     <Text style={styles.loginText}>注册</Text>
                 </TouchableOpacity>
@@ -200,6 +215,13 @@ export default class RegisterPage extends Component {
             console.log('data===------------>'+JSON.stringify(data));
             dispatch(Register(data, this.state.isLoading));
         });
+    }
+
+    _skipIntoWeb(content){
+        this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+            component: WebViewPage,
+            passProps:{title: content,url: Common.url.registerAgreeUrl}//
+        })
     }
 
     _getCheckNum(){
