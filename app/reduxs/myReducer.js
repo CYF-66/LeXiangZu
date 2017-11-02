@@ -7,6 +7,7 @@
 import * as types from '../actions/actionTypes';
 const initialState = {
     Data:[],
+    checkData:[],
     isLoading: true,
     isLoadMore: false,
     isRefreshing: false,
@@ -21,25 +22,27 @@ let myReducer = (state = initialState, action) => {
                 ...state,
                 isLoading: true
             };
-            // return Object.assign({}, state, {
-            //     isLoadMore: action.isLoadMore,
-            //     isRefreshing: action.isRefreshing,
-            //     isLoading: action.isLoading,
-            // });
         case types.LOGINOUTRECEIVED:
-            // return {
-            //     ...state,
-            //     //articles: action.articles,
-            //     articles: action.articles.length > 0 ? state.articles.concat(action.articles) : state.articles,
-            //     isLoading: false,
-            //     isRefreshing: false,
-            // };
             return {
                 ...state,
                 ...action,
                 isLoading: false,
                 isLoginOut:true,
                 Data:action.Data
+            };
+        case types.CHECKCENTER:
+            return {
+                ...state,
+                isLoading: true
+            };
+        case types.CHECKCENTERRECEIVED:
+            return {
+                ...state,
+                ...action,
+                isLoading: false,
+                isLoadMore: false,
+                isRefreshing: false,
+                checkData:action.Data
             };
         case types.TOKENERROR:
             return {

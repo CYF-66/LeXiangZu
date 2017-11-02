@@ -43,6 +43,9 @@ export const CHECKNAME    = IPAddress + 'custom/authByRealName';
 /** 实名认证 手机号 */
 export const CHECKPHONE    = IPAddress + 'custom/authByPhone';
 
+/** 实名认证 学历认证 */
+export const CHECKSCHOOL    = IPAddress + 'custom/educauth';
+
 /** 实名认证 工作认证 */
 export const CHECKWORK    = IPAddress + 'custom/workAuth';
 

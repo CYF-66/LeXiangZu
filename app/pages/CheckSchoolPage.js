@@ -4,6 +4,7 @@ import {
     View,
     ScrollView,
     RefreshControl,
+    InteractionManager,
     Image,
     TouchableOpacity,
     Text,
@@ -18,8 +19,8 @@ import Toast from 'react-native-root-toast';
 import ImagePicker from 'react-native-image-crop-picker';
 import IdentificationContainer from '../containers/IdentificationContainer'
 import Storage from '../util/Storage'
+import {CheckSchool} from '../actions/myActions';
 import DialogSelected from '../components/alertSelected';
-
 const selectedArr = ["拍照", "相册"];
 export default class CheckSchoolPage extends Component {
 
@@ -34,7 +35,16 @@ export default class CheckSchoolPage extends Component {
             isBen:true,
             isZhuan:false,
             isGao:false,
-            isChu:false
+            isChu:false,
+            base64Source:'',
+            college:'',
+            start_date:'',
+            specialty:'',
+            dorm:'',
+            school:'',
+            loginoutdate :'',
+            chsi_name:'',
+            chsi_password:'',
 
             // typeList: {}
         })
@@ -129,7 +139,7 @@ export default class CheckSchoolPage extends Component {
                         underlineColorAndroid={'transparent'}
                         // field.restrict = "0-9"
                         style={styles.loginInput}
-                        onChangeText={this.onChangeMobile.bind(this)}/>
+                        onChangeText={this.onChangeCollege.bind(this)}/>
                 </View>
                 <View style={[styles.formInput, styles.formInputSplit]}>
                     <Text
@@ -149,7 +159,7 @@ export default class CheckSchoolPage extends Component {
                         secureTextEntry={false}
                         placeholder=''
                         underlineColorAndroid={'transparent'}
-                        onChangeText={this.onChangePassword.bind(this)}/>
+                        onChangeText={this.onChangeStartTime.bind(this)}/>
                 </View>
                 <View style={[styles.formInput, styles.formInputSplit]}>
                     <Text
@@ -169,7 +179,7 @@ export default class CheckSchoolPage extends Component {
                         secureTextEntry={false}
                         placeholder=''
                         underlineColorAndroid={'transparent'}
-                        onChangeText={this.onChangePassword.bind(this)}/>
+                        onChangeText={this.onChangeClassRoom.bind(this)}/>
                 </View>
                 <View style={[styles.formInput, styles.formInputSplit]}>
                     <Text
@@ -189,7 +199,7 @@ export default class CheckSchoolPage extends Component {
                         secureTextEntry={false}
                         placeholder=''
                         underlineColorAndroid={'transparent'}
-                        onChangeText={this.onChangePassword.bind(this)}/>
+                        onChangeText={this.onChangeDorm.bind(this)}/>
                 </View>
 
                 <View style={{alignItems: 'center', justifyContent: 'center'}}>
@@ -449,7 +459,7 @@ export default class CheckSchoolPage extends Component {
                         underlineColorAndroid={'transparent'}
                         // field.restrict = "0-9"
                         style={styles.loginInput}
-                        onChangeText={this.onChangeMobile.bind(this)}/>
+                        onChangeText={this.onChangeChrisName.bind(this)}/>
                 </View>
                 <View style={[styles.formInput, styles.formInputSplit]}>
                     <Text
@@ -469,7 +479,7 @@ export default class CheckSchoolPage extends Component {
                         secureTextEntry={false}
                         placeholder=''
                         underlineColorAndroid={'transparent'}
-                        onChangeText={this.onChangePassword.bind(this)}/>
+                        onChangeText={this.onChangeChrisPassword.bind(this)}/>
                 </View>
             </View>
         )
@@ -477,28 +487,6 @@ export default class CheckSchoolPage extends Component {
     _renderLowLever(){
         return(
             <View>
-                <View style={[styles.formInput, styles.formInputSplit]}>
-                    <Text
-                        style={{
-                            fontSize: 16, color: Common.colors.gray1,
-                            alignItems: 'center', justifyContent: 'center'
-                        }}>
-                        毕业院校地址
-                    </Text>
-                    <TextInput
-                        ref="login_name"
-                        placeholder=''
-                        restrict="^."
-                        maxLength={11}
-                        editable={true}
-                        keyboardType='default'
-                        multiline={false}
-                        // defaultValue={this.state.account.substring(1,this.state.account.length-1)}
-                        underlineColorAndroid={'transparent'}
-                        // field.restrict = "0-9"
-                        style={styles.loginInput}
-                        onChangeText={this.onChangeMobile.bind(this)}/>
-                </View>
                 <View style={[styles.formInput, styles.formInputSplit]}>
                     <Text
                         style={{
@@ -517,7 +505,7 @@ export default class CheckSchoolPage extends Component {
                         secureTextEntry={false}
                         placeholder=''
                         underlineColorAndroid={'transparent'}
-                        onChangeText={this.onChangePassword.bind(this)}/>
+                        onChangeText={this.onChangeSchool.bind(this)}/>
                 </View>
                 <View style={[styles.formInput, styles.formInputSplit]}>
                     <Text
@@ -525,7 +513,7 @@ export default class CheckSchoolPage extends Component {
                             fontSize: 16, color: Common.colors.gray1,
                             alignItems: 'center', justifyContent: 'center'
                         }}>
-                        入学年份
+                        毕业时间
                     </Text>
                     <TextInput
                         ref="login_psw"
@@ -537,12 +525,13 @@ export default class CheckSchoolPage extends Component {
                         secureTextEntry={false}
                         placeholder=''
                         underlineColorAndroid={'transparent'}
-                        onChangeText={this.onChangePassword.bind(this)}/>
+                        onChangeText={this.onChangeLoginOutDate.bind(this)}/>
                 </View>
             </View>
         )
     }
     render() {
+        // console.log('this.state.base64Source==========='+JSON.stringify(this.state.base64Source));
         return (
             <View style={styles.container} needsOffscreenAlphaCompositing renderToHardwareTextureAndroid>
                 <NavigationBar
@@ -611,15 +600,73 @@ export default class CheckSchoolPage extends Component {
     }
 
     _next() {
-        Toast.show('下一步', {position: Toast.positions.CENTER});
+        // Toast.show('下一步', {position: Toast.positions.CENTER});
+
+        let {school,start_date,specialty,dorm,isEducation,base64Source,
+            avatarSource,isZhuanAndBen,chsi_name,
+            chsi_password,loginoutdate,isBen,isZhuan,isGao,isChu,college} = this.state;
+        let data;
+        let purpose;
+        if(isBen){
+            purpose=5;
+        }
+        if(isZhuan){
+            purpose=4;
+        }
+        if(isGao){
+            purpose=2;
+        }
+        if(isChu){
+            purpose=3;
+        }
+        if(isEducation){//毕业
+
+            if(isZhuanAndBen){//专科、本科及其以上
+                data={'purpose':purpose,'chsi_name':chsi_name,'chsi_password':chsi_password};
+            }else{//高中 初中及其以下
+                data={'purpose':purpose,'school':school,'loginoutdate':loginoutdate};
+            }
+        }else{//在校
+            data={'purpose':1,'college':college,'start_date':start_date,'specialty':specialty,'dorm':dorm,'picture':base64Source};
+
+        }
+
+        InteractionManager.runAfterInteractions(() => {
+            const {dispatch} = this.props;
+            // dispatch(GetOneKeyRegister(isLoading));
+            //11010497   cks69t
+            this.state.isLoading = true;
+            // let data = {'phone': phone};
+            console.log('data===------------>'+JSON.stringify(data));
+            // let data={'name':'13788957291','identity':'000000'};
+            dispatch(CheckSchool(data, this.state.isLoading));
+        });
     }
 
-    onChangeMobile(text) {
-        // this.state.account = text;
+    onChangeCollege(text) {
+        this.state.college = text;
     }
 
-    onChangePassword(text) {
-        // this.state.accountPWD = text;
+    onChangeStartTime(text) {
+        this.state.start_date = text;
+    }
+    onChangeClassRoom(text) {
+        this.state.specialty = text;
+    }
+    onChangeDorm(text) {
+        this.state.dorm = text;
+    }
+    onChangeSchool(text) {
+        this.state.school = text;
+    }
+    onChangeLoginOutDate(text) {
+        this.state.loginoutdate = text;
+    }
+    onChangeChrisName(text) {
+        this.state.chsi_name = text;
+    }
+    onChangeChrisPassword(text) {
+        this.state.chsi_password = text;
     }
 
     showAlertSelected() {
@@ -643,15 +690,22 @@ export default class CheckSchoolPage extends Component {
             width: 60,
             height: 60,
             cropping: true,
-            cropperCircleOverlay: true
+            cropperCircleOverlay: true,
+            includeBase64:true
         }).then(image => {
             // let source = { uri: image.uri };
             // You can also display the image using data:
-            // let source = { uri: 'data:image/jpeg;base64,' + response.data };
+            // let base64Path=new Buffer(image.path).toString('base64');
+
+            let url=`data:${image.mime};base64,`+ image.data;
+            console.log('received base64 image==========='+url);
+            // console.log('received base64 image');
+            let source={uri: image.path};
             this.setState({
-                avatarSource: {uri: image.path}
+                avatarSource: source,
+                base64Source:url
             });
-            console.log(image);
+
         });
 
     }
@@ -661,13 +715,15 @@ export default class CheckSchoolPage extends Component {
             width: 60,
             height: 60,
             cropping: true,
-            cropperCircleOverlay: true
+            cropperCircleOverlay: true,
+            includeBase64:true
         }).then(image => {
+            let url=`data:${image.mime};base64,`+ image.data;
+            console.log('received base64 image==========='+url);
             this.setState({
-                avatarSource: {uri: image.path}
+                avatarSource: {uri: image.path},
+                base64Source:url
             });
-            console.log('图片信息=' + JSON.stringify(image));
-            console.log('takePhoto--image.path=' + image.path);
         });
     }
 }

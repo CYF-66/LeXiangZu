@@ -162,7 +162,7 @@ export default class SetPage extends Component {
     }
 
     _goToLoginPage(){
-        Toast.show("登录", {position: Toast.positions.CENTER});
+        // Toast.show("登录", {position: Toast.positions.CENTER});
         this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
             name:'LoginContainer',
             component: LoginContainer,
@@ -170,7 +170,7 @@ export default class SetPage extends Component {
         })
     }
     _goToRegisterPage(){
-        Toast.show("注册", {position: Toast.positions.CENTER});
+        // Toast.show("注册", {position: Toast.positions.CENTER});
         this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
             name:'RegisterContainer',
             component: RegisterContainer,

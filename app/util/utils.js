@@ -83,44 +83,65 @@ let Util = {
 
     },
     /**
-     * http post 请求简单封装Code
-     * @param url 请求的URL
-     * @param data post的数据
-     * @param successCallback 请求成功回调
-     * @param failCallback failCallback 请求失败回调
+     * 使用fetch实现图片上传
+     * @param {string} url  接口地址
+     * @param {JSON} params body的请求参数
+     * @return 返回Promise
      */
-    postLogin: (url, data, successCallback, failCallback) => {
-        // let formData = new FormData();
-        // Object.keys(data).map(function(key) {
-        //     var value = data[key];
-        //     formData.append(key, value);
-        // });
+    POSTUPLOADIMAGE:(url,params, successCallback, failCallback) => {
 
-        let fetchOptions = {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                // 'Content-Type': 'multipart/form-data',
-            },
-            // body: formData
-            body: JSON.stringify(data)
-        };
+        let formData = new FormData();
+        for (var key in params){
+            formData.append(key, params[key]);
+        }
+        let file = {uri: params.picture, type: 'application/octet-stream', name: 'image.jpg'};
+        console.log('------file===='+file);
 
-        fetch(url, fetchOptions)
-            .then((response) => response.text())
-            .then((responseText) => {
-                let result = JSON.parse(responseText);
-                // alert(result.Message);
-                Toast.show(result.Message, {position:Toast.positions.CENTER});
-                successCallback(result.Code, result.Message, result.Data);
-                console.log('result.DataList'+result.Data);
-            })
-            .catch((err) => {
-                failCallback(err);
-            });
+        // var Buffer = require('buffer').Buffer;
+        // let base64Path=new Buffer(file).toString('base64');
+        formData.append("picture", file);
+
+        console.log('------formData===='+JSON.stringify(formData));
+
+        Storage.get('token').then((value) => {
+            console.log('提交参数为===data=='+data);
+            console.log('cookie===token=='+value);
+            let fetchOptions = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'multipart/form-data;charset=utf-8',
+                    'cookie':'token='+value
+                    // 'Content-Type': 'multipart/form-data',
+                },
+                body: formData
+                // body: JSON.stringify(data)
+            };
+
+            fetch(url, fetchOptions)
+                .then((response) => response.json())
+                .then((responseData) => {
+                    let result = responseData;
+                    // alert(result.Message);
+                    // Toast.show(JSON.stringify(result)
+                    // , {position:Toast.positions.CENTER});
+                    console.log('responseData='+responseData);
+                    // console.log('result.Message='+result.Message);
+
+                    // successCallback(result.Code, result.Message, result.Data);
+                    // if(responseText.indexOf('Code')>=0&&responseText.indexOf('Message')>=0){
+                    //     successCallback(result.Code, result.Message, result.Data);
+                    // }else{
+                    //     failCallback(result);
+                    // }
+                })
+                .catch((err) => {
+                    console.log('------err='+err);
+                    // Toast.show("错误返回==="+err
+                    //     , {position:Toast.positions.CENTER});
+                    failCallback(err);
+                });
+        });
     },
-
     /**
      * 日志打印
      * @param obj

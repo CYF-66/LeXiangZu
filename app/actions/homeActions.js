@@ -27,11 +27,15 @@ export let GetHomeInfo = (data,isLoading) => {
                     let data;
                     data={'refresh_token':value};
                     console.log('data===------------>'+JSON.stringify(data));
-                    dispatch(_RefreshToken(data));
+                    // dispatch(_RefreshToken(data));
                 });
+                Toast.show("登录验证失败，请重新登录"
+                    , {position:Toast.positions.CENTER});
                 dispatch({'type': types.TOKENERROR});
             }else{
-
+                Toast.show(Message
+                    , {position:Toast.positions.CENTER});
+                dispatch({'type': types.ACTIONERROR});
             }
 
 
@@ -63,11 +67,16 @@ export let GetMessage = (data,isLoading,isRefreshing,isLoadMore) => {
                     let data;
                     data={'refresh_token':value};
                     console.log('data===------------>'+JSON.stringify(data));
-                    dispatch(_RefreshToken(data));
+                    // dispatch(_RefreshToken(data));
                 });
+
+                Toast.show("登录验证失败，请重新登录"
+                    , {position:Toast.positions.CENTER});
                 dispatch({'type': types.TOKENERROR});
             }else{
-
+                Toast.show(Message
+                    , {position:Toast.positions.CENTER});
+                dispatch({'type': types.ACTIONERROR});
             }
 
 

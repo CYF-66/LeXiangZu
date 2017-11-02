@@ -16,20 +16,31 @@ import Common from '../util/constants';
 import NavigationBar from 'react-native-navigationbar'
 import Toast from 'react-native-root-toast';
 import IdentificationContainer from '../containers/IdentificationContainer'
+import ModalDropdown from '../components/ModalDropdown'
 
+const DEMO_OPTIONS_1 = ['option 1', 'option 2', 'option 3', 'option 4', 'option 5', 'option 6', 'option 7', 'option 8', 'option 9'];
+const DEMO_OPTIONS_2 = [
+    {"name": "Rex", "age": 30},
+    {"name": "Mary", "age": 25},
+    {"name": "John", "age": 41},
+    {"name": "Jim", "age": 22},
+    {"name": "Susan", "age": 52},
+    {"name": "Brent", "age": 33},
+    {"name": "Alex", "age": 16},
+    {"name": "Ian", "age": 20},
+    {"name": "Phil", "age": 24},
+];
 export default class CheckWorkPage extends Component {
 
     constructor(props) {
         super(props);
-        // this.state = ({
-        //     isError: false,
-        //     isLoading: true,
-        //     tabChange:'Android',
-        //     dataSource: new ListView.DataSource({
-        //         rowHasChanged: (row1, row2) => row1 !== row2
-        //     }),
-        //     // typeList: {}
-        // })
+        this.state = ({
+            isError: false,
+            isLoading: true,
+            dropdown_4_options: null,
+            dropdown_4_defaultValue: 'loading...',
+            dropdown_6_icon_heart: true,
+        })
     }
 
     render() {

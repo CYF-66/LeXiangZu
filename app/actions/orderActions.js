@@ -25,8 +25,10 @@ export let GetOrderList = (data,isLoading,isRefreshing,isLoadMore) => {
                     let data;
                     data={'refresh_token':value};
                     console.log('data===------------>'+JSON.stringify(data));
-                    dispatch(_RefreshToken(data));
+                    // dispatch(_RefreshToken(data));
                 });
+                Toast.show("登录验证失败，请重新登录"
+                    , {position:Toast.positions.CENTER});
                 dispatch({'type': types.TOKENERROR});
             }else{
 
@@ -59,12 +61,16 @@ export let GetOrderDetail = (data,isLoading,isRefreshing,isLoadMore) => {
                     let data;
                     data={'refresh_token':value};
                     console.log('data===------------>'+JSON.stringify(data));
-                    dispatch(_RefreshToken(data));
+                    // dispatch(_RefreshToken(data));
                 });
+                Toast.show("登录验证失败，请重新登录"
+                    , {position:Toast.positions.CENTER});
                 dispatch({'type': types.TOKENERROR});
                 // dispatch({type: types.MYORDERDETAILRECEIVED, Code: Code, Message: Message, Data: Data.bills});
             }else{
-
+                Toast.show(Message
+                    , {position:Toast.positions.CENTER});
+                dispatch({'type': types.ACTIONERROR});
             }
 
             },
@@ -87,7 +93,15 @@ export let TakeOrder = (data,isLoading) => {
         return Util.post(url, data,
             (Code, Message, Data) => {
 
+            if(Code==1){
                 dispatch({type: types.CREATEORDERRECEIVED, Code: Code, Message: Message, Data: Data});
+            }else if(Code==2){
+                Toast.show("登录验证失败，请重新登录"
+                    , {position:Toast.positions.CENTER});
+            }else{
+                Toast.show(Message
+                    , {position:Toast.positions.CENTER});
+            }
 
             },
             (err) => {
@@ -116,8 +130,7 @@ export let TakeOrder = (data,isLoading) => {
                 Storage.save('token',Data.token);
                 Storage.save('isLogin',true);
                 Storage.save('refresh_token',Data.refresh_token);
-                Toast.show("请重新登录"
-                    , {position:Toast.positions.CENTER});
+
             }else if(Code==2){
                 Toast.show("请重新登录"
                     , {position:Toast.positions.CENTER});

@@ -23,13 +23,6 @@ let checkReducer = (state = initialState, action) => {
                 isLoading: true
             };
         case types.CHECKNAMERECEIVED:
-            // return {
-            //     ...state,
-            //     //articles: action.articles,
-            //     articles: action.articles.length > 0 ? state.articles.concat(action.articles) : state.articles,
-            //     isLoading: false,
-            //     isRefreshing: false,
-            // };
             return {
                 ...state,
                 ...action,
@@ -42,13 +35,18 @@ let checkReducer = (state = initialState, action) => {
                 isLoading: true
             };
         case types.CHECKPHONERECEIVED:
-            // return {
-            //     ...state,
-            //     //articles: action.articles,
-            //     articles: action.articles.length > 0 ? state.articles.concat(action.articles) : state.articles,
-            //     isLoading: false,
-            //     isRefreshing: false,
-            // };
+            return {
+                ...state,
+                ...action,
+                isLoading: false,
+                isCheckPhone:true,
+            };
+        case types.CHECKSCHOOL:
+            return {
+                ...state,
+                isLoading: true
+            };
+        case types.CHECKSCHOOLRECEIVED:
             return {
                 ...state,
                 ...action,

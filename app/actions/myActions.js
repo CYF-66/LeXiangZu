@@ -30,6 +30,10 @@ export let HttpLogin = (data,isLoading) => {
                     Storage.save('isLogin',true);
                     Storage.save('refresh_token',Data.refresh_token);
                     dispatch({type: types.LOGINURLRECEIVED, Code : Code, Message: Message, Data: Data.custom});
+                }else{
+                    Toast.show(Message
+                        , {position:Toast.positions.CENTER});
+                    dispatch({'type': types.ACTIONERROR});
                 }
             },
             (err) => {
@@ -60,6 +64,14 @@ export let LoginOut = (data,isLoading) => {
                     Storage.save('token','');
                     Storage.save('isLogin',false);
                     Storage.save('refresh_token','');
+                }else if(Code==2){
+                    Toast.show("登录验证失败，请重新登录"
+                        , {position:Toast.positions.CENTER});
+                    dispatch({'type': types.TOKENERROR});
+                }else{
+                    Toast.show(Message
+                        , {position:Toast.positions.CENTER});
+                    dispatch({'type': types.ACTIONERROR});
                 }
                 dispatch({type: types.LOGINOUTRECEIVED, Code : Code, Message: Message, Data: Data});
             },
@@ -116,9 +128,13 @@ export let SendYZM = (data) => {
                 dispatch({type: types.SENDYZMRECEIVED, Code : Code, Message: Message, Data: Data});
                 console.log('======yzmtoken===------------>'+Message);
             }else if(Code==2){
-
+                Toast.show("登录验证失败，请重新登录"
+                    , {position:Toast.positions.CENTER});
+                dispatch({'type': types.TOKENERROR});
             }else{
-
+                Toast.show(Message
+                    , {position:Toast.positions.CENTER});
+                dispatch({'type': types.ACTIONERROR});
             }
 
             },
@@ -146,9 +162,13 @@ export let Register = (data,isLoading) => {
             if(Code==1){
                 dispatch({type: types.REGISTERRECEIVED, Code : Code, Message: Message, Data: Data});
             }else if(Code==2){
-
+                Toast.show("登录验证失败，请重新登录"
+                    , {position:Toast.positions.CENTER});
+                dispatch({'type': types.TOKENERROR});
             }else{
-
+                Toast.show(Message
+                    , {position:Toast.positions.CENTER});
+                dispatch({'type': types.ACTIONERROR});
             }
             },
             (err) => {
@@ -162,12 +182,12 @@ export let Register = (data,isLoading) => {
 };
 
 /**我的审核中心 */
-export let CheckCenter = (data,isLoading) => {
+export let CheckCenter = (data,isLoading,isRefreshing,isLoadMore,) => {
 
     let url = urls.CHECKCENTER;
 
     return dispatch => {
-        dispatch({type: types.CHECKCENTER,isLoading: isLoading});
+        dispatch({type: types.CHECKCENTER,isLoading: isLoading,isRefreshing:isRefreshing,isLoadMore:isLoadMore});
         return Util.post(url, data,
             (Code, Message, Data) => {
                 Toast.show(Message
@@ -176,8 +196,13 @@ export let CheckCenter = (data,isLoading) => {
                 dispatch({type: types.CHECKCENTERRECEIVED, Code : Code, Message: Message, Data: Data});
 
             }else if(Code==2){
-
+                Toast.show("登录验证失败，请重新登录"
+                    , {position:Toast.positions.CENTER});
+                dispatch({'type': types.TOKENERROR});
             }else{
+                Toast.show(Message
+                    , {position:Toast.positions.CENTER});
+                dispatch({'type': types.ACTIONERROR});
             }
             },
             (err) => {
@@ -202,12 +227,16 @@ export let CheckName = (data,isLoading) => {
                 Toast.show(Message
                     , {position:Toast.positions.CENTER});
             if(Code==1){
-
+                Storage.save('name',true);
                 dispatch({type: types.CHECKNAMERECEIVED, Code : Code, Message: Message, Data: Data});
             }else if(Code==2){
-
+                Toast.show("登录验证失败，请重新登录"
+                    , {position:Toast.positions.CENTER});
+                dispatch({'type': types.TOKENERROR});
             }else{
-
+                Toast.show(Message
+                    , {position:Toast.positions.CENTER});
+                dispatch({'type': types.ACTIONERROR});
             }
             },
             (err) => {
@@ -219,8 +248,8 @@ export let CheckName = (data,isLoading) => {
     }
 
 };
-/**学历认证 */
-export let CheckSchool = (data,isLoading) => {
+/**手机号认证 */
+export let CheckPhone = (data,isLoading) => {
 
     let url = urls.CHECKPHONE;
 
@@ -231,12 +260,50 @@ export let CheckSchool = (data,isLoading) => {
                 Toast.show(Message
                     , {position:Toast.positions.CENTER});
             if(Code==1){
-
+                Storage.save('phone',true);
                 dispatch({type: types.CHECKPHONERECEIVED, Code : Code, Message: Message, Data: Data});
             }else if(Code==2){
-
+                Toast.show("登录验证失败，请重新登录"
+                    , {position:Toast.positions.CENTER});
+                dispatch({'type': types.TOKENERROR});
             }else{
+                Toast.show(Message
+                    , {position:Toast.positions.CENTER});
+                dispatch({'type': types.ACTIONERROR});
+            }
+            },
+            (err) => {
+                console.log('Register error: ' + err);
+                dispatch({'type': types.ACTIONERROR});
+                // alert('Android要用外网地址');
+            }
+        );
+    }
 
+};
+
+/**学历认证 */
+export let CheckSchool = (data,isLoading) => {
+
+    let url = urls.CHECKSCHOOL;
+
+    return dispatch => {
+        dispatch({type: types.CHECKSCHOOL,isLoading: isLoading});
+        return Util.post(url, data,
+            (Code, Message, Data) => {
+                Toast.show(Message
+                    , {position:Toast.positions.CENTER});
+            if(Code==1){
+                Storage.save('school',true);
+                dispatch({type: types.CHECKSCHOOLRECEIVED, Code : Code, Message: Message, Data: Data});
+            }else if(Code==2){
+                Toast.show("登录验证失败，请重新登录"
+                    , {position:Toast.positions.CENTER});
+                dispatch({'type': types.TOKENERROR});
+            }else{
+                Toast.show(Message
+                    , {position:Toast.positions.CENTER});
+                dispatch({'type': types.ACTIONERROR});
             }
             },
             (err) => {

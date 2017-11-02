@@ -19,7 +19,7 @@ import CheckNameContainer from '../containers/CheckNameContainer'
 import CheckSchoolContainer from '../containers/CheckSchoolContainer'
 import CheckWorkContainer from '../containers/CheckWorkContainer'
 import CheckPhoneContainer from '../containers/CheckPhoneContainer'
-
+import Storage from '../util/Storage'
 
 export default class  IdentificationPage extends Component {
 
@@ -164,19 +164,33 @@ export default class  IdentificationPage extends Component {
     }
 
     _skipIntoAccountManage(content) {
-        Toast.show(content, {position: Toast.positions.CENTER});
+        // Toast.show(content, {position: Toast.positions.CENTER});
         if(content=="实名认证"){
-            this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
-                name:'CheckNameContainer',
-                component: CheckNameContainer,
-                // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
-            })
+            Storage.get('name').then((value) => {
+                if(!value){
+                    this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                        name:'CheckNameContainer',
+                        component: CheckNameContainer,
+                        // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
+                    })
+                }else{
+                    Toast.show('已认证', {position: Toast.positions.CENTER});
+                }
+            });
+
         }else if(content=="学历认证"){
-            this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
-                name:'CheckSchoolContainer',
-                component: CheckSchoolContainer,
-                // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
-            })
+            Storage.get('school').then((value) => {
+                if(!value){
+                    this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                        name:'CheckSchoolContainer',
+                        component: CheckSchoolContainer,
+                        // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+                    })
+                }else{
+                    Toast.show('已认证', {position: Toast.positions.CENTER});
+                }
+            });
+
         }else if(content=="工作信息"){
             this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
                 name:'CheckWorkContainer',
@@ -184,11 +198,18 @@ export default class  IdentificationPage extends Component {
                 // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
             })
         }else if(content=="手机认证"){
-            this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
-                name:'CheckPhoneContainer',
-                component: CheckPhoneContainer,
-                // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
-            })
+            Storage.get('phone').then((value) => {
+                if(!value){
+                    this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                        name:'CheckPhoneContainer',
+                        component: CheckPhoneContainer,
+                        // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+                    })
+                }else{
+                    Toast.show('已认证', {position: Toast.positions.CENTER});
+                }
+            });
+
         }else if(content=="联系人认证"){
 
         }

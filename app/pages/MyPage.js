@@ -24,6 +24,7 @@ import SetContainer from '../containers/SetContainer'
 import Storage from '../util/Storage'
 import DialogSelected from '../components/alertSelected';
 import WebViewPage from '../pages/WebViewPage'
+import Demo from '../pages/Demo'
 const selectedArr = ["拍照", "相册"];
 export default class MyPage extends Component {
 
@@ -467,6 +468,10 @@ export default class MyPage extends Component {
                 // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
             })
         }else if(content=="客服与反馈"){
+            this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                component: Demo,
+                // passProps:{title: '常见问题',url: Common.url.questionUrl}
+            })
             // this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
             //     name:'CouponContainer',
             //     component: CouponContainer,

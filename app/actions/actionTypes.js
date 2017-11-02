@@ -72,6 +72,10 @@ export const CHECKNAMERECEIVED                  = 'check_name_received';
 export const CHECKPHONE                  = 'check_phone';
 export const CHECKPHONERECEIVED                  = 'check_phone_received';
 
+//学历认证
+export const CHECKSCHOOL                  = 'check_school';
+export const CHECKSCHOOLRECEIVED                  = 'check_school_received';
+
 
 
 

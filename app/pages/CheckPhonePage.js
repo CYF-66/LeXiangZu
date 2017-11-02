@@ -16,7 +16,7 @@ import {
 import Common from '../util/constants';
 import NavigationBar from 'react-native-navigationbar'
 import Toast from 'react-native-root-toast';
-import {CheckSchool} from '../actions/myActions'
+import {CheckPhone} from '../actions/myActions'
 
 export default class CheckPhonePage extends Component {
 
@@ -102,7 +102,7 @@ export default class CheckPhonePage extends Component {
             let data = {'phone': phone};
             console.log('data===------------>'+JSON.stringify(data));
             // let data={'name':'13788957291','identity':'000000'};
-            dispatch(CheckSchool(data, this.state.isLoading));
+            dispatch(CheckPhone(data, this.state.isLoading));
         });
     }
     onChangePhone(text) {
