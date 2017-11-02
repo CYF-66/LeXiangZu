@@ -12,7 +12,7 @@ import {
 
 import ModalDropdown from '../components/ModalDropdown';
 
-const DEMO_OPTIONS_1 = ['option 1', 'option 2', 'option 3', 'option 4', 'option 5', 'option 6', 'option 7', 'option 8', 'option 9'];
+const DEMO_OPTIONS_1 = ['0~6个月', '6~12个月', '1~3年', '3~5年', '5~8年', '8年以上'];
 const DEMO_OPTIONS_2 = [
     {"name": "Rex", "age": 30},
     {"name": "Mary", "age": 25},
@@ -45,23 +45,21 @@ export default class Demo extends Component {
                         <ModalDropdown style={styles.dropdown_1}
                                        options={DEMO_OPTIONS_1}
                         />
-                        {/*<ModalDropdown style={styles.dropdown_6}*/}
-                                       {/*options={DEMO_OPTIONS_1}*/}
-                                       {/*onSelect={(idx, value) => this._dropdown_6_onSelect(idx, value)}>*/}
-                            {/*<Image style={styles.dropdown_6_image}*/}
-                                   {/*source={dropdown_6_icon}*/}
-                            {/*/>*/}
-                        {/*</ModalDropdown>*/}
                     </View>
                     <View style={styles.cell}>
-                        <ModalDropdown style={styles.dropdown_2}
-                                       textStyle={styles.dropdown_2_text}
-                                       dropdownStyle={styles.dropdown_2_dropdown}
-                                       options={DEMO_OPTIONS_2}
-                                       renderRow={this._dropdown_2_renderRow.bind(this)}
-                                       renderSeparator={(sectionID, rowID, adjacentRowHighlighted) => this._dropdown_2_renderSeparator(sectionID, rowID, adjacentRowHighlighted)}
+                        <ModalDropdown style={styles.dropdown_1}
+                                       options={DEMO_OPTIONS_1}
                         />
                     </View>
+                    {/*<View style={styles.cell}>*/}
+                        {/*<ModalDropdown style={styles.dropdown_2}*/}
+                                       {/*textStyle={styles.dropdown_2_text}*/}
+                                       {/*dropdownStyle={styles.dropdown_2_dropdown}*/}
+                                       {/*options={DEMO_OPTIONS_2}*/}
+                                       {/*renderRow={this._dropdown_2_renderRow.bind(this)}*/}
+                                       {/*renderSeparator={(sectionID, rowID, adjacentRowHighlighted) => this._dropdown_2_renderSeparator(sectionID, rowID, adjacentRowHighlighted)}*/}
+                        {/*/>*/}
+                    {/*</View>*/}
                 </View>
             </View>
         );
@@ -104,7 +102,7 @@ const styles = StyleSheet.create({
     },
     cell: {
         flex: 1,
-        borderWidth: StyleSheet.hairlineWidth,
+        // borderWidth: StyleSheet.hairlineWidth,
     },
     scrollView: {
         flex: 1,

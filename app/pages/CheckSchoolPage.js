@@ -476,7 +476,7 @@ export default class CheckSchoolPage extends Component {
                         multiline={false}
                         // defaultValue={this.state.accountPWD.substring(1,this.state.accountPWD.length-1)}
                         keyboardType={'default'}
-                        secureTextEntry={false}
+                        secureTextEntry={true}
                         placeholder=''
                         underlineColorAndroid={'transparent'}
                         onChangeText={this.onChangeChrisPassword.bind(this)}/>

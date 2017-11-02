@@ -59,7 +59,7 @@ export default class ModalDropdown extends Component {
   static defaultProps = {
     disabled: false,
     defaultIndex: -1,
-    defaultValue: 'Please select...===========================',
+    defaultValue: 'Please select',
     options: null,
     animated: true,
     showsVerticalScrollIndicator: true
@@ -106,17 +106,6 @@ export default class ModalDropdown extends Component {
   render() {
     return (
       <View {...this.props}>
-        <NavigationBar
-            backIconHidden={false}
-            barTintColor={Common.colors.red}
-            barStyle={styles.navbar}
-            title='美元/日元'
-            titleColor={Common.colors.white}
-            backColor={Common.colors.white}
-            backFunc={() => {
-                this.props.navigator.pop()
-            }}
-        />
         {this._renderButton()}
         {this._renderModal()}
       </View>

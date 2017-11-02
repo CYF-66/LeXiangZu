@@ -18,18 +18,12 @@ import Toast from 'react-native-root-toast';
 import IdentificationContainer from '../containers/IdentificationContainer'
 import ModalDropdown from '../components/ModalDropdown'
 
-const DEMO_OPTIONS_1 = ['option 1', 'option 2', 'option 3', 'option 4', 'option 5', 'option 6', 'option 7', 'option 8', 'option 9'];
-const DEMO_OPTIONS_2 = [
-    {"name": "Rex", "age": 30},
-    {"name": "Mary", "age": 25},
-    {"name": "John", "age": 41},
-    {"name": "Jim", "age": 22},
-    {"name": "Susan", "age": 52},
-    {"name": "Brent", "age": 33},
-    {"name": "Alex", "age": 16},
-    {"name": "Ian", "age": 20},
-    {"name": "Phil", "age": 24},
-];
+const  WORK_YEAR_OPTIONS = ['0~6个月', '6~12个月', '1~3年', '3~5年', '5~8年', '8年以上'];
+const WORK_STATE_OPTIONS = ['在职', '自由职业', '其他'];
+const CURRENT_YEAR_OPTIONS = ['0~6个月', '6~12个月', '1~3年', '3~5年', '5~8年', '8年以上'];
+const COMPANY_SORT_OPTIONS = ['机关/事业单位', '国有企业', '上市公司', '民营/私营企业', '合资/外资'];
+const JOB_OPTIONS = ['IT/互联网', '金融', '制造业', '教育/医疗等事业', '交通物流通讯','贸易类行业','服务类行业','其他'];
+const INCOME_OPTIONS = ['2000以下', '2000-3000', '3000-5000', '5000-8000', '8000以上'];
 export default class CheckWorkPage extends Component {
 
     constructor(props) {
@@ -37,9 +31,11 @@ export default class CheckWorkPage extends Component {
         this.state = ({
             isError: false,
             isLoading: true,
-            dropdown_4_options: null,
-            dropdown_4_defaultValue: 'loading...',
-            dropdown_6_icon_heart: true,
+            workYear_defaultValue: '请选择',
+            workState_defaultValue: '请选择',
+            companySort_defaultValue: '请选择',
+            job_defaultValue: '请选择',
+            income_defaultValue: '请选择',
         })
     }
 
@@ -68,25 +64,41 @@ export default class CheckWorkPage extends Component {
                 <ScrollView
                     style={styles.container}>
                 <View style={{flex:1}}>
-                    <View style={[styles.formInput, styles.formInputSplit]}>
+                    <View style={{flexDirection:'row',paddingLeft:20,paddingTop:20,paddingBottom:20,paddingRight:20,
+                        justifyContent:'center',
+                        alignItems:'center',borderBottomWidth: 1,
+                        borderBottomColor: Common.colors.bottomlinecolor,}}>
                         <Text
-                            style={{fontSize:16,color:Common.colors.gray1,
+                            style={{flex:1,fontSize:16,color:Common.colors.gray1,
                                 alignItems:'center',justifyContent:'center'}}>
                             参加工作年限
                         </Text>
-                        <TextInput
-                            ref="login_name"
-                            placeholder=''
-                            restrict="^."
-                            maxLength={11}
-                            editable={true}
-                            keyboardType='default'
-                            multiline={false}
-                            // defaultValue={this.state.account.substring(1,this.state.account.length-1)}
-                            underlineColorAndroid={'transparent'}
-                            // field.restrict = "0-9"
-                            style={styles.loginInput}
-                            onChangeText={this.onChangeMobile.bind(this)}/>
+                        <View style={{}}>
+                            <ModalDropdown style={{
+                                top: 0,
+                                right: 10,}}
+                                           options={WORK_YEAR_OPTIONS}
+                                           defaultValue={this.state.workYear_defaultValue}
+                            />
+                        </View>
+                    </View>
+                    <View style={{flexDirection:'row',paddingLeft:20,paddingTop:20,paddingBottom:20,paddingRight:20,
+                        justifyContent:'center',
+                        alignItems:'center',borderBottomWidth: 1,
+                        borderBottomColor: Common.colors.bottomlinecolor,}}>
+                        <Text
+                            style={{flex:1,fontSize:16,color:Common.colors.gray1,
+                                alignItems:'center',justifyContent:'center'}}>
+                            工作状态
+                        </Text>
+                        <View style={{}}>
+                            <ModalDropdown style={{
+                                top: 0,
+                                right: 10,}}
+                                           options={WORK_STATE_OPTIONS}
+                                           defaultValue={this.state.workState_defaultValue}
+                            />
+                        </View>
                     </View>
                     <View style={[styles.formInput, styles.formInputSplit]}>
                         <Text
@@ -145,62 +157,59 @@ export default class CheckWorkPage extends Component {
                             underlineColorAndroid={'transparent'}
                             onChangeText={this.onChangePassword.bind(this)}/>
                     </View>
-                    <View style={[styles.formInput, styles.formInputSplit]}>
+                    <View style={{flexDirection:'row',paddingLeft:20,paddingTop:20,paddingBottom:20,paddingRight:20,
+                        justifyContent:'center',
+                        alignItems:'center',borderBottomWidth: 1,
+                        borderBottomColor: Common.colors.bottomlinecolor,}}>
                         <Text
-                            style={{fontSize:16,color:Common.colors.gray1,
+                            style={{flex:1,fontSize:16,color:Common.colors.gray1,
                                 alignItems:'center',justifyContent:'center'}}>
                             单位性质
                         </Text>
-                        <TextInput
-                            ref="login_psw"
-                            style={styles.loginInput}
-                            // field.restrict = "0-9"
-                            restrict="0-9"
-                            multiline={false}
-                            // defaultValue={this.state.accountPWD.substring(1,this.state.accountPWD.length-1)}
-                            secureTextEntry={false}
-                            keyboardType={'default'}
-                            placeholder=''
-                            underlineColorAndroid={'transparent'}
-                            onChangeText={this.onChangePassword.bind(this)}/>
+                        <View style={{}}>
+                            <ModalDropdown style={{
+                                top: 0,
+                                right: 10,}}
+                                           options={COMPANY_SORT_OPTIONS}
+                                           defaultValue={this.state.companySort_defaultValue}
+                            />
+                        </View>
                     </View>
-                    <View style={[styles.formInput, styles.formInputSplit]}>
+                    <View style={{flexDirection:'row',paddingLeft:20,paddingTop:20,paddingBottom:20,paddingRight:20,
+                        justifyContent:'center',
+                        alignItems:'center',borderBottomWidth: 1,
+                        borderBottomColor: Common.colors.bottomlinecolor,}}>
                         <Text
-                            style={{fontSize:16,color:Common.colors.gray1,
+                            style={{flex:1,fontSize:16,color:Common.colors.gray1,
                                 alignItems:'center',justifyContent:'center'}}>
-                            当前职位
+                            当前职业
                         </Text>
-                        <TextInput
-                            ref="login_psw"
-                            style={styles.loginInput}
-                            // field.restrict = "0-9"
-                            restrict="0-9"
-                            multiline={false}
-                            // defaultValue={this.state.accountPWD.substring(1,this.state.accountPWD.length-1)}
-                            secureTextEntry={false}
-                            keyboardType={'default'}
-                            placeholder=''
-                            underlineColorAndroid={'transparent'}
-                            onChangeText={this.onChangePassword.bind(this)}/>
+                        <View style={{}}>
+                            <ModalDropdown style={{
+                                top: 0,
+                                right: 10,}}
+                                           options={JOB_OPTIONS}
+                                           defaultValue={this.state.job_defaultValue}
+                            />
+                        </View>
                     </View>
-                    <View style={[styles.formInput, styles.formInputSplit]}>
+                    <View style={{flexDirection:'row',paddingLeft:20,paddingTop:20,paddingBottom:20,paddingRight:20,
+                        justifyContent:'center',
+                        alignItems:'center',borderBottomWidth: 1,
+                        borderBottomColor: Common.colors.bottomlinecolor,}}>
                         <Text
-                            style={{fontSize:16,color:Common.colors.gray1,
+                            style={{flex:1,fontSize:16,color:Common.colors.gray1,
                                 alignItems:'center',justifyContent:'center'}}>
-                            个人月收入
+                            当前月收入
                         </Text>
-                        <TextInput
-                            ref="login_psw"
-                            style={styles.loginInput}
-                            // field.restrict = "0-9"
-                            restrict="0-9"
-                            multiline={false}
-                            keyboardType={'default'}
-                            // defaultValue={this.state.accountPWD.substring(1,this.state.accountPWD.length-1)}
-                            secureTextEntry={false}
-                            placeholder=''
-                            underlineColorAndroid={'transparent'}
-                            onChangeText={this.onChangePassword.bind(this)}/>
+                        <View style={{}}>
+                            <ModalDropdown style={{
+                                top: 0,
+                                right: 10,}}
+                                           options={INCOME_OPTIONS}
+                                           defaultValue={this.state.income_defaultValue}
+                            />
+                        </View>
                     </View>
                     <View style={[styles.formInput, styles.formInputSplit]}>
                         <Text
@@ -212,7 +221,6 @@ export default class CheckWorkPage extends Component {
                             ref="login_psw"
                             style={styles.loginInput}
                             // field.restrict = "0-9"
-                            restrict="0-9"
                             multiline={false}
                             // defaultValue={this.state.accountPWD.substring(1,this.state.accountPWD.length-1)}
                             keyboardType={'default'}
