@@ -19,6 +19,7 @@ import Toast from 'react-native-root-toast';
 import {CheckPhone} from '../actions/myActions'
 import CheckContactContainer from '../containers/CheckContactContainer'
 import TakeOrderContainer from '../containers/TakeOrderContainer'
+import Storage from '../util/Storage'
 export default class CheckPhonePage extends Component {
 
     constructor(props) {

@@ -19,6 +19,8 @@ export let GetOrderList = (data,isLoading,isRefreshing,isLoadMore) => {
             (Code, Message, Data) => {
 
             if(Code==1){
+                Toast.show(Message
+                    , {position:Toast.positions.CENTER});
                 dispatch({type: types.MYORDERRECEIVED, Code: Code, Message: Message, Data: Data});
             }else if(Code==2){//token 失效
                 Storage.get("refresh_token").then((value) => {
@@ -55,6 +57,8 @@ export let GetOrderDetail = (data,isLoading,isRefreshing,isLoadMore) => {
             (Code, Message, Data) => {
 
             if(Code==1){
+                Toast.show(Message
+                    , {position:Toast.positions.CENTER});
                 dispatch({type: types.MYORDERDETAILRECEIVED, Code: Code, Message: Message, Data: Data});
             }else if(Code==2){//token 失效TOKENERROR
                 Storage.get("refresh_token").then((value) => {
@@ -94,6 +98,8 @@ export let TakeOrder = (data,isLoading) => {
             (Code, Message, Data) => {
 
             if(Code==1){
+                Toast.show('成功'
+                    , {position:Toast.positions.CENTER});
                 dispatch({type: types.CREATEORDERRECEIVED, Code: Code, Message: Message, Data: Data});
             }else if(Code==2){
                 Toast.show("登录验证失败，请重新登录"

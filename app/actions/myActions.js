@@ -19,16 +19,17 @@ export let HttpLogin = (data,isLoading) => {
         dispatch({type: types.LOGINURL,isLoading: isLoading});
         return Util.post(url, data,
             (Code, Message, Data) => {
-                Toast.show(Message
-                    , {position:Toast.positions.CENTER});
                 let user={};
                 if(Code==1){
+                    Toast.show('成功'
+                        , {position:Toast.positions.CENTER});
                     user=Data.custom;
                     Storage.setUser(user);
                     Storage.save('token',Data.token);
                     Storage.save('isLogin',true);
                     Storage.save('refresh_token',Data.refresh_token);
                     Storage.save('username',user.name);
+                    Storage.save('userphone',user.phone);
                     if(user.isrealauth=='1'){
                         Storage.save('name',true);
                     }else{
@@ -82,14 +83,21 @@ export let LoginOut = (data,isLoading) => {
         return Util.post(url, data,
             (Code, Message, Data) => {
                 let user={};
-                Toast.show(Message
-                    , {position:Toast.positions.CENTER});
                 if(Code==1){
+                    Toast.show('成功'
+                        , {position:Toast.positions.CENTER});
                     console.log('=======user===------------>'+JSON.stringify(user));
                     Storage.setUser(user);
                     Storage.save('token','');
                     Storage.save('isLogin',false);
                     Storage.save('refresh_token','');
+                    Storage.save('username','');
+                    Storage.save('userphone','');
+                    Storage.save('name',false);
+                    Storage.save('school',false);
+                    Storage.save('work',false);
+                    Storage.save('phone',false);
+                    Storage.save('contact',false);
                 }else if(Code==2){
                     Toast.show("登录验证失败，请重新登录"
                         , {position:Toast.positions.CENTER});
@@ -183,9 +191,10 @@ export let Register = (data,isLoading) => {
         dispatch({type: types.REGISTER,isLoading: isLoading});
         return Util.post(url, data,
             (Code, Message, Data) => {
-                Toast.show(Message
-                    , {position:Toast.positions.CENTER});
+
             if(Code==1){
+                Toast.show('成功'
+                    , {position:Toast.positions.CENTER});
                 dispatch({type: types.REGISTERRECEIVED, Code : Code, Message: Message, Data: Data});
             }else if(Code==2){
                 Toast.show("登录验证失败，请重新登录"
@@ -216,9 +225,9 @@ export let CheckCenter = (data,isLoading,isRefreshing,isLoadMore,) => {
         dispatch({type: types.CHECKCENTER,isLoading: isLoading,isRefreshing:isRefreshing,isLoadMore:isLoadMore});
         return Util.post(url, data,
             (Code, Message, Data) => {
-                Toast.show(Message
-                    , {position:Toast.positions.CENTER});
             if(Code==1){
+                Toast.show('成功'
+                    , {position:Toast.positions.CENTER});
                 dispatch({type: types.CHECKCENTERRECEIVED, Code : Code, Message: Message, Data: Data});
 
             }else if(Code==2){
@@ -250,9 +259,9 @@ export let CheckName = (data,isLoading) => {
         dispatch({type: types.CHECKNAME,isLoading: isLoading});
         return Util.post(url, data,
             (Code, Message, Data) => {
-                Toast.show(Message
-                    , {position:Toast.positions.CENTER});
             if(Code==1){
+                Toast.show('认证成功'
+                    , {position:Toast.positions.CENTER});
                 Storage.save('name',true);
                 dispatch({type: types.CHECKNAMERECEIVED, Code : Code, Message: Message, Data: Data});
             }else if(Code==2){
@@ -283,9 +292,9 @@ export let CheckPhone = (data,isLoading) => {
         dispatch({type: types.CHECKPHONE,isLoading: isLoading});
         return Util.post(url, data,
             (Code, Message, Data) => {
-                Toast.show(Message
-                    , {position:Toast.positions.CENTER});
             if(Code==1){
+                Toast.show('认证成功'
+                    , {position:Toast.positions.CENTER});
                 Storage.save('phone',true);
                 dispatch({type: types.CHECKPHONERECEIVED, Code : Code, Message: Message, Data: Data});
             }else if(Code==2){
@@ -317,9 +326,9 @@ export let CheckSchool = (data,isLoading) => {
         dispatch({type: types.CHECKSCHOOL,isLoading: isLoading});
         return Util.post(url, data,
             (Code, Message, Data) => {
-                Toast.show(Message
-                    , {position:Toast.positions.CENTER});
             if(Code==1){
+                Toast.show('认证成功'
+                    , {position:Toast.positions.CENTER});
                 Storage.save('school',true);
                 dispatch({type: types.CHECKSCHOOLRECEIVED, Code : Code, Message: Message, Data: Data});
             }else if(Code==2){
@@ -351,9 +360,9 @@ export let CheckWork = (data,isLoading) => {
         dispatch({type: types.CHECKWORK,isLoading: isLoading});
         return Util.post(url, data,
             (Code, Message, Data) => {
-                Toast.show(Message
-                    , {position:Toast.positions.CENTER});
             if(Code==1){
+                Toast.show('认证成功'
+                    , {position:Toast.positions.CENTER});
                 Storage.save('work',true);
                 dispatch({type: types.CHECKWORKRECEIVED, Code : Code, Message: Message, Data: Data});
             }else if(Code==2){
@@ -385,9 +394,9 @@ export let CheckContact = (data,isLoading) => {
         dispatch({type: types.CHECKCONTACT,isLoading: isLoading});
         return Util.post(url, data,
             (Code, Message, Data) => {
-                Toast.show(Message
-                    , {position:Toast.positions.CENTER});
             if(Code==1){
+                Toast.show('认证成功'
+                    , {position:Toast.positions.CENTER});
                 Storage.save('contact',true);
                 dispatch({type: types.CHECKCONTACTRECEIVED, Code : Code, Message: Message, Data: Data});
             }else if(Code==2){

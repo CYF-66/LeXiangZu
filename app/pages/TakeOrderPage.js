@@ -18,6 +18,7 @@ import NavigationBar from 'react-native-navigationbar'
 import Toast from 'react-native-root-toast';
 import {TakeOrder} from '../actions/orderActions'
 import WebViewPage from '../pages/WebViewPage'
+import Storage from '../util/Storage'
 export default class TakeOrderPage extends Component {
 
     constructor(props) {
@@ -28,6 +29,8 @@ export default class TakeOrderPage extends Component {
             isSuccess: false,
             title: '申请确认',
             firstPayDay:'',
+            username:'',
+            userphone:'',
             // typeList: {}
         })
     }
@@ -49,6 +52,30 @@ export default class TakeOrderPage extends Component {
     }
     componentWillMount() {
 
+        Storage.get("username").then((value) => {
+            if(value){
+                this.setState({
+                    username: value
+                })
+
+            }else{
+                this.setState({
+                    username: ''
+                })
+            }
+        });
+        Storage.get("userphone").then((value) => {
+            if(value){
+                this.setState({
+                    userphone: value
+                })
+
+            }else{
+                this.setState({
+                    userphone: ''
+                })
+            }
+        });
         InteractionManager.runAfterInteractions(() => {
             let t;
             if(this.props.deadunit=='1'){//1天
@@ -159,7 +186,7 @@ export default class TakeOrderPage extends Component {
                         姓名
                     </Text>
                     <Text style={{fontSize: 15, color: Common.colors.gray1, marginLeft: 20}}>
-                        张三
+                        {this.state.username}
                     </Text>
                 </View>
                 <View style={{
@@ -169,7 +196,7 @@ export default class TakeOrderPage extends Component {
                         手机号
                     </Text>
                     <Text style={{fontSize: 15, color: Common.colors.gray1, marginLeft: 20}}>
-                        16888888888
+                        {this.state.userphone}
                     </Text>
                 </View>
 

@@ -18,7 +18,7 @@ import NavigationBar from 'react-native-navigationbar'
 import Toast from 'react-native-root-toast';
 import {CheckContact} from '../actions/myActions'
 import ModalDropdown from '../components/ModalDropdown'
-
+import Storage from '../util/Storage'
 const  ONE_RELATIVE_OPTIONS = ['父亲', '母亲', '配偶', '儿子', '女儿', '朋友'];
 const  TWO_RELATIVE_OPTIONS = ['父亲', '母亲', '配偶', '儿子', '女儿', '朋友'];
 export default class CheckContactPage extends Component {

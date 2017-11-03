@@ -16,6 +16,7 @@ import {
 import Common from '../util/constants';
 import NavigationBar from 'react-native-navigationbar'
 import Toast from 'react-native-root-toast';
+import Storage from '../util/Storage'
 import {CheckName} from '../actions/myActions'
 import CheckSchoolContainer from '../containers/CheckSchoolContainer'
 import CheckWorkContainer from '../containers/CheckWorkContainer'
@@ -35,17 +36,18 @@ export default class CheckNamePage extends Component {
         })
     }
 
-    // componentWillUpdate() {
-    //     InteractionManager.runAfterInteractions(() => {
-    //         const {checkReducer} = this.props;
-    //         console.log('checkReducer.isCheckName===------------>'+checkReducer.isCheckName);
-    //         if (checkReducer.isCheckName) {
-    //             this.props.navigator.popToTop();
-    //             checkReducer.isCheckName=false;
-    //         }
-    //     });
-    //
-    // }
+    componentWillUpdate() {
+        InteractionManager.runAfterInteractions(() => {
+            const {checkReducer} = this.props;
+            console.log('checkReducer.isCheckName===------------>'+checkReducer.isCheckName);
+            if (checkReducer.isCheckName) {
+                // this.props.navigator.popToTop();
+                checkReducer.isCheckName=false;
+                Storage.save('username',this.state.name);
+            }
+        });
+
+    }
     render() {
         return (
             <View style={styles.container} needsOffscreenAlphaCompositing renderToHardwareTextureAndroid>
