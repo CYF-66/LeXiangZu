@@ -76,6 +76,14 @@ export const CHECKPHONERECEIVED                  = 'check_phone_received';
 export const CHECKSCHOOL                  = 'check_school';
 export const CHECKSCHOOLRECEIVED                  = 'check_school_received';
 
+//工作认证
+export const CHECKWORK                  = 'check_work';
+export const CHECKWORKRECEIVED                  = 'check_work_received';
+
+//工作认证
+export const CHECKCONTACT                  = 'check_contact';
+export const CHECKCONTACTRECEIVED                  = 'check_contact_received';
+
 
 
 

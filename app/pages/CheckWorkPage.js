@@ -5,6 +5,7 @@ import {
     ScrollView,
     RefreshControl,
     Image,
+    InteractionManager,
     TouchableOpacity,
     Text,
     TextInput,
@@ -17,6 +18,10 @@ import NavigationBar from 'react-native-navigationbar'
 import Toast from 'react-native-root-toast';
 import IdentificationContainer from '../containers/IdentificationContainer'
 import ModalDropdown from '../components/ModalDropdown'
+import {CheckWork} from '../actions/myActions'
+import CheckPhoneContainer from '../containers/CheckPhoneContainer'
+import CheckContactContainer from '../containers/CheckContactContainer'
+import TakeOrderContainer from '../containers/TakeOrderContainer'
 
 const  WORK_YEAR_OPTIONS = ['0~6个月', '6~12个月', '1~3年', '3~5年', '5~8年', '8年以上'];
 const WORK_STATE_OPTIONS = ['在职', '自由职业', '其他'];
@@ -31,11 +36,16 @@ export default class CheckWorkPage extends Component {
         this.state = ({
             isError: false,
             isLoading: true,
-            workYear_defaultValue: '请选择',
-            workState_defaultValue: '请选择',
-            companySort_defaultValue: '请选择',
-            job_defaultValue: '请选择',
-            income_defaultValue: '请选择',
+            defaultValue:'请选择',
+            workYear_id: '',
+            workState_id: '',
+            companySort_id: '',
+            job_id: '',
+            income_id: '',
+            companyName:'',
+            companyPhone:'',
+            companyAddress:'',
+            currentLiveAddress:''
         })
     }
 
@@ -52,22 +62,25 @@ export default class CheckWorkPage extends Component {
                     backFunc={() => {
                         this.props.navigator.pop()
                     }}
-                    // actionName='提交'
-                    // actionTextColor={Common.colors.white}
-                    // actionFunc={() => {
-                    //     Toast.show('提交', {position: Toast.positions.CENTER});
-                    //     // this.props.navigator.push({
-                    //     //     component: AboutPage
-                    //     // })
-                    // }}
+                    actionName='下一步'
+                    actionTextColor={Common.colors.white}
+                    actionFunc={() => {
+
+                        this._check();
+                    }}
                 />
                 <ScrollView
                     style={styles.container}>
                 <View style={{flex:1}}>
-                    <View style={{flexDirection:'row',paddingLeft:20,paddingTop:20,paddingBottom:20,paddingRight:20,
+                    <View style={{flexDirection:'row',paddingLeft:15,paddingTop:20,paddingBottom:20,paddingRight:20,
                         justifyContent:'center',
                         alignItems:'center',borderBottomWidth: 1,
                         borderBottomColor: Common.colors.bottomlinecolor,}}>
+                        <Text
+                            style={{fontSize:16,color:Common.colors.red,
+                                alignItems:'center',justifyContent:'center'}}>
+                            *
+                        </Text>
                         <Text
                             style={{flex:1,fontSize:16,color:Common.colors.gray1,
                                 alignItems:'center',justifyContent:'center'}}>
@@ -75,17 +88,32 @@ export default class CheckWorkPage extends Component {
                         </Text>
                         <View style={{}}>
                             <ModalDropdown style={{
-                                top: 0,
-                                right: 10,}}
+                                alignSelf: 'flex-end', backgroundColor: Common.colors.white}}
+                                           textStyle={{
+                                               fontSize: 12,
+                                               color: Common.colors.black,
+                                               textAlign: 'center',
+                                               textAlignVertical: 'center',}}
+                                           dropdownStyle={{ marginTop:-20,borderColor: Common.colors.gray1,
+                                               borderWidth: 1,
+                                               borderRadius: 3,}}
+                                           dropdownTextStyle={{fontSize: 12,color:Common.colors.black}}
+                                           dropdownTextHighlightStyle={{fontSize: 12,color:Common.colors.red}}
+                                           onSelect={(idx, value) => this._dropdown_1_onSelect(idx, value)}
                                            options={WORK_YEAR_OPTIONS}
-                                           defaultValue={this.state.workYear_defaultValue}
+                                           defaultValue={this.state.defaultValue}
                             />
                         </View>
                     </View>
-                    <View style={{flexDirection:'row',paddingLeft:20,paddingTop:20,paddingBottom:20,paddingRight:20,
+                    <View style={{flexDirection:'row',paddingLeft:15,paddingTop:20,paddingBottom:20,paddingRight:20,
                         justifyContent:'center',
                         alignItems:'center',borderBottomWidth: 1,
                         borderBottomColor: Common.colors.bottomlinecolor,}}>
+                        <Text
+                            style={{fontSize:16,color:Common.colors.red,
+                                alignItems:'center',justifyContent:'center'}}>
+                            *
+                        </Text>
                         <Text
                             style={{flex:1,fontSize:16,color:Common.colors.gray1,
                                 alignItems:'center',justifyContent:'center'}}>
@@ -93,10 +121,20 @@ export default class CheckWorkPage extends Component {
                         </Text>
                         <View style={{}}>
                             <ModalDropdown style={{
-                                top: 0,
-                                right: 10,}}
+                                alignSelf: 'flex-end', backgroundColor: Common.colors.white}}
+                                           textStyle={{
+                                               fontSize: 12,
+                                               color: Common.colors.black,
+                                               textAlign: 'center',
+                                               textAlignVertical: 'center',}}
+                                           dropdownStyle={{ marginTop:-20,borderColor: Common.colors.gray1,
+                                               borderWidth: 1,
+                                               borderRadius: 3,}}
+                                           dropdownTextStyle={{fontSize: 12,color:Common.colors.black}}
+                                           dropdownTextHighlightStyle={{fontSize: 12,color:Common.colors.red}}
+                                           onSelect={(idx, value) => this._dropdown_2_onSelect(idx, value)}
                                            options={WORK_STATE_OPTIONS}
-                                           defaultValue={this.state.workState_defaultValue}
+                                           defaultValue={this.state.defaultValue}
                             />
                         </View>
                     </View>
@@ -117,7 +155,7 @@ export default class CheckWorkPage extends Component {
                             secureTextEntry={false}
                             placeholder=''
                             underlineColorAndroid={'transparent'}
-                            onChangeText={this.onChangePassword.bind(this)}/>
+                            onChangeText={this.onChangeCompanyName.bind(this)}/>
                     </View>
                     <View style={[styles.formInput, styles.formInputSplit]}>
                         <Text
@@ -136,7 +174,7 @@ export default class CheckWorkPage extends Component {
                             secureTextEntry={false}
                             placeholder=''
                             underlineColorAndroid={'transparent'}
-                            onChangeText={this.onChangePassword.bind(this)}/>
+                            onChangeText={this.onChangeCompanyPhone.bind(this)}/>
                     </View>
                     <View style={[styles.formInput, styles.formInputSplit]}>
                         <Text
@@ -155,7 +193,7 @@ export default class CheckWorkPage extends Component {
                             keyboardType={'default'}
                             placeholder=''
                             underlineColorAndroid={'transparent'}
-                            onChangeText={this.onChangePassword.bind(this)}/>
+                            onChangeText={this.onChangeCompanyAddress.bind(this)}/>
                     </View>
                     <View style={{flexDirection:'row',paddingLeft:20,paddingTop:20,paddingBottom:20,paddingRight:20,
                         justifyContent:'center',
@@ -168,10 +206,20 @@ export default class CheckWorkPage extends Component {
                         </Text>
                         <View style={{}}>
                             <ModalDropdown style={{
-                                top: 0,
-                                right: 10,}}
+                                alignSelf: 'flex-end', backgroundColor: Common.colors.white}}
+                                           textStyle={{
+                                               fontSize: 12,
+                                               color: Common.colors.black,
+                                               textAlign: 'center',
+                                               textAlignVertical: 'center',}}
+                                           dropdownStyle={{ marginTop:-20,borderColor: Common.colors.gray1,
+                                               borderWidth: 1,
+                                               borderRadius: 3,}}
+                                           dropdownTextStyle={{fontSize: 12,color:Common.colors.black}}
+                                           dropdownTextHighlightStyle={{fontSize: 12,color:Common.colors.red}}
+                                           onSelect={(idx, value) => this._dropdown_3_onSelect(idx, value)}
                                            options={COMPANY_SORT_OPTIONS}
-                                           defaultValue={this.state.companySort_defaultValue}
+                                           defaultValue={this.state.defaultValue}
                             />
                         </View>
                     </View>
@@ -186,10 +234,20 @@ export default class CheckWorkPage extends Component {
                         </Text>
                         <View style={{}}>
                             <ModalDropdown style={{
-                                top: 0,
-                                right: 10,}}
+                                alignSelf: 'flex-end', backgroundColor: Common.colors.white}}
+                                           textStyle={{
+                                               fontSize: 12,
+                                               color: Common.colors.black,
+                                               textAlign: 'center',
+                                               textAlignVertical: 'center',}}
+                                           dropdownStyle={{ marginTop:-20,borderColor: Common.colors.gray1,
+                                               borderWidth: 1,
+                                               borderRadius: 3,}}
+                                           dropdownTextStyle={{fontSize: 12,color:Common.colors.black}}
+                                           dropdownTextHighlightStyle={{fontSize: 12,color:Common.colors.red}}
+                                           onSelect={(idx, value) => this._dropdown_4_onSelect(idx, value)}
                                            options={JOB_OPTIONS}
-                                           defaultValue={this.state.job_defaultValue}
+                                           defaultValue={this.state.defaultValue}
                             />
                         </View>
                     </View>
@@ -204,14 +262,32 @@ export default class CheckWorkPage extends Component {
                         </Text>
                         <View style={{}}>
                             <ModalDropdown style={{
-                                top: 0,
-                                right: 10,}}
+                                alignSelf: 'flex-end', backgroundColor: Common.colors.white}}
+                                           textStyle={{
+                                               fontSize: 12,
+                                               color: Common.colors.black,
+                                               textAlign: 'center',
+                                               textAlignVertical: 'center',}}
+                                           dropdownStyle={{ marginTop:-20,borderColor: Common.colors.gray1,
+                                               borderWidth: 1,
+                                               borderRadius: 3,}}
+                                           dropdownTextStyle={{fontSize: 12,color:Common.colors.black}}
+                                           dropdownTextHighlightStyle={{fontSize: 12,color:Common.colors.red}}
+                                           onSelect={(idx, value) => this._dropdown_5_onSelect(idx, value)}
                                            options={INCOME_OPTIONS}
-                                           defaultValue={this.state.income_defaultValue}
+                                           defaultValue={this.state.defaultValue}
                             />
                         </View>
                     </View>
-                    <View style={[styles.formInput, styles.formInputSplit]}>
+                    <View style={{flexDirection:'row',paddingLeft:15,paddingTop:20,paddingBottom:20,paddingRight:20,
+                        justifyContent:'center',
+                        alignItems:'center',borderBottomWidth: 1,
+                        borderBottomColor: Common.colors.bottomlinecolor,}}>
+                        <Text
+                            style={{fontSize:16,color:Common.colors.red,
+                                alignItems:'center',justifyContent:'center'}}>
+                            *
+                        </Text>
                         <Text
                             style={{fontSize:16,color:Common.colors.gray1,
                                 alignItems:'center',justifyContent:'center'}}>
@@ -227,7 +303,7 @@ export default class CheckWorkPage extends Component {
                             secureTextEntry={false}
                             placeholder=''
                             underlineColorAndroid={'transparent'}
-                            onChangeText={this.onChangePassword.bind(this)}/>
+                            onChangeText={this.onChangeCurrentLiveAddress.bind(this)}/>
                     </View>
                     <TouchableOpacity activeOpacity={0.5} style={styles.loginBtn} onPress={this._next.bind(this)}>
                         <Text style={styles.loginText}>提交</Text>
@@ -239,14 +315,113 @@ export default class CheckWorkPage extends Component {
     }
 
     _next() {
-        Toast.show('提交', {position: Toast.positions.CENTER});
+        let {companyAddress,companyPhone,companyName,workYear_id,workState_id,
+            companySort_id,job_id,income_id,currentLiveAddress} = this.state;
+
+        if(workYear_id!=''&&workState_id!=''&&currentLiveAddress!=''){
+            var work_year=parseInt(workYear_id)+1;
+            var work_state=parseInt(workState_id)+1;
+            var company_sort=parseInt(companySort_id)+1;
+            var job=parseInt(job_id)+1;
+            var income=parseInt(income_id)+1;
+        }else{
+            Toast.show('请填写完整工作信息', {position: Toast.positions.CENTER});
+            return;
+        }
+
+
+        InteractionManager.runAfterInteractions(() => {
+            const {dispatch} = this.props;
+            // dispatch(GetOneKeyRegister(isLoading));
+            //11010497   cks69t
+            this.state.isLoading = true;
+            let data = {'work_year': work_year,'work_state':work_state,'currcompany':companyName,
+                'currwork_address':companyAddress,
+                'currwork_cell':companyPhone,'company_sort':company_sort,'job':job,'income':income,'placeaddress':currentLiveAddress};
+            console.log('data===------------>'+JSON.stringify(data));
+            // let data={'name':'13788957291','identity':'000000'};
+            dispatch(CheckWork(data, this.state.isLoading));
+        });
+
     }
-    onChangeMobile(text) {
-        // this.state.account = text;
+    onChangeCompanyName(text) {
+        this.state.companyName = text;
     }
 
-    onChangePassword(text) {
-        // this.state.accountPWD = text;
+    onChangeCompanyPhone(text) {
+        this.state.companyPhone = text;
+    }
+    onChangeCompanyAddress(text) {
+        this.state.companyAddress = text;
+    }
+    onChangeCurrentLiveAddress(text) {
+        this.state.currentLiveAddress = text;
+    }
+    _dropdown_1_onSelect(idx, value) {
+        // BUG: alert in a modal will auto dismiss and causes crash after reload and touch. @sohobloo 2016-12-1
+        console.log('idx+1===------------>'+idx+1);
+        console.log('value===------------>'+value);
+        this.setState({
+            workYear_id:idx
+        })
+    }
+    _dropdown_2_onSelect(idx, value) {
+        // BUG: alert in a modal will auto dismiss and causes crash after reload and touch. @sohobloo 2016-12-1
+        console.log('idx===------------>'+idx);
+        console.log('value===------------>'+value);
+        this.setState({
+            workState_id:idx
+        })
+    }
+    _dropdown_3_onSelect(idx, value) {
+        // BUG: alert in a modal will auto dismiss and causes crash after reload and touch. @sohobloo 2016-12-1
+        console.log('idx===------------>'+idx);
+        console.log('value===------------>'+value);
+        this.setState({
+            companySort_id:idx
+        })
+    }
+    _dropdown_4_onSelect(idx, value) {
+        // BUG: alert in a modal will auto dismiss and causes crash after reload and touch. @sohobloo 2016-12-1
+        console.log('idx===------------>'+idx);
+        console.log('value===------------>'+value);
+        this.setState({
+            job_id:idx
+        })
+    }
+    _dropdown_5_onSelect(idx, value) {
+        // BUG: alert in a modal will auto dismiss and causes crash after reload and touch. @sohobloo 2016-12-1
+        console.log('idx===------------>'+idx);
+        console.log('value===------------>'+value);
+        this.setState({
+            income_id:idx
+        })
+    }
+
+    _check(){
+                Storage.get('phone').then((value) => {
+                    if(value){
+                        Storage.get('contact').then((value) => {
+                            if(value){
+                                this.props.navigator.pop()
+                            }else{
+                                this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                                    name:'CheckContactContainer',
+                                    component: CheckContactContainer,
+                                    // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+                                })
+                                return;
+                            }
+                        });
+                    }else{
+                        this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                            name:'CheckPhoneContainer',
+                            component: CheckPhoneContainer,
+                            // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+                        })
+                        return;
+                    }
+                });
     }
 }
 
@@ -298,8 +473,7 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
         flex: 1,
         fontSize: 16,
-        alignItems:'center',
-        justifyContent:'center',
+        textAlign: 'right',
         // borderBottomWidth: 1,
         // borderBottomColor: Common.colors.bottomlinecolor,
     },

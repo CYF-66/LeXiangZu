@@ -24,7 +24,9 @@ import SetContainer from '../containers/SetContainer'
 import Storage from '../util/Storage'
 import DialogSelected from '../components/alertSelected';
 import WebViewPage from '../pages/WebViewPage'
-import Demo from '../pages/Demo'
+import CustomServicePage from '../pages/CustomServicePage'
+import AboutPage from '../pages/AboutPage'
+// import Demo from '../pages/Demo'
 const selectedArr = ["拍照", "相册"];
 export default class MyPage extends Component {
 
@@ -34,6 +36,8 @@ export default class MyPage extends Component {
             isError: false,
             isLoading: true,
             isLogin:false,
+            name:'',
+            username:'',
             user:{},
             avatarSource: require('../images/set/personicon.png')
         })
@@ -42,17 +46,6 @@ export default class MyPage extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        Storage.getUser().then((user) => {
-            if (user) {
-                this.setState({
-                    user: user,
-                })
-            } else {
-                this.setState({
-                    user: {},
-                })
-            }
-        });
         Storage.get("token").then((value) => {
             if(value){
                 this.setState({
@@ -65,19 +58,20 @@ export default class MyPage extends Component {
                 })
             }
         });
-    }
-    componentWillMount() {
-        Storage.getUser().then((user) => {
-            if (user) {
+        Storage.get("username").then((value) => {
+            if(value){
                 this.setState({
-                    user: user,
+                    username: value
                 })
-            } else {
+
+            }else{
                 this.setState({
-                    user: {},
+                    username: ''
                 })
             }
         });
+    }
+    componentWillMount() {
         Storage.get("token").then((value) => {
             if(value){
                 this.setState({
@@ -102,6 +96,18 @@ export default class MyPage extends Component {
                 })
             }
         });
+        Storage.get("username").then((value) => {
+            if(value){
+                this.setState({
+                    username: value
+                })
+
+            }else{
+                this.setState({
+                    username: ''
+                })
+            }
+        });
 
     }
 
@@ -117,19 +123,10 @@ export default class MyPage extends Component {
                     marginLeft: 10,
                     color: Common.colors.white,
                     fontSize: 12,
+                    marginTop:20,
                     alignItems: 'center',
-                    marginTop: 5,
                 }}>
-                    张三
-                </Text>
-                <Text style={{
-                    marginLeft: 10,
-                    color: Common.colors.white,
-                    fontSize: 12,
-                    alignItems: 'center',
-                    marginTop: 5,
-                }}>
-                    用户ID: 0001
+                    {this.state.username}
                 </Text>
             </View>
         )
@@ -450,11 +447,6 @@ export default class MyPage extends Component {
                 component: IdentificationContainer,
                 // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
             })// push一个route对象到navigator中
-            // this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
-            //     name:'SetContainer',
-            //     component: SetContainer,
-            //     // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
-            // })// push一个route对象到navigator中
         }else if(content=="我的优惠券"){
             this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
                 name:'CouponContainer',
@@ -469,14 +461,9 @@ export default class MyPage extends Component {
             })
         }else if(content=="客服与反馈"){
             this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
-                component: Demo,
+                component: CustomServicePage,
                 // passProps:{title: '常见问题',url: Common.url.questionUrl}
             })
-            // this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
-            //     name:'CouponContainer',
-            //     component: CouponContainer,
-            //     // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
-            // })
         }else if(content=="常见问题"){
                 this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
                     component: WebViewPage,
@@ -499,6 +486,11 @@ export default class MyPage extends Component {
                 name:'CheckContainer',
                 component: CheckContainer,
                 // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
+            })
+        }else if(content=='关于'){
+            this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                component: AboutPage,
+                // passProps:{title: '常见问题',url: Common.url.questionUrl}
             })
         }
     }

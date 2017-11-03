@@ -43,7 +43,7 @@ export default class LoginPage extends Component {
             const {loginReducer} = this.props;
             console.log('loginReducer.isLoggedIn===------------>'+loginReducer.isLoggedIn);
             if (loginReducer.isLoggedIn) {
-                this.props.navigator.popToTop();
+                this.props.navigator.pop();
                 loginReducer.isLoggedIn=false;
             }
         });
@@ -111,7 +111,7 @@ export default class LoginPage extends Component {
                         editable={true}
                         keyboardType='numeric'
                         multiline={false}
-                        defaultValue={this.state.account.substring(1,this.state.account.length-1)}
+                        // defaultValue={this.state.account.substring(1,this.state.account.length-1)}
                         underlineColorAndroid={'transparent'}
                         // field.restrict = "0-9"
                         style={styles.loginInput}
@@ -127,7 +127,7 @@ export default class LoginPage extends Component {
                         // field.restrict = "0-9"
                         restrict="0-9"
                         multiline={false}
-                        defaultValue={this.state.accountPWD.substring(1,this.state.accountPWD.length-1)}
+                        // defaultValue={this.state.accountPWD.substring(1,this.state.accountPWD.length-1)}
                         keyboardType={'default'}
                         secureTextEntry={true}
                         placeholder='密码'
@@ -178,8 +178,8 @@ export default class LoginPage extends Component {
             // dispatch(GetOneKeyRegister(isLoading));
             //11010497   cks69t
             this.state.isLoading = true;
-            // let data = {'accountNo': account, 'loginPwd': accountPWD};
-            let data={'phone':'13788957291','password':'000000'};
+            let data = {'phone': account, 'password': accountPWD};
+            // let data={'phone':'13788957291','password':'000000'};
             dispatch(HttpLogin(data, this.state.isLoading));
         });
     }

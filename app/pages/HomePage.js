@@ -18,6 +18,12 @@ import TakeOrderContainer from '../containers/TakeOrderContainer'
 import MessageContainer from '../containers/MessageContainer'
 import WebViewPage from '../pages/WebViewPage'
 import Loading from '../components/Loading';
+import CheckNameContainer from '../containers/CheckNameContainer'
+import CheckSchoolContainer from '../containers/CheckSchoolContainer'
+import CheckWorkContainer from '../containers/CheckWorkContainer'
+import CheckPhoneContainer from '../containers/CheckPhoneContainer'
+import CheckContactContainer from '../containers/CheckContactContainer'
+import Storage from '../util/Storage'
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 var state='iphone8';
 var isRefreshing=true;
@@ -358,17 +364,73 @@ export default class HomePage extends Component {
     }
     _takeOrder(){
 
-            let product_id=this.state.id;
-        let name=this.state.name;
-        let deadline=this.state.deadline;
-        let deadunit=this.state.deadunit;
-        let deadprice=this.state.deadprice;
-        let serverfee=this.state.serverfee;
-        this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
-            name:'TakeOrderContainer',
-            component: TakeOrderContainer,
-            passProps: {product_id:product_id,name:name,deadline:deadline,deadunit:deadunit,deadprice:deadprice,serverfee:serverfee}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
-        })// push一个route对象到navigator中
+        Storage.get("name").then((value) => {
+            if(value){
+                Storage.get('school').then((value) => {
+                    if(value){
+                        Storage.get('work').then((value) => {
+                            if(value){
+                                Storage.get('phone').then((value) => {
+                                    if(value){
+                                        Storage.get('contact').then((value) => {
+                                            if(value){
+                                                let product_id=this.state.id;
+                                                let name=this.state.name;
+                                                let deadline=this.state.deadline;
+                                                let deadunit=this.state.deadunit;
+                                                let deadprice=this.state.deadprice;
+                                                let serverfee=this.state.serverfee;
+
+                                                this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                                                    name:'TakeOrderContainer',
+                                                    component: TakeOrderContainer,
+                                                    passProps: {product_id:product_id,name:name,deadline:deadline,deadunit:deadunit,deadprice:deadprice,serverfee:serverfee}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
+                                                })// push一个route对象到navigator中
+                                            }else{
+                                                this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                                                    name:'CheckContactContainer',
+                                                    component: CheckContactContainer,
+                                                    // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+                                                })
+                                                return;
+                                            }
+                                        });
+                                    }else{
+                                        this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                                            name:'CheckPhoneContainer',
+                                            component: CheckPhoneContainer,
+                                            // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+                                        })
+                                        return;
+                                    }
+                                });
+                            }else{
+                                this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                                    name:'CheckWorkContainer',
+                                    component: CheckWorkContainer,
+                                    // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+                                })
+                                return;
+                            }
+                        });
+                    }else{
+                        this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                            name:'CheckSchoolContainer',
+                            component: CheckSchoolContainer,
+                            // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+                        });
+                        return;
+                    }
+                });
+            }else{
+                this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                    name:'CheckNameContainer',
+                    component: CheckNameContainer,
+                    // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
+                });
+                return;
+            }
+        });
     }
 }
 const styles = StyleSheet.create({

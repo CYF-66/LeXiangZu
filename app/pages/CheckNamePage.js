@@ -17,7 +17,11 @@ import Common from '../util/constants';
 import NavigationBar from 'react-native-navigationbar'
 import Toast from 'react-native-root-toast';
 import {CheckName} from '../actions/myActions'
-
+import CheckSchoolContainer from '../containers/CheckSchoolContainer'
+import CheckWorkContainer from '../containers/CheckWorkContainer'
+import CheckPhoneContainer from '../containers/CheckPhoneContainer'
+import CheckContactContainer from '../containers/CheckContactContainer'
+import TakeOrderContainer from '../containers/TakeOrderContainer'
 export default class CheckNamePage extends Component {
 
     constructor(props) {
@@ -31,17 +35,17 @@ export default class CheckNamePage extends Component {
         })
     }
 
-    componentWillUpdate() {
-        InteractionManager.runAfterInteractions(() => {
-            const {checkReducer} = this.props;
-            console.log('checkReducer.isCheckName===------------>'+checkReducer.isCheckName);
-            if (checkReducer.isCheckName) {
-                this.props.navigator.popToTop();
-                checkReducer.isCheckName=false;
-            }
-        });
-
-    }
+    // componentWillUpdate() {
+    //     InteractionManager.runAfterInteractions(() => {
+    //         const {checkReducer} = this.props;
+    //         console.log('checkReducer.isCheckName===------------>'+checkReducer.isCheckName);
+    //         if (checkReducer.isCheckName) {
+    //             this.props.navigator.popToTop();
+    //             checkReducer.isCheckName=false;
+    //         }
+    //     });
+    //
+    // }
     render() {
         return (
             <View style={styles.container} needsOffscreenAlphaCompositing renderToHardwareTextureAndroid>
@@ -55,14 +59,12 @@ export default class CheckNamePage extends Component {
                     backFunc={() => {
                         this.props.navigator.pop()
                     }}
-                    // actionName='提交'
-                    // actionTextColor={Common.colors.white}
-                    // actionFunc={() => {
-                    //     Toast.show('提交', {position: Toast.positions.CENTER});
-                    //     // this.props.navigator.push({
-                    //     //     component: AboutPage
-                    //     // })
-                    // }}
+                     actionName='下一步'
+                     actionTextColor={Common.colors.white}
+                     actionFunc={() => {
+
+                         this._check();
+                     }}
                 />
                 <View style={[styles.formInput, styles.formInputSplit]}>
                     <Text
@@ -123,6 +125,53 @@ export default class CheckNamePage extends Component {
             console.log('data===------------>'+JSON.stringify(data));
             // let data={'name':'13788957291','identity':'000000'};
             dispatch(CheckName(data, this.state.isLoading));
+        });
+    }
+    _check(){
+        Storage.get('school').then((value) => {
+            if(value){
+                Storage.get('work').then((value) => {
+                    if(value){
+                        Storage.get('phone').then((value) => {
+                            if(value){
+                                Storage.get('contact').then((value) => {
+                                    if(value){
+                                        this.props.navigator.pop()
+                                    }else{
+                                        this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                                            name:'CheckContactContainer',
+                                            component: CheckContactContainer,
+                                            // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+                                        })
+                                        return;
+                                    }
+                                });
+                            }else{
+                                this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                                    name:'CheckPhoneContainer',
+                                    component: CheckPhoneContainer,
+                                    // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+                                })
+                                return;
+                            }
+                        });
+                    }else{
+                        this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                            name:'CheckWorkContainer',
+                            component: CheckWorkContainer,
+                            // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+                        })
+                        return;
+                    }
+                });
+            }else{
+                this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                    name:'CheckSchoolContainer',
+                    component: CheckSchoolContainer,
+                    // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+                });
+                return;
+            }
         });
     }
     onChangeName(text) {

@@ -79,7 +79,7 @@ export default class RegisterPage extends Component {
             const {registerReducer} = this.props;
             console.log('registerReducer.isRegisterSuccess===------------>'+registerReducer.isRegisterSuccess);
             if (registerReducer.isRegisterSuccess==true) {
-                this.props.navigator.popToTop();
+                this.props.navigator.pop();
                 registerReducer.isRegisterSuccess=false;
             }
         });

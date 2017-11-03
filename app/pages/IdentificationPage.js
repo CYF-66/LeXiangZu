@@ -19,6 +19,7 @@ import CheckNameContainer from '../containers/CheckNameContainer'
 import CheckSchoolContainer from '../containers/CheckSchoolContainer'
 import CheckWorkContainer from '../containers/CheckWorkContainer'
 import CheckPhoneContainer from '../containers/CheckPhoneContainer'
+import CheckContactContainer from '../containers/CheckContactContainer'
 import Storage from '../util/Storage'
 
 export default class  IdentificationPage extends Component {
@@ -192,11 +193,18 @@ export default class  IdentificationPage extends Component {
             });
 
         }else if(content=="工作信息"){
-            this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
-                name:'CheckWorkContainer',
-                component: CheckWorkContainer,
-                // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
-            })
+            Storage.get('work').then((value) => {
+                if(!value){
+                    this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                        name:'CheckWorkContainer',
+                        component: CheckWorkContainer,
+                        // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+                    })
+                }else{
+                    Toast.show('已认证', {position: Toast.positions.CENTER});
+                }
+            });
+
         }else if(content=="手机认证"){
             Storage.get('phone').then((value) => {
                 if(!value){
@@ -211,7 +219,17 @@ export default class  IdentificationPage extends Component {
             });
 
         }else if(content=="联系人认证"){
-
+            Storage.get('contact').then((value) => {
+                if(!value){
+                    this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                        name:'CheckContactContainer',
+                        component: CheckContactContainer,
+                        // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+                    })
+                }else{
+                    Toast.show('已认证', {position: Toast.positions.CENTER});
+                }
+            });
         }
     }
 }

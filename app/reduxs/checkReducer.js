@@ -12,6 +12,9 @@ const initialState = {
     isRefreshing: false,
     isCheckName:false,
     isCheckPhone:false,
+    isCheckWork:false,
+    isCheckSchool:false,
+    isCheckContact:false,
 };
 
 let checkReducer = (state = initialState, action) => {
@@ -51,20 +54,41 @@ let checkReducer = (state = initialState, action) => {
                 ...state,
                 ...action,
                 isLoading: false,
-                isCheckPhone:true,
+                isCheckSchool:true,
+            };
+        case types.CHECKWORK:
+            return {
+                ...state,
+                isLoading: true
+            };
+        case types.CHECKWORKRECEIVED:
+            return {
+                ...state,
+                ...action,
+                isLoading: false,
+                isCheckWork:true,
+            };
+        case types.CHECKCONTACT:
+            return {
+                ...state,
+                isLoading: true
+            };
+        case types.CHECKCONTACTRECEIVED:
+            return {
+                ...state,
+                ...action,
+                isLoading: false,
+                isCheckContact:true,
             };
         case types.TOKENERROR:
             return {
                 ...state,
                 isLoading: false,
-                isCheckName:false
             };
         case types.ACTIONERROR:
             return {
                 ...state,
                 isLoading: false,
-                isCheckName:false,
-                isCheckPhone:false
             };
 
         default:

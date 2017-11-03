@@ -15,6 +15,7 @@ let colors = {
     bottomlinecolor: '#ddd',//下划线颜色
     white: '#ffffff',
     black: '#000000',
+    qianblack: '#1d1d1d',
     allbackgroundColor: '#F0F0F0',
     bluelogin: '#0d94e0',
     blue: '#0b6ff9',
@@ -24,6 +25,7 @@ let colors = {
     gray4: '#F6FAF8',
     gray5: '#CCCCCC',
     gray6: '#E6E6E6',
+    gray8: '#F4F4F4',
     gray7: '#999999',
     yellow1: '#FFCC66',
     yellow2: '#ff9616',

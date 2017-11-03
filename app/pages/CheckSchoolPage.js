@@ -21,6 +21,10 @@ import IdentificationContainer from '../containers/IdentificationContainer'
 import Storage from '../util/Storage'
 import {CheckSchool} from '../actions/myActions';
 import DialogSelected from '../components/alertSelected';
+import CheckWorkContainer from '../containers/CheckWorkContainer'
+import CheckPhoneContainer from '../containers/CheckPhoneContainer'
+import CheckContactContainer from '../containers/CheckContactContainer'
+import TakeOrderContainer from '../containers/TakeOrderContainer'
 const selectedArr = ["拍照", "相册"];
 export default class CheckSchoolPage extends Component {
 
@@ -544,6 +548,12 @@ export default class CheckSchoolPage extends Component {
                     backFunc={() => {
                         this.props.navigator.pop()
                     }}
+                    actionName='下一步'
+                    actionTextColor={Common.colors.white}
+                    actionFunc={() => {
+
+                        this._check();
+                    }}
                 />
                 {this.state.isEducation ? this._renderAfterEdu() : this._renderBeforeEdu()}
 
@@ -724,6 +734,43 @@ export default class CheckSchoolPage extends Component {
                 avatarSource: {uri: image.path},
                 base64Source:url
             });
+        });
+    }
+
+    _check(){
+        Storage.get('work').then((value) => {
+            if(value){
+                Storage.get('phone').then((value) => {
+                    if(value){
+                        Storage.get('contact').then((value) => {
+                            if(value){
+                                this.props.navigator.pop()
+                            }else{
+                                this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                                    name:'CheckContactContainer',
+                                    component: CheckContactContainer,
+                                    // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+                                })
+                                return;
+                            }
+                        });
+                    }else{
+                        this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                            name:'CheckPhoneContainer',
+                            component: CheckPhoneContainer,
+                            // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+                        })
+                        return;
+                    }
+                });
+            }else{
+                this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                    name:'CheckWorkContainer',
+                    component: CheckWorkContainer,
+                    // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+                })
+                return;
+            }
         });
     }
 }

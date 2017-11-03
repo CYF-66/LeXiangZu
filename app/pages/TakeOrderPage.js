@@ -48,6 +48,7 @@ export default class TakeOrderPage extends Component {
 
     }
     componentWillMount() {
+
         InteractionManager.runAfterInteractions(() => {
             let t;
             if(this.props.deadunit=='1'){//1天

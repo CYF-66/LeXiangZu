@@ -17,7 +17,8 @@ import Common from '../util/constants';
 import NavigationBar from 'react-native-navigationbar'
 import Toast from 'react-native-root-toast';
 import {CheckPhone} from '../actions/myActions'
-
+import CheckContactContainer from '../containers/CheckContactContainer'
+import TakeOrderContainer from '../containers/TakeOrderContainer'
 export default class CheckPhonePage extends Component {
 
     constructor(props) {
@@ -30,17 +31,17 @@ export default class CheckPhonePage extends Component {
         })
     }
 
-    componentWillUpdate() {
-        InteractionManager.runAfterInteractions(() => {
-            const {checkReducer} = this.props;
-            console.log('checkReducer.isCheckPhone===------------>'+checkReducer.isCheckPhone);
-            if (checkReducer.isCheckPhone) {
-                this.props.navigator.popToTop();
-                checkReducer.isCheckPhone=false;
-            }
-        });
-
-    }
+    // componentWillUpdate() {
+    //     InteractionManager.runAfterInteractions(() => {
+    //         const {checkReducer} = this.props;
+    //         console.log('checkReducer.isCheckPhone===------------>'+checkReducer.isCheckPhone);
+    //         if (checkReducer.isCheckPhone) {
+    //             this.props.navigator.popToTop();
+    //             checkReducer.isCheckPhone=false;
+    //         }
+    //     });
+    //
+    // }
     render() {
         return (
             <View style={styles.container} needsOffscreenAlphaCompositing renderToHardwareTextureAndroid>
@@ -54,14 +55,12 @@ export default class CheckPhonePage extends Component {
                     backFunc={() => {
                         this.props.navigator.pop()
                     }}
-                    // actionName='提交'
-                    // actionTextColor={Common.colors.white}
-                    // actionFunc={() => {
-                    //     Toast.show('提交', {position: Toast.positions.CENTER});
-                    //     // this.props.navigator.push({
-                    //     //     component: AboutPage
-                    //     // })
-                    // }}
+                    actionName='下一步'
+                    actionTextColor={Common.colors.white}
+                    actionFunc={() => {
+
+                        this._check();
+                    }}
                 />
                 <View style={[styles.formInput, styles.formInputSplit]}>
                     <Text
@@ -107,6 +106,21 @@ export default class CheckPhonePage extends Component {
     }
     onChangePhone(text) {
         this.state.phone = text;
+    }
+
+    _check(){
+                Storage.get('contact').then((value) => {
+                    if(value){
+                        this.props.navigator.pop()
+                    }else{
+                        this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                            name:'CheckContactContainer',
+                            component: CheckContactContainer,
+                            // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+                        })
+                        return;
+                    }
+                });
     }
 }
 
