@@ -3517,10 +3517,6 @@ react-native-tab-navigator@^0.3.4:
     immutable "^3.8.1"
     prop-types "^15.5.10"
 
-react-native-yunpeng-alipay@^2.0.0:
-  version "2.0.0"
-  resolved "http://registry.npm.taobao.org/react-native-yunpeng-alipay/download/react-native-yunpeng-alipay-2.0.0.tgz#a9d3d68a5eef2e5c75bb66c460384e1288d9aaad"
-
 react-native@0.47.2:
   version "0.47.2"
   resolved "http://registry.npm.taobao.org/react-native/download/react-native-0.47.2.tgz#5e55cd84e4947123c86d36ea6f95ab9ed2d0cb19"

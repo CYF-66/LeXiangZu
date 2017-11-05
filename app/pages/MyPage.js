@@ -58,7 +58,7 @@ export default class MyPage extends Component {
                 })
             }
         });
-        Storage.get("username").then((value) => {
+        Storage.get("userphone").then((value) => {
             if(value){
                 this.setState({
                     username: value
@@ -96,7 +96,7 @@ export default class MyPage extends Component {
                 })
             }
         });
-        Storage.get("username").then((value) => {
+        Storage.get("userphone").then((value) => {
             if(value){
                 this.setState({
                     username: value

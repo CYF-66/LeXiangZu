@@ -16,7 +16,6 @@ import NavigationBar from 'react-native-navigationbar'
 import Toast from 'react-native-root-toast';
 import Common from '../util/constants';
 import {GetOrderDetail} from '../actions/orderActions'
-import Alipay from 'react-native-yunpeng-alipay'
 import Loading from '../components/Loading';
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});

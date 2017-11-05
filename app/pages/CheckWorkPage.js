@@ -94,7 +94,7 @@ export default class CheckWorkPage extends Component {
                                                color: Common.colors.black,
                                                textAlign: 'center',
                                                textAlignVertical: 'center',}}
-                                           dropdownStyle={{ marginTop:10,borderColor: Common.colors.gray1,
+                                           dropdownStyle={{ marginTop:0,borderColor: Common.colors.gray1,
                                                borderWidth: 1,
                                                borderRadius: 3,}}
                                            dropdownTextStyle={{fontSize: 12,color:Common.colors.black}}
@@ -127,7 +127,7 @@ export default class CheckWorkPage extends Component {
                                                color: Common.colors.black,
                                                textAlign: 'center',
                                                textAlignVertical: 'center',}}
-                                           dropdownStyle={{ marginTop:10,borderColor: Common.colors.gray1,
+                                           dropdownStyle={{ marginTop:0,borderColor: Common.colors.gray1,
                                                borderWidth: 1,
                                                borderRadius: 3,}}
                                            dropdownTextStyle={{fontSize: 12,color:Common.colors.black}}
@@ -212,7 +212,7 @@ export default class CheckWorkPage extends Component {
                                                color: Common.colors.black,
                                                textAlign: 'center',
                                                textAlignVertical: 'center',}}
-                                           dropdownStyle={{ marginTop:10,borderColor: Common.colors.gray1,
+                                           dropdownStyle={{ marginTop:0,borderColor: Common.colors.gray1,
                                                borderWidth: 1,
                                                borderRadius: 3,}}
                                            dropdownTextStyle={{fontSize: 12,color:Common.colors.black}}
@@ -240,7 +240,7 @@ export default class CheckWorkPage extends Component {
                                                color: Common.colors.black,
                                                textAlign: 'center',
                                                textAlignVertical: 'center',}}
-                                           dropdownStyle={{ marginTop:10,borderColor: Common.colors.gray1,
+                                           dropdownStyle={{ marginTop:0,borderColor: Common.colors.gray1,
                                                borderWidth: 1,
                                                borderRadius: 3,}}
                                            dropdownTextStyle={{fontSize: 12,color:Common.colors.black}}
@@ -268,7 +268,7 @@ export default class CheckWorkPage extends Component {
                                                color: Common.colors.black,
                                                textAlign: 'center',
                                                textAlignVertical: 'center',}}
-                                           dropdownStyle={{ marginTop:10,borderColor: Common.colors.gray1,
+                                           dropdownStyle={{ marginTop:0,borderColor: Common.colors.gray1,
                                                borderWidth: 1,
                                                borderRadius: 3,}}
                                            dropdownTextStyle={{fontSize: 12,color:Common.colors.black}}
