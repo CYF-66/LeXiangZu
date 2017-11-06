@@ -46,67 +46,56 @@ export default class MyPage extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        Storage.get("token").then((value) => {
-            if(value){
-                this.setState({
-                    isLogin: value
-                })
-
-            }else{
-                this.setState({
-                    isLogin: false
-                })
-            }
-        });
-        Storage.get("userphone").then((value) => {
-            if(value){
-                this.setState({
-                    username: value
-                })
-
-            }else{
-                this.setState({
-                    username: ''
-                })
-            }
-        });
-    }
-    componentWillMount() {
-        Storage.get("token").then((value) => {
-            if(value){
-                this.setState({
-                    isLogin: value
-                })
-
-            }else{
-                this.setState({
-                    isLogin: false
-                })
-            }
-        });
         Storage.get("isLogin").then((value) => {
             if(value){
-                this.setState({
-                    isLogin: value
-                })
-
             }else{
-                this.setState({
-                    isLogin: ''
-                })
+                    console.log('componentWillReceiveProps===------------>');
+
+                    // this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                    //     name:'LoginContainer',
+                    //     component: LoginContainer,
+                    //     // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
+                    // });
             }
+            this.setState({
+                isLogin: value,
+
+            })
         });
         Storage.get("userphone").then((value) => {
+            this.setState({
+                username: value
+            })
+        });
+    }
+    // shouldComponentUpdate(){
+    //     console.log('shouldComponentUpdate===------------>');
+    // }
+    // componentWillUpdate(){
+    //     console.log('componentWillUpdate===------------>');
+    // }
+    // componentDidUpdate(){
+    //     console.log('componentDidUpdate===------------>');
+    // }
+    componentWillMount() {
+        // console.log('componentWillMount===------------>');
+        Storage.get("isLogin").then((value) => {
             if(value){
-                this.setState({
-                    username: value
-                })
-
             }else{
-                this.setState({
-                    username: ''
-                })
+                this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                    name:'LoginContainer',
+                    component: LoginContainer,
+                    // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
+                });
             }
+            this.setState({
+                isLogin: value
+            })
+        });
+        Storage.get("userphone").then((value) => {
+            this.setState({
+                username: value
+            })
         });
 
     }
@@ -122,7 +111,7 @@ export default class MyPage extends Component {
                 <Text style={{
                     marginLeft: 10,
                     color: Common.colors.white,
-                    fontSize: 12,
+                    fontSize: 15,
                     marginTop:20,
                     alignItems: 'center',
                 }}>
@@ -182,7 +171,7 @@ export default class MyPage extends Component {
                     }}>
                         <TouchableOpacity
                             activeOpacity={0.5}
-                            onPress={() => this.showAlertSelected()}>
+                            onPress={() => this._clickIcon()}>
                         <Image source={this.state.avatarSource} style={{
                             width: 60,
                             height: 60,
@@ -392,6 +381,17 @@ export default class MyPage extends Component {
         )
     }
 
+    _clickIcon(){
+        if(this.state.isLogin){
+            this.showAlertSelected();
+        }else{
+            this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                name:'LoginContainer',
+                component: LoginContainer,
+                // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
+            })
+        }
+    }
     showAlertSelected(){
         this.dialog.show("请选择照片", selectedArr, '#333333', this.callbackSelected);
     }
@@ -442,17 +442,37 @@ export default class MyPage extends Component {
     _skipIntoAccountManage(content) {
         // Toast.show(content, {position: Toast.positions.CENTER});
         if(content=="我的认证"){
-            this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
-               name:'IdentificationContainer',
-                component: IdentificationContainer,
-                // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
-            })// push一个route对象到navigator中
+            Storage.get("isLogin").then((value) => {
+                if(value){
+                    this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                        name:'IdentificationContainer',
+                        component: IdentificationContainer,
+                        // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
+                    })// push一个route对象到navigator中
+                }else{
+                    this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                        name:'LoginContainer',
+                        component: LoginContainer,
+                        // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
+                    });
+                }
+            });
         }else if(content=="我的优惠券"){
-            this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
-                name:'CouponContainer',
-                component: CouponContainer,
-                // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
-            })
+            Storage.get("isLogin").then((value) => {
+                if(value){
+                    this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                        name:'CouponContainer',
+                        component: CouponContainer,
+                        // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
+                    })
+                }else{
+                    this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                        name:'LoginContainer',
+                        component: LoginContainer,
+                        // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
+                    });
+                }
+            });
         }else if(content=="设置"){
             this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
                 name:'SetContainer',
@@ -482,11 +502,21 @@ export default class MyPage extends Component {
                 // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
             })
         }else if(content=="审核中心"){
-            this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
-                name:'CheckContainer',
-                component: CheckContainer,
-                // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
-            })
+            Storage.get("isLogin").then((value) => {
+                if(value){
+                    this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                        name:'CheckContainer',
+                        component: CheckContainer,
+                        // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
+                    })
+                }else{
+                    this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                        name:'LoginContainer',
+                        component: LoginContainer,
+                        // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
+                    });
+                }
+            });
         }else if(content=='关于'){
             this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
                 component: AboutPage,

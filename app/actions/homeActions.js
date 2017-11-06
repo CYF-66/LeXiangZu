@@ -59,10 +59,8 @@ export let GetMessage = (data,isLoading,isRefreshing,isLoadMore) => {
         dispatch({type: types.GETMESSAGE,isLoading: isLoading,isRefreshing:isRefreshing,isLoadMore:isLoadMore});
         return Util.post(url, data,
             (Code, Message, Data) => {
-                Toast.show(Message
-                    , {position:Toast.positions.CENTER});
             if(Code==1){
-                Toast.show('成功'
+                Toast.show(Message
                     , {position:Toast.positions.CENTER});
                 dispatch({type: types.GETMESSAGERECEIVED, Code: Code, Message: Message, Data: Data});
             }else if(Code==2){

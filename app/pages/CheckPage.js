@@ -8,7 +8,9 @@ import {
     TouchableOpacity,
     Text,
     StyleSheet,
-    InteractionManager
+    InteractionManager,
+    Platform,
+    BackHandler
 } from 'react-native'
 //引入标题支持包
 // import SetPage from 'SetPage'
@@ -16,7 +18,10 @@ import Common from '../util/constants';
 import NavigationBar from 'react-native-navigationbar'
 import CheckNameContainer from '../containers/CheckNameContainer'
 import Toast from 'react-native-root-toast';
+import LoginContainer from '../containers/LoginContainer'
+import Storage from '../util/Storage'
 import Loading from '../components/Loading';
+import Load from '../components/Load';
 import {CheckCenter} from '../actions/myActions'
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 var isRefreshing=false;
@@ -34,6 +39,37 @@ export default class CheckPage extends Component {
         })
     }
 
+    componentWillMount() {
+        if (Platform.OS === 'android') {
+            BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid);
+        }
+        Storage.get("isLogin").then((value) => {
+            if(value){
+            }else{
+                this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                    name:'LoginContainer',
+                    component: LoginContainer,
+                    // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
+                });
+            }
+        });
+    }
+
+    componentWillUnmount() {
+        if (Platform.OS === 'android') {
+            BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid);
+        }
+    }
+
+    onBackAndroid = () => {
+        const nav = this.props.navigator;
+        const routers = nav.getCurrentRoutes();
+        if (routers.length > 1) {
+            nav.pop();
+            return true;
+        }
+        return false;
+    };
     componentDidMount() {
         InteractionManager.runAfterInteractions(() => {
             const {dispatch} = this.props;
@@ -52,7 +88,7 @@ export default class CheckPage extends Component {
         content = (
             <View style={styles.container}>
                 {isLoading ?
-                    <Loading/> :
+                    null :
                     <View style={{flex: 1, flexDirection: 'column'}}>
                         <ListView
                             dataSource={this.state.dataSource.cloneWithRows(data)}
@@ -92,6 +128,13 @@ export default class CheckPage extends Component {
                 />
 
                 {content}
+                <Load
+                    transparent={true}
+                    visible={isLoading}
+                    color={Common.colors.loadblue}
+                    overlayColor={Common.colors.transparent}
+                    size={'large'}
+                />
             </View>
         )
     }

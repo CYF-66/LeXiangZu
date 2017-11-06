@@ -7,7 +7,7 @@
 import * as types from '../actions/actionTypes';
 const initialState = {
     Data:'',
-    isLoading: true,
+    isLoading: false,
     isLoadMore: false,
     isRefreshing: false,
     isRegisterSuccess:false,

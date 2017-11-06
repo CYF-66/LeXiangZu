@@ -6,9 +6,10 @@
 
 import * as types from '../actions/actionTypes';
 const initialState = {
-    Data:[],
     takeOrderData:[],
-    isLoading: true,
+    orderData:[],
+    orderDetailsData:[],
+    isLoading: false,
     isLoadMore: false,
     isRefreshing: false,
     isTakeOrderSuccess:false,
@@ -26,7 +27,7 @@ let orderReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: false,
-                Data: action.Data,
+                orderData: action.Data,
                 isLoadMore: false,
                 isRefreshing: false,
                 // DataList: action.DataList.length> 0 ? state.DataList.concat(action.DataList) : state.DataList
@@ -41,14 +42,14 @@ let orderReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isLoading: false,
-                Data: action.Data,
+                orderDetailsData: action.Data,
                 isLoadMore: false,
                 isRefreshing: false,
                 // DataList: action.DataList.length> 0 ? state.DataList.concat(action.DataList) : state.DataList
             };
         case types.CREATEORDER:
             return Object.assign({}, state, {
-                isLoading: action.isLoading,
+                isLoading: true,
             });
         case types.CREATEORDERRECEIVED:
             return {

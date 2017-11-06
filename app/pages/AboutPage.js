@@ -7,9 +7,9 @@ import {
     Image,
     TouchableOpacity,
     Text,
-    Button,
+    Platform,
     StyleSheet,
-    InteractionManager
+    BackHandler
 } from 'react-native'
 //引入标题支持包
 // import SetPage from 'SetPage'
@@ -21,6 +21,7 @@ const SHOW_API = 'https://www.showapi.com';
 const READING_REPO = 'https://github.com/attentiveness/reading';
 import DeviceInfo from 'react-native-device-info';
 const aboutLogo = require('../images/ic_launcher.png');
+
 export default class AboutPage extends Component {
 
     constructor(props) {
@@ -31,6 +32,27 @@ export default class AboutPage extends Component {
         })
     }
 
+    componentWillMount() {
+        if (Platform.OS === 'android') {
+            BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid);
+        }
+    }
+
+    componentWillUnmount() {
+        if (Platform.OS === 'android') {
+            BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid);
+        }
+    }
+
+    onBackAndroid = () => {
+        const nav = this.props.navigator;
+        const routers = nav.getCurrentRoutes();
+        if (routers.length > 1) {
+            nav.pop();
+            return true;
+        }
+        return false;
+    };
     render() {
         return (
             <View style={styles.container} needsOffscreenAlphaCompositing renderToHardwareTextureAndroid>
@@ -66,7 +88,6 @@ export default class AboutPage extends Component {
                             </View>
                         </View>
                     </View>
-
             </View>
         )
     }

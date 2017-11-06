@@ -7,13 +7,14 @@ import {
     TouchableOpacity,
     Text,
     StyleSheet,
-    Switch,
-    InteractionManager
+    Platform,
+    InteractionManager,
+    BackHandler
 } from 'react-native'
 //引入标题支持包
 import NavigationBar from 'react-native-navigationbar';
 import Toast from 'react-native-root-toast';
-import Loading from '../components/Loading';
+import Load from '../components/Load';
 import HomePage from "./HomePage";
 import AppMain from '../containers/AppMain';
 import Common from '../util/constants';
@@ -73,7 +74,27 @@ export default class RegisterPage extends Component {
         });
     }
 
+    componentWillMount() {
+        if (Platform.OS === 'android') {
+            BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid);
+        }
+    }
 
+    componentWillUnmount() {
+        if (Platform.OS === 'android') {
+            BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid);
+        }
+    }
+
+    onBackAndroid = () => {
+        const nav = this.props.navigator;
+        const routers = nav.getCurrentRoutes();
+        if (routers.length > 1) {
+            nav.pop();
+            return true;
+        }
+        return false;
+    };
     componentWillUpdate() {
         InteractionManager.runAfterInteractions(() => {
             const {registerReducer} = this.props;
@@ -94,6 +115,9 @@ export default class RegisterPage extends Component {
     }
 
     render() {
+        const {registerReducer} = this.props;
+        // let Data=homeReducer.Data;
+        let isLoading = registerReducer.isLoading;
         // console.log('token===------------>'+this,state.token);
         return (
             <View style={styles.container}>
@@ -190,6 +214,13 @@ export default class RegisterPage extends Component {
                 <TouchableOpacity activeOpacity={0.5} style={styles.loginBtn} onPress={this._register.bind(this)}>
                     <Text style={styles.loginText}>注册</Text>
                 </TouchableOpacity>
+                <Load
+                    transparent={true}
+                    visible={isLoading}
+                    color={Common.colors.loadblue}
+                    overlayColor={Common.colors.transparent}
+                    size={'large'}
+                />
             </View>
         )
     }

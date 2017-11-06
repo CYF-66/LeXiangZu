@@ -8,13 +8,15 @@ import {
     Text,
     StyleSheet,
     Switch,
-    InteractionManager
+    InteractionManager,
+    BackHandler,
+    Platform
 } from 'react-native'
 //引入标题支持包
 import NavigationBar from 'react-native-navigationbar';
 import Toast from 'react-native-root-toast';
 import {HttpLogin} from '../actions/myActions'
-import Loading from '../components/Loading';
+import Load from '../components/Load';
 import HomePage from "./HomePage";
 import AppMain from '../containers/AppMain';
 import Common from '../util/constants';
@@ -49,7 +51,25 @@ export default class LoginPage extends Component {
         });
 
     }
+    componentWillUnmount() {
+        if (Platform.OS === 'android') {
+            BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid);
+        }
+    }
+
+    onBackAndroid = () => {
+        const nav = this.props.navigator;
+        const routers = nav.getCurrentRoutes();
+        if (routers.length > 1) {
+            nav.pop();
+            return true;
+        }
+        return false;
+    };
     componentWillMount() {
+        if (Platform.OS === 'android') {
+            BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid);
+        }
         Storage.getUser().then((user) => {
             if (user) {
                 this.setState({
@@ -78,6 +98,8 @@ export default class LoginPage extends Component {
 
     render() {
         // console.log('=======this.state.user===------------>'+JSON.stringify(this.state.user));
+        const {loginReducer} = this.props;
+        let isLoading=loginReducer.isLoading;
         return (
             <View style={styles.container}>
                 <NavigationBar
@@ -144,6 +166,7 @@ export default class LoginPage extends Component {
                 <TouchableOpacity activeOpacity={0.5} style={styles.loginBtn} onPress={this._login.bind(this)}>
                     <Text style={styles.loginText}>登录</Text>
                 </TouchableOpacity>
+
                 {/*{content}*/}
                 <View style={styles.registerWrap}>
                     <TouchableOpacity activeOpacity={0.5} onPress={this._forgetPassword.bind(this)}>
@@ -156,22 +179,29 @@ export default class LoginPage extends Component {
                         <Text style={{color: Common.colors.blue ,fontSize: 15}}>立即注册</Text>
                     </TouchableOpacity>
                 </View>
+                <Load
+                    transparent={true}
+                    visible={isLoading}
+                    color={Common.colors.loadblue}
+                    overlayColor={Common.colors.transparent}
+                    size={'large'}
+                />
             </View>
+
         )
     }
 
     _login() {
-        // alert("登录")
         let {account, accountPWD} = this.state;
 
-        // if (!account.length) {
-        //     Toast.show('请输入正确手机号', {position: Toast.positions.CENTER});
-        //     return;
-        // }
-        // if (!accountPWD.length) {
-        //     Toast.show('请输入密码', {position: Toast.positions.CENTER});
-        //     return;
-        // }
+        if (!account.length) {
+            Toast.show('手机号不能为空', {position: Toast.positions.CENTER});
+            return;
+        }
+        if (!accountPWD.length) {
+            Toast.show('密码不能为空', {position: Toast.positions.CENTER});
+            return;
+        }
         // 交互管理器在任意交互/动画完成之后，允许安排长期的运行工作. 在所有交互都完成之后安排一个函数来运行。
         InteractionManager.runAfterInteractions(() => {
             const {dispatch} = this.props;

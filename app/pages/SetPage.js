@@ -9,6 +9,8 @@ import {
     TouchableOpacity,
     Text,
     StyleSheet,
+    BackHandler,
+    Platform
 } from 'react-native'
 //引入标题支持包
 // import SetPage from 'SetPage'
@@ -18,6 +20,7 @@ import Toast from 'react-native-root-toast';
 import IdentificationContainer from '../containers/IdentificationContainer'
 import Storage from '../util/Storage'
 import {LoginOut} from '../actions/myActions'
+import Load from '../components/Load';
 import LoginContainer from '../containers/LoginContainer'
 import RegisterContainer from '../containers/RegisterContainer'
 export default class SetPage extends Component {
@@ -38,8 +41,13 @@ export default class SetPage extends Component {
             const {myReducer} = this.props;
             console.log('loginReducer.isLoggedIn===------------>'+myReducer.isLoggedIn);
             if (myReducer.isLoginOut) {
-                this.props.navigator.popToTop();
+                // this.props.navigator.popToTop();
                 myReducer.isLoginOut=false;
+                this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                    name:'LoginContainer',
+                    component: LoginContainer,
+                    // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
+                });
             }
         });
 
@@ -71,7 +79,33 @@ export default class SetPage extends Component {
         });
 
     }
+    componentWillMount() {
+        if (Platform.OS === 'android') {
+            BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid);
+        }
+    }
+
+    componentWillUnmount() {
+        if (Platform.OS === 'android') {
+            BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid);
+        }
+    }
+
+    onBackAndroid = () => {
+        const nav = this.props.navigator;
+        const routers = nav.getCurrentRoutes();
+        if (routers.length > 1) {
+            nav.pop();
+            return true;
+        }
+        return false;
+    };
+
     render() {
+
+        const {myReducer} = this.props;
+        // let Data=homeReducer.Data;
+        let isLoading = myReducer.isLoading;
         return (
             <View style={styles.container} needsOffscreenAlphaCompositing renderToHardwareTextureAndroid>
                 <NavigationBar
@@ -157,6 +191,13 @@ export default class SetPage extends Component {
                 <TouchableOpacity activeOpacity={0.5} style={styles.loginBtn} onPress={this._loginOut.bind(this)}>
                     <Text style={styles.loginText}>退出登录</Text>
                 </TouchableOpacity>
+                <Load
+                    transparent={true}
+                    visible={isLoading}
+                    color={Common.colors.loadblue}
+                    overlayColor={Common.colors.transparent}
+                    size={'large'}
+                />
             </View>
         )
     }

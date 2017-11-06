@@ -1,6 +1,7 @@
 'use strict'
 import React, {Component} from 'react'
-import {View, Platform, Text, StyleSheet, Image, TouchableOpacity, ScrollView, InteractionManager,ListView,RefreshControl} from 'react-native'
+import {View, Platform, Text, StyleSheet, Image, TouchableOpacity, ScrollView, InteractionManager,ListView,RefreshControl,
+    BackHandler} from 'react-native'
 import Swiper from 'react-native-swiper';
 import Common from '../util/constants';
 import Toast from 'react-native-root-toast';
@@ -17,12 +18,13 @@ import {GetHomeInfo} from '../actions/homeActions'
 import TakeOrderContainer from '../containers/TakeOrderContainer'
 import MessageContainer from '../containers/MessageContainer'
 import WebViewPage from '../pages/WebViewPage'
-import Loading from '../components/Loading';
+import LoginContainer from '../containers/LoginContainer'
 import CheckNameContainer from '../containers/CheckNameContainer'
 import CheckSchoolContainer from '../containers/CheckSchoolContainer'
 import CheckWorkContainer from '../containers/CheckWorkContainer'
 import CheckPhoneContainer from '../containers/CheckPhoneContainer'
 import CheckContactContainer from '../containers/CheckContactContainer'
+import Load from '../components/Load';
 import Storage from '../util/Storage'
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 var state='iphone8';
@@ -42,12 +44,46 @@ export default class HomePage extends Component {
             yuqi:'',
             id:'',
             name:'',
+            price:'',
             deadline:'',
             deadunit:'',
             serverfee:'',
             dataSource:ds.cloneWithRows([])
         })
     }
+    componentWillMount() {
+        if (Platform.OS === 'android') {
+            BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid);
+        }
+    }
+
+    componentWillUnmount() {
+        if (Platform.OS === 'android') {
+            BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid);
+        }
+    }
+
+    onBackAndroid = () => {
+        // const nav = this.navigator;
+        // const routers = nav.getCurrentRoutes();
+        // if (routers.length > 1) {
+        //     nav.pop();
+        //     return true;
+        // }
+        // return false;
+        console.log('onBackAndroid===----home-------->'+this.props.navigator.getCurrentRoutes());
+        if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
+            //最近2秒内按过back键，可以退出应用。
+
+            return false;
+        }
+        this.lastBackPressed = Date.now();
+        Toast.show('再按一次退出应用'
+            , {position:Toast.positions.CENTER});
+
+        return true;
+    };
+
     componentWillUpdate() {
         InteractionManager.runAfterInteractions(() => {
             const {homeReducer} = this.props;
@@ -67,6 +103,7 @@ export default class HomePage extends Component {
                             deadline:data[0].deadline,
                             deadunit:data[0].deadunit,
                             serverfee:data[0].serverfee,
+                            price:data[0].price,
                         })
                     }
                 }
@@ -142,7 +179,7 @@ export default class HomePage extends Component {
         content=(
             <View style={styles.container}>
                 {isLoading ?
-                    <Loading/> :
+                   null :
                     <View style={{flex: 1, flexDirection: 'column'}}>
 
                         <ListView
@@ -254,7 +291,13 @@ export default class HomePage extends Component {
                         }}>马上申请</Text>
                     </View>
                 </TouchableOpacity>
-
+                <Load
+                    transparent={true}
+                    visible={isLoading}
+                    color={Common.colors.loadblue}
+                    overlayColor={Common.colors.transparent}
+                    size={'large'}
+                />
             </ScrollView>
         );
     }
@@ -283,7 +326,7 @@ export default class HomePage extends Component {
         return(
             <TouchableOpacity
                 activeOpacity={0.5}
-                onPress={() => this._clickItem(contentData.name,contentData.id,contentData.deadunit,contentData.deadline,contentData.deadprice,contentData.expiryrate,contentData.serverfee)}>
+                onPress={() => this._clickItem(contentData.name,contentData.id,contentData.deadunit,contentData.deadline,contentData.deadprice,contentData.expiryrate,contentData.serverfee,contentData.price)}>
             <View style={{flexDirection: 'row',justifyContent:'center',alignItems:'center',
                 backgroundColor:Common.colors.white,
                 paddingLeft:25,paddingTop:5,paddingBottom:5,paddingRight:10,borderBottomColor: Common.colors.bottomlinecolor,
@@ -326,7 +369,7 @@ export default class HomePage extends Component {
             passProps:{title: '逾期后果',url: Common.url.outTimeUrl}//http://114.67.154.29/agreement.html
         })
     }
-    _clickItem(name,id,deadunit,deadline,deadprice,expiryrate,serverfee) {
+    _clickItem(name,id,deadunit,deadline,deadprice,expiryrate,serverfee,price) {
         if(name=="iphone8" ||name==""){
             this.setState({
                 isSecltor8: true,
@@ -337,6 +380,7 @@ export default class HomePage extends Component {
                 deadline:deadline,
                 deadunit:deadunit,
                 serverfee:serverfee,
+                price:price,
                 isClickItem:true,
             })
         }else{
@@ -349,6 +393,7 @@ export default class HomePage extends Component {
                 deadline:deadline,
                 deadunit:deadunit,
                 serverfee:serverfee,
+                price:price,
                 isClickItem:true,
             })
         }
@@ -366,72 +411,82 @@ export default class HomePage extends Component {
         })
     }
     _takeOrder(){
-
-        Storage.get("name").then((value) => {
+        Storage.get("isLogin").then((value) => {
             if(value){
-                Storage.get('school').then((value) => {
+                Storage.get("name").then((value) => {
                     if(value){
-                        Storage.get('work').then((value) => {
+                        Storage.get('school').then((value) => {
                             if(value){
-                                Storage.get('phone').then((value) => {
+                                Storage.get('work').then((value) => {
                                     if(value){
-                                        Storage.get('contact').then((value) => {
+                                        Storage.get('phone').then((value) => {
                                             if(value){
-                                                let product_id=this.state.id;
-                                                let name=this.state.name;
-                                                let deadline=this.state.deadline;
-                                                let deadunit=this.state.deadunit;
-                                                let deadprice=this.state.deadprice;
-                                                let serverfee=this.state.serverfee;
+                                                Storage.get('contact').then((value) => {
+                                                    if(value){
+                                                        let product_id=this.state.id;
+                                                        let name=this.state.name;
+                                                        let price=this.state.price;
+                                                        let deadline=this.state.deadline;
+                                                        let deadunit=this.state.deadunit;
+                                                        let deadprice=this.state.deadprice;
+                                                        let serverfee=this.state.serverfee;
 
-                                                this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
-                                                    name:'TakeOrderContainer',
-                                                    component: TakeOrderContainer,
-                                                    passProps: {product_id:product_id,name:name,deadline:deadline,deadunit:deadunit,deadprice:deadprice,serverfee:serverfee}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
-                                                })// push一个route对象到navigator中
+                                                        this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                                                            name:'TakeOrderContainer',
+                                                            component: TakeOrderContainer,
+                                                            passProps: {product_id:product_id,name:name,deadline:deadline,deadunit:deadunit,deadprice:deadprice,serverfee:serverfee,price:price}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
+                                                        })// push一个route对象到navigator中
+                                                    }else{
+                                                        this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                                                            name:'CheckContactContainer',
+                                                            component: CheckContactContainer,
+                                                            passProps: {isNeedSkip:true}
+                                                        })
+                                                        return;
+                                                    }
+                                                });
                                             }else{
                                                 this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
-                                                    name:'CheckContactContainer',
-                                                    component: CheckContactContainer,
-                                                    // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+                                                    name:'CheckPhoneContainer',
+                                                    component: CheckPhoneContainer,
+                                                    passProps: {isNeedSkip:true}
                                                 })
                                                 return;
                                             }
                                         });
                                     }else{
                                         this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
-                                            name:'CheckPhoneContainer',
-                                            component: CheckPhoneContainer,
-                                            // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+                                            name:'CheckWorkContainer',
+                                            component: CheckWorkContainer,
+                                            passProps: {isNeedSkip:true}
                                         })
                                         return;
                                     }
                                 });
                             }else{
                                 this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
-                                    name:'CheckWorkContainer',
-                                    component: CheckWorkContainer,
-                                    // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
-                                })
+                                    name:'CheckSchoolContainer',
+                                    component: CheckSchoolContainer,
+                                    passProps: {isNeedSkip:true}
+                                });
                                 return;
                             }
                         });
                     }else{
                         this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
-                            name:'CheckSchoolContainer',
-                            component: CheckSchoolContainer,
-                            // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+                            name:'CheckNameContainer',
+                            component: CheckNameContainer,
+                            passProps: {isNeedSkip:true}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
                         });
                         return;
                     }
                 });
             }else{
                 this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
-                    name:'CheckNameContainer',
-                    component: CheckNameContainer,
+                    name:'LoginContainer',
+                    component: LoginContainer,
                     // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
                 });
-                return;
             }
         });
     }

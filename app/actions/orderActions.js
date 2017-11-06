@@ -23,12 +23,6 @@ export let GetOrderList = (data,isLoading,isRefreshing,isLoadMore) => {
                     , {position:Toast.positions.CENTER});
                 dispatch({type: types.MYORDERRECEIVED, Code: Code, Message: Message, Data: Data});
             }else if(Code==2){//token 失效
-                Storage.get("refresh_token").then((value) => {
-                    let data;
-                    data={'refresh_token':value};
-                    console.log('data===------------>'+JSON.stringify(data));
-                    // dispatch(_RefreshToken(data));
-                });
                 Toast.show("登录验证失败，请重新登录"
                     , {position:Toast.positions.CENTER});
                 dispatch({'type': types.TOKENERROR});

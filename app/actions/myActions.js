@@ -30,27 +30,27 @@ export let HttpLogin = (data,isLoading) => {
                     Storage.save('refresh_token',Data.refresh_token);
                     Storage.save('username',user.name);
                     Storage.save('userphone',user.phone);
-                    if(user.isrealauth=='1'){
+                    if(user.isrealauth=='1'||user.isrealauth=='4'){
                         Storage.save('name',true);
                     }else{
                         Storage.save('name',false);
                     }
-                    if(user.iseducauth=='1'){
+                    if(user.iseducauth=='1'||user.iseducauth=='4'){
                         Storage.save('school',true);
                     }else{
                         Storage.save('school',false);
                     }
-                    if(user.isworkauth=='1'){
+                    if(user.isworkauth=='1'||user.isworkauth=='4'){
                         Storage.save('work',true);
                     }else{
                         Storage.save('work',false);
                     }
-                    if(user.isphoneauth=='1'){
+                    if(user.isphoneauth=='1'||user.isphoneauth=='4'){
                         Storage.save('phone',true);
                     }else{
                         Storage.save('phone',false);
                     }
-                    if(user.islinkeauth=='1'){
+                    if(user.islinkeauth=='1'||user.islinkeauth=='4'){
                         Storage.save('contact',true);
                     }else{
                         Storage.save('contact',false);
@@ -226,7 +226,7 @@ export let CheckCenter = (data,isLoading,isRefreshing,isLoadMore,) => {
         return Util.post(url, data,
             (Code, Message, Data) => {
             if(Code==1){
-                Toast.show('成功'
+                Toast.show(Message
                     , {position:Toast.positions.CENTER});
                 dispatch({type: types.CHECKCENTERRECEIVED, Code : Code, Message: Message, Data: Data});
 
@@ -260,7 +260,7 @@ export let CheckName = (data,isLoading) => {
         return Util.post(url, data,
             (Code, Message, Data) => {
             if(Code==1){
-                Toast.show('认证成功'
+                Toast.show(Message
                     , {position:Toast.positions.CENTER});
                 Storage.save('name',true);
                 dispatch({type: types.CHECKNAMERECEIVED, Code : Code, Message: Message, Data: Data});
@@ -293,7 +293,7 @@ export let CheckPhone = (data,isLoading) => {
         return Util.post(url, data,
             (Code, Message, Data) => {
             if(Code==1){
-                Toast.show('认证成功'
+                Toast.show(Message
                     , {position:Toast.positions.CENTER});
                 Storage.save('phone',true);
                 dispatch({type: types.CHECKPHONERECEIVED, Code : Code, Message: Message, Data: Data});
@@ -327,7 +327,7 @@ export let CheckSchool = (data,isLoading) => {
         return Util.post(url, data,
             (Code, Message, Data) => {
             if(Code==1){
-                Toast.show('认证成功'
+                Toast.show(Message
                     , {position:Toast.positions.CENTER});
                 Storage.save('school',true);
                 dispatch({type: types.CHECKSCHOOLRECEIVED, Code : Code, Message: Message, Data: Data});
@@ -361,7 +361,7 @@ export let CheckWork = (data,isLoading) => {
         return Util.post(url, data,
             (Code, Message, Data) => {
             if(Code==1){
-                Toast.show('认证成功'
+                Toast.show(Message
                     , {position:Toast.positions.CENTER});
                 Storage.save('work',true);
                 dispatch({type: types.CHECKWORKRECEIVED, Code : Code, Message: Message, Data: Data});
@@ -395,7 +395,7 @@ export let CheckContact = (data,isLoading) => {
         return Util.post(url, data,
             (Code, Message, Data) => {
             if(Code==1){
-                Toast.show('认证成功'
+                Toast.show(Message
                     , {position:Toast.positions.CENTER});
                 Storage.save('contact',true);
                 dispatch({type: types.CHECKCONTACTRECEIVED, Code : Code, Message: Message, Data: Data});

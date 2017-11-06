@@ -16,7 +16,7 @@ import {
 import Common from '../util/constants';
 import NavigationBar from 'react-native-navigationbar'
 import Toast from 'react-native-root-toast';
-import IdentificationContainer from '../containers/IdentificationContainer'
+import Load from '../components/Load';
 import ModalDropdown from '../components/ModalDropdown'
 import {CheckWork} from '../actions/myActions'
 import CheckPhoneContainer from '../containers/CheckPhoneContainer'
@@ -25,7 +25,6 @@ import TakeOrderContainer from '../containers/TakeOrderContainer'
 import Storage from '../util/Storage'
 const  WORK_YEAR_OPTIONS = ['0~6个月', '6~12个月', '1~3年', '3~5年', '5~8年', '8年以上'];
 const WORK_STATE_OPTIONS = ['在职', '自由职业', '其他'];
-const CURRENT_YEAR_OPTIONS = ['0~6个月', '6~12个月', '1~3年', '3~5年', '5~8年', '8年以上'];
 const COMPANY_SORT_OPTIONS = ['机关/事业单位', '国有企业', '上市公司', '民营/私营企业', '合资/外资'];
 const JOB_OPTIONS = ['IT/互联网', '金融', '制造业', '教育/医疗等事业', '交通物流通讯','贸易类行业','服务类行业','其他'];
 const INCOME_OPTIONS = ['2000以下', '2000-3000', '3000-5000', '5000-8000', '8000以上'];
@@ -48,8 +47,26 @@ export default class CheckWorkPage extends Component {
             currentLiveAddress:''
         })
     }
+    componentWillUpdate() {
+        InteractionManager.runAfterInteractions(() => {
+            const {checkReducer} = this.props;
+            console.log('checkReducer.isCheckWork===------------>'+checkReducer.isCheckWork);
+            if (checkReducer.isCheckWork) {
+                if(this.props.isNeedSkip){
+                    this._check();
+                }else{
+                    this.props.navigator.pop();
+                }
+                // this.props.navigator.popToTop();
+                checkReducer.isCheckWork=false;
+            }
+        });
 
+    }
     render() {
+        const {checkReducer} = this.props;
+        // let Data=homeReducer.Data;
+        let isLoading = checkReducer.isLoading;
         return (
             <View style={styles.container} needsOffscreenAlphaCompositing renderToHardwareTextureAndroid>
                 <NavigationBar
@@ -62,12 +79,12 @@ export default class CheckWorkPage extends Component {
                     backFunc={() => {
                         this.props.navigator.pop()
                     }}
-                    actionName='下一步'
-                    actionTextColor={Common.colors.white}
-                    actionFunc={() => {
-
-                        this._check();
-                    }}
+                    // actionName='下一步'
+                    // actionTextColor={Common.colors.white}
+                    // actionFunc={() => {
+                    //
+                    //     this._check();
+                    // }}
                 />
                 <ScrollView
                     style={styles.container}>
@@ -129,7 +146,8 @@ export default class CheckWorkPage extends Component {
                                                textAlignVertical: 'center',}}
                                            dropdownStyle={{ marginTop:0,borderColor: Common.colors.gray1,
                                                borderWidth: 1,
-                                               borderRadius: 3,}}
+                                               borderRadius: 3,width: 80,
+                                               height: 120}}
                                            dropdownTextStyle={{fontSize: 12,color:Common.colors.black}}
                                            dropdownTextHighlightStyle={{fontSize: 12,color:Common.colors.red}}
                                            onSelect={(idx, value) => this._dropdown_2_onSelect(idx, value)}
@@ -310,6 +328,13 @@ export default class CheckWorkPage extends Component {
                     </TouchableOpacity>
                 </View>
                 </ScrollView>
+                <Load
+                    transparent={true}
+                    visible={isLoading}
+                    color={Common.colors.loadblue}
+                    overlayColor={Common.colors.transparent}
+                    size={'large'}
+                />
             </View>
         )
     }
@@ -318,17 +343,23 @@ export default class CheckWorkPage extends Component {
         let {companyAddress,companyPhone,companyName,workYear_id,workState_id,
             companySort_id,job_id,income_id,currentLiveAddress} = this.state;
 
-        if(workYear_id!=''&&workState_id!=''&&currentLiveAddress!=''){
-            var work_year=parseInt(workYear_id)+1;
-            var work_state=parseInt(workState_id)+1;
-            var company_sort=parseInt(companySort_id)+1;
-            var job=parseInt(job_id)+1;
-            var income=parseInt(income_id)+1;
-        }else{
-            Toast.show('请填写完整工作信息', {position: Toast.positions.CENTER});
+        if(workYear_id==''){
+            Toast.show('工作年限不能为空', {position: Toast.positions.CENTER});
             return;
         }
-
+        if(workState_id==''){
+            Toast.show('工作状态不能为空', {position: Toast.positions.CENTER});
+            return;
+        }
+        if(currentLiveAddress==''){
+            Toast.show('当前住址不能为空', {position: Toast.positions.CENTER});
+            return;
+        }
+        var work_year=parseInt(workYear_id)+1;
+        var work_state=parseInt(workState_id)+1;
+        var company_sort=parseInt(companySort_id)+1;
+        var job=parseInt(job_id)+1;
+        var income=parseInt(income_id)+1;
 
         InteractionManager.runAfterInteractions(() => {
             const {dispatch} = this.props;
@@ -408,7 +439,7 @@ export default class CheckWorkPage extends Component {
                                 this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
                                     name:'CheckContactContainer',
                                     component: CheckContactContainer,
-                                    // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+                                    passProps: {isNeedSkip:true}
                                 })
                                 return;
                             }
@@ -417,7 +448,7 @@ export default class CheckWorkPage extends Component {
                         this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
                             name:'CheckPhoneContainer',
                             component: CheckPhoneContainer,
-                            // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+                            passProps: {isNeedSkip:true}
                         })
                         return;
                     }

@@ -19,6 +19,7 @@ let colors = {
     allbackgroundColor: '#F0F0F0',
     bluelogin: '#0d94e0',
     blue: '#0b6ff9',
+    loadblue: '#3e9ce9',
     gray1: '#7E8188',
     gray2: '#808080',
     gray3: '#d5d6d1',
@@ -37,6 +38,7 @@ let colors = {
     red: '#FF0000',
     pink: '#ff709d',
     pink1: '#ffe9d5',
+    transparent: 'rgba(0, 0, 0, 0)',
     backgroundColor0: 'rgba(128,128,128,0.3)',
     backgroundColor1: 'rgba(128,128,128,0.5)',
     backgroundColor2: 'rgba(128,128,128,0.7)'

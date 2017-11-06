@@ -5,9 +5,9 @@ import {
     ScrollView,
     RefreshControl,
     Image,
-    TouchableOpacity,
+    Platform,
     Text,
-    TextInput,
+    BackHandler,
     ListView,
     StyleSheet,
     InteractionManager
@@ -18,7 +18,7 @@ import Common from '../util/constants';
 import NavigationBar from 'react-native-navigationbar'
 import Toast from 'react-native-root-toast';
 import {GetMessage} from '../actions/homeActions'
-import Loading from '../components/Loading';
+import Load from '../components/Load';
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 var isRefreshing=false;
 var isLoadMore=false;
@@ -34,17 +34,27 @@ export default class MessagePage extends Component {
         })
     }
 
-    // componentWillUpdate() {
-    //     InteractionManager.runAfterInteractions(() => {
-    //         const {checkReducer} = this.props;
-    //         console.log('checkReducer.isCheckPhone===------------>'+checkReducer.isCheckPhone);
-    //         if (checkReducer.isCheckPhone) {
-    //             this.props.navigator.popToTop();
-    //             checkReducer.isCheckPhone=false;
-    //         }
-    //     });
-    //
-    // }
+    componentWillMount() {
+        if (Platform.OS === 'android') {
+            BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid);
+        }
+    }
+
+    componentWillUnmount() {
+        if (Platform.OS === 'android') {
+            BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid);
+        }
+    }
+
+    onBackAndroid = () => {
+        const nav = this.props.navigator;
+        const routers = nav.getCurrentRoutes();
+        if (routers.length > 1) {
+            nav.pop();
+            return true;
+        }
+        return false;
+    };
     componentDidMount() {
         InteractionManager.runAfterInteractions(() => {
             const {dispatch} = this.props;
@@ -64,7 +74,7 @@ export default class MessagePage extends Component {
         content = (
             <View style={styles.container}>
                 {isLoading ?
-                    <Loading/> :
+                    null :
                     <View style={{flex: 1, flexDirection: 'column'}}>
                         <ListView
                             dataSource={this.state.dataSource.cloneWithRows(data)}
@@ -111,7 +121,13 @@ export default class MessagePage extends Component {
                     // }}
                 />
                 {content}
-
+                <Load
+                    transparent={true}
+                    visible={isLoading}
+                    color={Common.colors.loadblue}
+                    overlayColor={Common.colors.transparent}
+                    size={'large'}
+                />
             </View>
         )
     }

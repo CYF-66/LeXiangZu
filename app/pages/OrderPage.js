@@ -16,8 +16,10 @@ import NavigationBar from 'react-native-navigationbar'
 import Toast from 'react-native-root-toast';
 import Common from '../util/constants';
 import RepaymentContainer from '../containers/RepaymentContainer'
+import LoginContainer from '../containers/LoginContainer'
 import {GetOrderList} from '../actions/orderActions'
-import Loading from '../components/Loading';
+import Storage from '../util/Storage'
+import Load from '../components/Load';
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 var isRefreshing=false;
 var isLoadMore=false;
@@ -30,8 +32,27 @@ export default class OrderPage extends Component {
             isError: false,
             isLoading: true,
             currentPage:'1',
+            isLogin:false,
             dataSource:ds.cloneWithRows([])
         })
+
+    }
+    componentWillMount() {
+        Storage.get("isLogin").then((value) => {
+            if(value){
+                // console.log('value===------------>'+value);
+            }else{
+                this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                    name:'LoginContainer',
+                    component: LoginContainer,
+                    // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
+                });
+                // console.log('value===------------>'+value);
+            }
+            this.setState({
+                isLogin: value
+            })
+        });
 
     }
 
@@ -48,13 +69,13 @@ export default class OrderPage extends Component {
 
         const {orderReducer} = this.props;
         // let Data=homeReducer.Data;
-        let data = orderReducer.Data;
+        let data = orderReducer.orderData;
         let isLoading = orderReducer.isLoading;
         let content;
         content = (
             <View style={styles.container}>
                 {isLoading ?
-                    <Loading/> :
+                    null :
                     <View style={{flex: 1, flexDirection: 'column'}}>
                         <ListView
                             dataSource={this.state.dataSource.cloneWithRows(data)}
@@ -100,7 +121,13 @@ export default class OrderPage extends Component {
                     // }}
                 />
                 {content}
-
+                <Load
+                    transparent={true}
+                    visible={isLoading}
+                    color={Common.colors.loadblue}
+                    overlayColor={Common.colors.transparent}
+                    size={'large'}
+                />
             </View>
         )
     }

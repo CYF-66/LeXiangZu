@@ -5,18 +5,19 @@ import {
     ListView,
     RefreshControl,
     TouchableOpacity,
-    TouchableHighlight,
+    BackHandler,
     Text,
     Image,
     StyleSheet,
-    InteractionManager
+    InteractionManager,
+    Platform
 } from 'react-native'
 //引入标题支持包
 import NavigationBar from 'react-native-navigationbar'
 import Toast from 'react-native-root-toast';
 import Common from '../util/constants';
 import {GetOrderDetail} from '../actions/orderActions'
-import Loading from '../components/Loading';
+import Load from '../components/Load';
 
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 var isRefreshing = false;
@@ -31,6 +32,27 @@ export default class RepaymentPage extends Component {
         })
     }
 
+    componentWillMount() {
+        if (Platform.OS === 'android') {
+            BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid);
+        }
+    }
+
+    componentWillUnmount() {
+        if (Platform.OS === 'android') {
+            BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid);
+        }
+    }
+
+    onBackAndroid = () => {
+        const nav = this.props.navigator;
+        const routers = nav.getCurrentRoutes();
+        if (routers.length > 1) {
+            nav.pop();
+            return true;
+        }
+        return false;
+    };
     componentDidMount() {
         InteractionManager.runAfterInteractions(() => {
             const {dispatch} = this.props;
@@ -44,7 +66,7 @@ export default class RepaymentPage extends Component {
 
         const {orderReducer} = this.props;
         // let Data=homeReducer.Data;
-        let data = orderReducer.Data;
+        let data = orderReducer.orderDetailsData;
         let isLoading = orderReducer.isLoading;
         // console.log('orderReducer.data.bills===------------>'+JSON.stringify(data.bills));
 
@@ -59,7 +81,7 @@ export default class RepaymentPage extends Component {
         content = (
             <View style={styles.container}>
                 {isLoading ?
-                    <Loading/> :
+                    null :
                     <View style={{flex: 1, flexDirection: 'column'}}>
                         <ListView
                             dataSource={this.state.dataSource.cloneWithRows(orderData)}
@@ -225,6 +247,13 @@ export default class RepaymentPage extends Component {
                         </Text>
                     </TouchableOpacity>
                 </View>
+                <Load
+                    transparent={true}
+                    visible={isLoading}
+                    color={Common.colors.loadblue}
+                    overlayColor={Common.colors.transparent}
+                    size={'large'}
+                />
             </View>
         )
     }

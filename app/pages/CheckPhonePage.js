@@ -3,8 +3,8 @@ import React, {Component} from 'react'
 import {
     View,
     ScrollView,
-    RefreshControl,
-    Image,
+    Platform,
+    BackHandler,
     TouchableOpacity,
     Text,
     TextInput,
@@ -19,6 +19,7 @@ import Toast from 'react-native-root-toast';
 import {CheckPhone} from '../actions/myActions'
 import CheckContactContainer from '../containers/CheckContactContainer'
 import TakeOrderContainer from '../containers/TakeOrderContainer'
+import Load from '../components/Load';
 import Storage from '../util/Storage'
 export default class CheckPhonePage extends Component {
 
@@ -32,18 +33,47 @@ export default class CheckPhonePage extends Component {
         })
     }
 
-    // componentWillUpdate() {
-    //     InteractionManager.runAfterInteractions(() => {
-    //         const {checkReducer} = this.props;
-    //         console.log('checkReducer.isCheckPhone===------------>'+checkReducer.isCheckPhone);
-    //         if (checkReducer.isCheckPhone) {
-    //             this.props.navigator.popToTop();
-    //             checkReducer.isCheckPhone=false;
-    //         }
-    //     });
-    //
-    // }
+    componentWillUpdate() {
+        InteractionManager.runAfterInteractions(() => {
+            const {checkReducer} = this.props;
+            console.log('checkReducer.isCheckPhone===------------>'+checkReducer.isCheckPhone);
+            if (checkReducer.isCheckPhone) {
+                if(this.props.isNeedSkip){
+                    this._check();
+                }else{
+                    this.props.navigator.pop();
+                }
+                // this.props.navigator.popToTop();
+                checkReducer.isCheckPhone=false;
+            }
+        });
+
+    }
+    componentWillMount() {
+        if (Platform.OS === 'android') {
+            BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid);
+        }
+    }
+
+    componentWillUnmount() {
+        if (Platform.OS === 'android') {
+            BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid);
+        }
+    }
+
+    onBackAndroid = () => {
+        const nav = this.props.navigator;
+        const routers = nav.getCurrentRoutes();
+        if (routers.length > 1) {
+            nav.pop();
+            return true;
+        }
+        return false;
+    };
     render() {
+        const {checkReducer} = this.props;
+        // let Data=homeReducer.Data;
+        let isLoading = checkReducer.isLoading;
         return (
             <View style={styles.container} needsOffscreenAlphaCompositing renderToHardwareTextureAndroid>
                 <NavigationBar
@@ -56,12 +86,12 @@ export default class CheckPhonePage extends Component {
                     backFunc={() => {
                         this.props.navigator.pop()
                     }}
-                    actionName='下一步'
-                    actionTextColor={Common.colors.white}
-                    actionFunc={() => {
-
-                        this._check();
-                    }}
+                    // actionName='下一步'
+                    // actionTextColor={Common.colors.white}
+                    // actionFunc={() => {
+                    //
+                    //     this._check();
+                    // }}
                 />
                 <View style={[styles.formInput, styles.formInputSplit]}>
                     <Text
@@ -86,6 +116,13 @@ export default class CheckPhonePage extends Component {
                 <TouchableOpacity activeOpacity={0.5} style={styles.loginBtn} onPress={this._submit.bind(this)}>
                     <Text style={styles.loginText}>提交</Text>
                 </TouchableOpacity>
+                <Load
+                    transparent={true}
+                    visible={isLoading}
+                    color={Common.colors.loadblue}
+                    overlayColor={Common.colors.transparent}
+                    size={'large'}
+                />
             </View>
         )
     }
@@ -94,6 +131,10 @@ export default class CheckPhonePage extends Component {
         // Toast.show('提交', {position: Toast.positions.CENTER});
         let {phone} = this.state;
 
+        if(phone==''){
+            Toast.show('手机号不能为空', {position: Toast.positions.CENTER});
+            return;
+        }
         InteractionManager.runAfterInteractions(() => {
             const {dispatch} = this.props;
             // dispatch(GetOneKeyRegister(isLoading));
@@ -117,7 +158,7 @@ export default class CheckPhonePage extends Component {
                         this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
                             name:'CheckContactContainer',
                             component: CheckContactContainer,
-                            // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+                            passProps: {isNeedSkip:true}
                         })
                         return;
                     }

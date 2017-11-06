@@ -3,7 +3,8 @@ import React, {Component} from 'react'
 import {
     View,
     ScrollView,
-    RefreshControl,
+    Platform,
+    BackHandler,
     Image,
     TouchableOpacity,
     Text,
@@ -18,6 +19,7 @@ import NavigationBar from 'react-native-navigationbar'
 import Toast from 'react-native-root-toast';
 import {CheckContact} from '../actions/myActions'
 import ModalDropdown from '../components/ModalDropdown'
+import Load from '../components/Load';
 import Storage from '../util/Storage'
 const  ONE_RELATIVE_OPTIONS = ['父亲', '母亲', '配偶', '儿子', '女儿', '朋友'];
 const  TWO_RELATIVE_OPTIONS = ['父亲', '母亲', '配偶', '儿子', '女儿', '朋友'];
@@ -38,19 +40,63 @@ export default class CheckContactPage extends Component {
             // typeList: {}
         })
     }
-
     componentWillUpdate() {
         InteractionManager.runAfterInteractions(() => {
             const {checkReducer} = this.props;
             console.log('checkReducer.isCheckContact===------------>'+checkReducer.isCheckContact);
             if (checkReducer.isCheckContact) {
-                this.props.navigator.popToTop();
+                if(this.props.isNeedSkip){
+                    this._check();
+                }else{
+                    this.props.navigator.pop();
+                }
+                // this.props.navigator.popToTop();
+                checkReducer.isCheckContact=false;
+            }
+        });
+
+    }
+    componentWillMount() {
+        if (Platform.OS === 'android') {
+            BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid);
+        }
+    }
+
+    componentWillUnmount() {
+        if (Platform.OS === 'android') {
+            BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid);
+        }
+    }
+
+    onBackAndroid = () => {
+        const nav = this.props.navigator;
+        const routers = nav.getCurrentRoutes();
+        if (routers.length > 1) {
+            nav.pop();
+            return true;
+        }
+        return false;
+    };
+    componentWillUpdate() {
+        InteractionManager.runAfterInteractions(() => {
+            const {checkReducer} = this.props;
+            console.log('checkReducer.isCheckContact===------------>'+checkReducer.isCheckContact);
+            if (checkReducer.isCheckContact) {
+                console.log('this.props.isNeedSkip===------------>'+this.props.isNeedSkip);
+                if(this.props.isNeedSkip){
+                    this.props.navigator.popToTop();
+                }else{
+                    this.props.navigator.pop();
+                }
                 checkReducer.isCheckContact=false;
             }
         });
 
     }
     render() {
+        const {checkReducer} = this.props;
+        // let Data=homeReducer.Data;
+        let isLoading = checkReducer.isLoading;
         return (
             <View style={styles.container} needsOffscreenAlphaCompositing renderToHardwareTextureAndroid>
                 <NavigationBar
@@ -251,6 +297,13 @@ export default class CheckContactPage extends Component {
                     <Text style={styles.loginText}>提交</Text>
                 </TouchableOpacity>
                 </ScrollView>
+                <Load
+                    transparent={true}
+                    visible={isLoading}
+                    color={Common.colors.loadblue}
+                    overlayColor={Common.colors.transparent}
+                    size={'large'}
+                />
             </View>
         )
     }
@@ -258,13 +311,33 @@ export default class CheckContactPage extends Component {
     _submit() {
         // Toast.show('提交', {position: Toast.positions.CENTER});
         let {onelinkman, onelinkrealation,onelinkphone,twolinkman,twolinkrealation,twolinkphone} = this.state;
-        if(onelinkman!=''&&onelinkphone!=''&&twolinkman!=''&&twolinkphone!=''&&onelinkrealation!=''&&twolinkrealation!=''){
-            var onerelative=parseInt(onelinkrealation)+1;
-            var tworelative=parseInt(twolinkrealation)+1;
-        }else{
-            Toast.show('请填写完整联系人信息', {position: Toast.positions.CENTER});
+        if(onelinkman==''){
+            Toast.show('联系人1姓名不能为空', {position: Toast.positions.CENTER});
             return;
         }
+        if(onelinkphone==''){
+            Toast.show('联系人1手机号不能为空', {position: Toast.positions.CENTER});
+            return;
+        }
+        if(onelinkrealation==''){
+            Toast.show('联系人1关系不能为空', {position: Toast.positions.CENTER});
+            return;
+        }
+        if(twolinkman==''){
+            Toast.show('联系人2姓名不能为空', {position: Toast.positions.CENTER});
+            return;
+        }
+        if(twolinkphone==''){
+            Toast.show('联系人2手机号不能为空', {position: Toast.positions.CENTER});
+            return;
+        }
+        if(twolinkrealation==''){
+            Toast.show('联系人2关系不能为空', {position: Toast.positions.CENTER});
+            return;
+        }
+        var onerelative=parseInt(onelinkrealation)+1;
+        var tworelative=parseInt(twolinkrealation)+1;
+
         InteractionManager.runAfterInteractions(() => {
             const {dispatch} = this.props;
             // dispatch(GetOneKeyRegister(isLoading));

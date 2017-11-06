@@ -2,10 +2,10 @@
 import React, {Component} from 'react'
 import {
     View,
-    ListView,
+    Platform,
     RefreshControl,
     TouchableOpacity,
-    TouchableHighlight,
+    BackHandler,
     Text,
     Image,
     StyleSheet,
@@ -32,6 +32,27 @@ export default class  IdentificationPage extends Component {
         })
     }
 
+    componentWillMount() {
+        if (Platform.OS === 'android') {
+            BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid);
+        }
+    }
+
+    componentWillUnmount() {
+        if (Platform.OS === 'android') {
+            BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid);
+        }
+    }
+
+    onBackAndroid = () => {
+        const nav = this.props.navigator;
+        const routers = nav.getCurrentRoutes();
+        if (routers.length > 1) {
+            nav.pop();
+            return true;
+        }
+        return false;
+    };
     render() {
         return (
             <View style={styles.container} needsOffscreenAlphaCompositing renderToHardwareTextureAndroid>
@@ -172,7 +193,7 @@ export default class  IdentificationPage extends Component {
                     this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
                         name:'CheckNameContainer',
                         component: CheckNameContainer,
-                        // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
+                        passProps: {isNeedSkip:false}
                     })
                 }else{
                     Toast.show('已认证', {position: Toast.positions.CENTER});
@@ -185,7 +206,7 @@ export default class  IdentificationPage extends Component {
                     this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
                         name:'CheckSchoolContainer',
                         component: CheckSchoolContainer,
-                        // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+                        passProps: {isNeedSkip:false}
                     })
                 }else{
                     Toast.show('已认证', {position: Toast.positions.CENTER});
@@ -198,7 +219,7 @@ export default class  IdentificationPage extends Component {
                     this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
                         name:'CheckWorkContainer',
                         component: CheckWorkContainer,
-                        // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+                        passProps: {isNeedSkip:false}
                     })
                 }else{
                     Toast.show('已认证', {position: Toast.positions.CENTER});
@@ -211,7 +232,7 @@ export default class  IdentificationPage extends Component {
                     this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
                         name:'CheckPhoneContainer',
                         component: CheckPhoneContainer,
-                        // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+                        passProps: {isNeedSkip:false}
                     })
                 }else{
                     Toast.show('已认证', {position: Toast.positions.CENTER});
@@ -224,7 +245,7 @@ export default class  IdentificationPage extends Component {
                     this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
                         name:'CheckContactContainer',
                         component: CheckContactContainer,
-                        // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+                        passProps: {isNeedSkip:false}
                     })
                 }else{
                     Toast.show('已认证', {position: Toast.positions.CENTER});

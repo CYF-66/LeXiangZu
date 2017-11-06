@@ -3,13 +3,14 @@ import React, {Component} from 'react'
 import {
     View,
     ScrollView,
-    RefreshControl,
+    Platform,
     InteractionManager,
     Image,
     TouchableOpacity,
     Text,
     TextInput,
     StyleSheet,
+    BackHandler
 } from 'react-native'
 //引入标题支持包
 // import SetPage from 'SetPage'
@@ -19,6 +20,7 @@ import Toast from 'react-native-root-toast';
 import ImagePicker from 'react-native-image-crop-picker';
 import IdentificationContainer from '../containers/IdentificationContainer'
 import Storage from '../util/Storage'
+import Load from '../components/Load';
 import {CheckSchool} from '../actions/myActions';
 import DialogSelected from '../components/alertSelected';
 import CheckWorkContainer from '../containers/CheckWorkContainer'
@@ -55,7 +57,44 @@ export default class CheckSchoolPage extends Component {
         this.showAlertSelected = this.showAlertSelected.bind(this);
         this.callbackSelected = this.callbackSelected.bind(this);
     }
+    componentWillMount() {
+        if (Platform.OS === 'android') {
+            BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid);
+        }
+    }
 
+    componentWillUnmount() {
+        if (Platform.OS === 'android') {
+            BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid);
+        }
+    }
+
+    onBackAndroid = () => {
+        const nav = this.props.navigator;
+        const routers = nav.getCurrentRoutes();
+        if (routers.length > 1) {
+            nav.pop();
+            return true;
+        }
+        return false;
+    };
+
+    componentWillUpdate() {
+        InteractionManager.runAfterInteractions(() => {
+            const {checkReducer} = this.props;
+            console.log('checkReducer.isCheckSchool===------------>'+checkReducer.isCheckSchool);
+            if (checkReducer.isCheckSchool) {
+                if(this.props.isNeedSkip){
+                    this._check();
+                }else{
+                    this.props.navigator.pop();
+                }
+                // this.props.navigator.popToTop();
+                checkReducer.isCheckSchool=false;
+            }
+        });
+
+    }
     _renderBeforeEdu() {
         return (
             <ScrollView
@@ -535,6 +574,9 @@ export default class CheckSchoolPage extends Component {
         )
     }
     render() {
+        const {checkReducer} = this.props;
+        // let Data=homeReducer.Data;
+        let isLoading = checkReducer.isLoading;
         // console.log('this.state.base64Source==========='+JSON.stringify(this.state.base64Source));
         return (
             <View style={styles.container} needsOffscreenAlphaCompositing renderToHardwareTextureAndroid>
@@ -548,18 +590,25 @@ export default class CheckSchoolPage extends Component {
                     backFunc={() => {
                         this.props.navigator.pop()
                     }}
-                    actionName='下一步'
-                    actionTextColor={Common.colors.white}
-                    actionFunc={() => {
-
-                        this._check();
-                    }}
+                    // actionName='下一步'
+                    // actionTextColor={Common.colors.white}
+                    // actionFunc={() => {
+                    //
+                    //     this._check();
+                    // }}
                 />
                 {this.state.isEducation ? this._renderAfterEdu() : this._renderBeforeEdu()}
 
                 <DialogSelected ref={(dialog) => {
                     this.dialog = dialog;
                 }}/>
+                <Load
+                    transparent={true}
+                    visible={isLoading}
+                    color={Common.colors.loadblue}
+                    overlayColor={Common.colors.transparent}
+                    size={'large'}
+                />
             </View>
         )
     }
@@ -632,11 +681,47 @@ export default class CheckSchoolPage extends Component {
         if(isEducation){//毕业
 
             if(isZhuanAndBen){//专科、本科及其以上
+                if(chsi_name==''){
+                    Toast.show('学信号不能为空', {position: Toast.positions.CENTER});
+                    return;
+                }
+                if(chsi_password==''){
+                    Toast.show('密码不能为空', {position: Toast.positions.CENTER});
+                    return;
+                }
                 data={'purpose':purpose,'chsi_name':chsi_name,'chsi_password':chsi_password};
             }else{//高中 初中及其以下
+                if(school==''){
+                    Toast.show('毕业院校不能为空', {position: Toast.positions.CENTER});
+                    return;
+                }
+                if(loginoutdate==''){
+                    Toast.show('毕业时间不能为空', {position: Toast.positions.CENTER});
+                    return;
+                }
                 data={'purpose':purpose,'school':school,'loginoutdate':loginoutdate};
             }
         }else{//在校
+            if(college==''){
+                Toast.show('就读院校不能为空', {position: Toast.positions.CENTER});
+                return;
+            }
+            if(start_date==''){
+                Toast.show('入学时间不能为空', {position: Toast.positions.CENTER});
+                return;
+            }
+            if(specialty==''){
+                Toast.show('专业班级不能为空', {position: Toast.positions.CENTER});
+                return;
+            }
+            if(dorm==''){
+                Toast.show('宿舍号不能为空', {position: Toast.positions.CENTER});
+                return;
+            }
+            if(base64Source==''){
+                Toast.show('学生证照片不能为空', {position: Toast.positions.CENTER});
+                return;
+            }
             data={'purpose':1,'college':college,'start_date':start_date,'specialty':specialty,'dorm':dorm,'picture':base64Source};
 
         }
@@ -749,7 +834,7 @@ export default class CheckSchoolPage extends Component {
                                 this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
                                     name:'CheckContactContainer',
                                     component: CheckContactContainer,
-                                    // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+                                    passProps: {isNeedSkip:true}
                                 })
                                 return;
                             }
@@ -758,7 +843,7 @@ export default class CheckSchoolPage extends Component {
                         this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
                             name:'CheckPhoneContainer',
                             component: CheckPhoneContainer,
-                            // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+                            passProps: {isNeedSkip:true}
                         })
                         return;
                     }
@@ -767,7 +852,7 @@ export default class CheckSchoolPage extends Component {
                 this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
                     name:'CheckWorkContainer',
                     component: CheckWorkContainer,
-                    // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字CheckSchoolContainer
+                    passProps: {isNeedSkip:true}
                 })
                 return;
             }

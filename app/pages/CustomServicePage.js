@@ -7,9 +7,9 @@ import {
     Image,
     TouchableOpacity,
     Text,
-    TextInput,
+    BackHandler,
     StyleSheet,
-    InteractionManager
+    Platform
 } from 'react-native'
 //引入标题支持包
 // import SetPage from 'SetPage'
@@ -41,6 +41,28 @@ export default class CustomServicePage extends Component {
     //     });
     //
     // }
+    componentWillMount() {
+        if (Platform.OS === 'android') {
+            BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid);
+        }
+    }
+
+    componentWillUnmount() {
+        if (Platform.OS === 'android') {
+            BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid);
+        }
+    }
+
+    onBackAndroid = () => {
+        const nav = this.props.navigator;
+        const routers = nav.getCurrentRoutes();
+        if (routers.length > 1) {
+            nav.pop();
+            return true;
+        }
+        return false;
+    };
+
     render() {
         return (
             <View style={styles.container} needsOffscreenAlphaCompositing renderToHardwareTextureAndroid>

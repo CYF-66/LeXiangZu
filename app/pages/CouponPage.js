@@ -4,9 +4,9 @@ import {
     View,
     ScrollView,
     RefreshControl,
-    Image,
+    Platform,
     TouchableOpacity,
-    Text,
+    BackHandler,
     StyleSheet,
 } from 'react-native'
 //引入标题支持包
@@ -15,7 +15,8 @@ import Common from '../util/constants';
 import NavigationBar from 'react-native-navigationbar'
 import Toast from 'react-native-root-toast';
 import IdentificationContainer from '../containers/IdentificationContainer'
-
+import Storage from '../util/Storage'
+import LoginContainer from '../containers/LoginContainer'
 export default class CouponPage extends Component {
 
     constructor(props) {
@@ -30,7 +31,37 @@ export default class CouponPage extends Component {
         //     // typeList: {}
         // })
     }
+    componentWillMount() {
+        if (Platform.OS === 'android') {
+            BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid);
+        }
+        Storage.get("isLogin").then((value) => {
+            if(value){
+            }else{
+                this.props.navigator.push({// 活动跳转，以Navigator为容器管理活动页面
+                    name:'LoginContainer',
+                    component: LoginContainer,
+                    // passProps: {contentData}// 传递的参数（可选）,{}里都是键值对  ps: test是关键字
+                });
+            }
+        });
+    }
 
+    componentWillUnmount() {
+        if (Platform.OS === 'android') {
+            BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid);
+        }
+    }
+
+    onBackAndroid = () => {
+        const nav = this.props.navigator;
+        const routers = nav.getCurrentRoutes();
+        if (routers.length > 1) {
+            nav.pop();
+            return true;
+        }
+        return false;
+    };
     render() {
         return (
             <View style={styles.container} needsOffscreenAlphaCompositing renderToHardwareTextureAndroid>

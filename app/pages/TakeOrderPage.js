@@ -19,6 +19,7 @@ import Toast from 'react-native-root-toast';
 import {TakeOrder} from '../actions/orderActions'
 import WebViewPage from '../pages/WebViewPage'
 import Storage from '../util/Storage'
+import Load from '../components/Load';
 export default class TakeOrderPage extends Component {
 
     constructor(props) {
@@ -295,7 +296,7 @@ export default class TakeOrderPage extends Component {
                         color: Common.colors.gray1,
                         textAlign: 'center'
                     }}>
-                        iphone8
+                        {this.props.name}
                     </Text>
                 </View>
                 <View style={{flexDirection: 'row', backgroundColor: Common.colors.gray5, width: 150}}>
@@ -323,7 +324,7 @@ export default class TakeOrderPage extends Component {
                         color: Common.colors.yellow3,
                         textAlign: 'center'
                     }}>
-                        5500元
+                        {this.props.price}元
                     </Text>
                 </View>
             </View>
@@ -332,6 +333,9 @@ export default class TakeOrderPage extends Component {
 
     render() {
 
+        const {orderReducer} = this.props;
+        // let Data=homeReducer.Data;
+        let isLoading = orderReducer.isLoading;
         return (
             <View style={styles.container} needsOffscreenAlphaCompositing renderToHardwareTextureAndroid>
                 <NavigationBar
@@ -349,6 +353,13 @@ export default class TakeOrderPage extends Component {
                     style={styles.container}>
                     {this.state.isSuccess ? this._renderSuccess() : this._renderSubmit()}
                 </ScrollView>
+                <Load
+                    transparent={true}
+                    visible={isLoading}
+                    color={Common.colors.loadblue}
+                    overlayColor={Common.colors.transparent}
+                    size={'large'}
+                />
             </View>
         )
     }
