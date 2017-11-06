@@ -72,6 +72,8 @@ export default class CheckContactPage extends Component {
                     //     // })
                     // }}
                 />
+                <ScrollView
+                    style={styles.container}>
                 <Text style={{marginLeft:20,color:Common.colors.gray1,fontSize:15,marginTop:20, borderBottomWidth: 1,
                     borderBottomColor: Common.colors.bottomlinecolor,paddingBottom:10}}>
                     联系人1
@@ -248,6 +250,7 @@ export default class CheckContactPage extends Component {
                 <TouchableOpacity activeOpacity={0.5} style={styles.loginBtn} onPress={this._submit.bind(this)}>
                     <Text style={styles.loginText}>提交</Text>
                 </TouchableOpacity>
+                </ScrollView>
             </View>
         )
     }

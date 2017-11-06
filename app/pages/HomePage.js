@@ -455,6 +455,7 @@ const styles = StyleSheet.create({
     img: {
         width: Common.window.width,
         height: 200,
+        resizeMode:'stretch'
     },
     customDot: {
         backgroundColor: Common.colors.white,
