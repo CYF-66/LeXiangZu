@@ -8,7 +8,7 @@ import * as types from '../actions/actionTypes';
 const initialState = {
     Data:[],
     msgData:[],
-    isLoading: true,
+    isLoading: false,
     isLoadMore: false,
     isRefreshing: false,
     isSuccess:false,

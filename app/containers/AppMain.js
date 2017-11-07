@@ -6,9 +6,6 @@ import React, {Component} from 'react';
 import {
     StyleSheet,
     Image,
-    DrawerLayoutAndroid,
-    View,
-    Text,
     TouchableHighlight,
     Platform,
     BackHandler

@@ -26,6 +26,7 @@ import CheckPhoneContainer from '../containers/CheckPhoneContainer'
 import CheckContactContainer from '../containers/CheckContactContainer'
 import Load from '../components/Load';
 import Storage from '../util/Storage'
+import NetWorkTool from '../util/NetWorkTool'
 var ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 var state='iphone8';
 var isRefreshing=true;
@@ -55,26 +56,20 @@ export default class HomePage extends Component {
         if (Platform.OS === 'android') {
             BackHandler.addEventListener('hardwareBackPress', this.onBackAndroid);
         }
+        NetWorkTool.addEventListener(NetWorkTool.TAG_NETWORK_CHANGE,this.handleMethod);
     }
 
     componentWillUnmount() {
         if (Platform.OS === 'android') {
             BackHandler.removeEventListener('hardwareBackPress', this.onBackAndroid);
         }
+        NetWorkTool.removeEventListener(NetWorkTool.TAG_NETWORK_CHANGE,this.handleMethod);
     }
 
     onBackAndroid = () => {
-        // const nav = this.navigator;
-        // const routers = nav.getCurrentRoutes();
-        // if (routers.length > 1) {
-        //     nav.pop();
-        //     return true;
-        // }
-        // return false;
         console.log('onBackAndroid===----home-------->'+this.props.navigator.getCurrentRoutes());
         if (this.lastBackPressed && this.lastBackPressed + 2000 >= Date.now()) {
             //最近2秒内按过back键，可以退出应用。
-
             return false;
         }
         this.lastBackPressed = Date.now();
@@ -83,7 +78,13 @@ export default class HomePage extends Component {
 
         return true;
     };
-
+    handleMethod(isConnected){
+        console.log('test', (isConnected ? 'online' : 'offline'));
+        if(!isConnected){
+            Toast.show(NetWorkTool.NOT_NETWORK
+                , {position:Toast.positions.CENTER});
+        }
+    }
     componentWillUpdate() {
         InteractionManager.runAfterInteractions(() => {
             const {homeReducer} = this.props;
@@ -109,14 +110,20 @@ export default class HomePage extends Component {
                 }
             }
         });
-
     }
     componentDidMount() {
         InteractionManager.runAfterInteractions(() => {
-            const {dispatch} = this.props;
-            let data={'reload ':true};
-            console.log('data===------------>'+JSON.stringify(data));
-            dispatch(GetHomeInfo(data,this.state.isLoading,isRefreshing,isLoadMore));
+            NetWorkTool.checkNetworkState((isConnected)=>{
+                if(!isConnected){
+                    Toast.show(NetWorkTool.NOT_NETWORK);
+                    return;
+                }else{
+                    const {dispatch} = this.props;
+                    let data={'reload ':true};
+                    console.log('data===------------>'+JSON.stringify(data));
+                    dispatch(GetHomeInfo(data,this.state.isLoading,isRefreshing,isLoadMore));
+                }
+            });
         });
     }
 

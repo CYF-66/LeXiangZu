@@ -41,7 +41,16 @@ let loginReducer = (state = initialState, action) => {
                 isLoading: false,
                 isLoggedIn:true,
             };
-
+        case types.TOKENERROR://token失效
+            return {
+                ...state,
+                isLoading: false,
+            };
+        case types.ACTIONERROR://请求错误
+            return {
+                ...state,
+                isLoading: false,
+            };
         default:
             return state;
     }
