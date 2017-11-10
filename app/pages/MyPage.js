@@ -412,6 +412,9 @@ export default class MyPage extends Component {
             width: 60,
             height: 60,
             cropping: true,
+            compressImageMaxWidth:100,
+            compressImageMaxHeight:100,
+            compressImageQuality:1,
             cropperCircleOverlay:true
         }).then(image => {
             // let source = { uri: image.uri };
@@ -429,6 +432,7 @@ export default class MyPage extends Component {
             width: 60,
             height: 60,
             cropping: true,
+            compressImageQuality:1,
             cropperCircleOverlay:true
         }).then(image => {
             this.setState({
